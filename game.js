@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 16:00";
+var APP_VER="13.11 16:20";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -107,7 +107,7 @@ function dest(lat,lon,dist,b){var R=6371000,t=Math.PI/180,d=dist/R,br=b*t,la=lat
 function fmtKm(m){return m<1000?Math.round(m/10)*10+" m":(Math.round(m/100)/10).toString().replace(".",",")+" km"}
 function getPos(){return new Promise(function(res,rej){if(!navigator.geolocation)return rej(new Error("Brak GPS w tym urządzeniu"));
   navigator.geolocation.getCurrentPosition(function(p){res({lat:p.coords.latitude,lon:p.coords.longitude,acc:p.coords.accuracy})},function(e){rej(new Error(e.code===1?"Brak zgody na lokalizację. Włącz ją w ustawieniach przeglądarki.":"Nie udało się ustalić lokalizacji. Spróbuj na zewnątrz."))},{enableHighAccuracy:true,timeout:20000,maximumAge:30000})})}
-function getStart(){if(D.g.useHome&&D.g.home)return Promise.resolve(D.g.home);return getPos().catch(function(err){if(D.g.home)return D.g.home;throw err})}
+function getStart(){if(D.g.tester&&D.g.fake)return Promise.resolve({lat:D.g.fake.lat,lon:D.g.fake.lon});if(D.g.useHome&&D.g.home)return Promise.resolve(D.g.home);return getPos().catch(function(err){if(D.g.home)return D.g.home;throw err})}
 var OVERPASS=[["de","https://overpass-api.de/api/interpreter"],["coffee","https://overpass.private.coffee/api/interpreter"],["kumi","https://overpass.kumi.systems/api/interpreter"],["mailru","https://maps.mail.ru/osm/tools/overpass/api/interpreter"]];
 var MAPDIAG=[];
 function diag(t){MAPDIAG.unshift(new Date().toLocaleTimeString("pl-PL")+" "+t);MAPDIAG=MAPDIAG.slice(0,12)}
@@ -336,7 +336,7 @@ R.mission=function(){
       '<button class="btn ghost" data-a="hero">'+(S.heroArm?'⚔️ Na pewno? Stuknij jeszcze raz':'⚔️ Podbijam do Hero')+'</button></div>';
   }
   if(e.mapa){
-    h+='<div class="box"><b>🗺️ Cel</b>';
+    h+='<div class="box"><b>🗺️ Cel</b>'+(D.g.tester&&D.g.fake?'<p class="tag" style="display:inline-block;margin:6px 0">🧪 start: '+esc(D.g.fake.name)+'</p>':'');
     if(S.mapBusy)h+='<p>Szukam celu w okolicy… 🧭</p>';
     else if(A.target){var t=A.target;
       if(t.nearby===undefined&&S.nbFor!==t){S.nbFor=t;findNearby(t).then(function(n){t.nearby=n;save();if(S.step==="mission")render()})}
@@ -429,6 +429,10 @@ R.char=function(){
   '<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share"><span class="em">📤</span><span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b><span class="s">Misja, poziom, ocena i punkty trafiają do arkusza Maćka. Bez zdjęć i lokalizacji.</span></span></button>'+
   '<span class="lbl">📅 Codzienne przypomnienie</span>'+calButtons()+
   ((D.g.tester||D.g.dev)?'<button class="opt'+(D.g.tester?" on":"")+'" data-a="tester"><span class="em">🧪</span><span><b>Tryb testera '+(D.g.tester?"✓":"")+'</b><span class="s">Misje z kilku poziomów naraz, podgląd bazy, przeskakiwanie dni</span></span></button>':'')+
+  (D.g.tester?'<div class="box"><b>🧪 Udawana lokalizacja</b><p class="small">Misje z mapą wystartują z wpisanego miejsca zamiast z GPS. Działa tylko w trybie testera.</p>'+
+    (D.g.fake?'<p>📍 Teraz: <b>'+esc(D.g.fake.name)+'</b></p><button class="btn ghost" data-a="fakeclear">↩ Wróć do prawdziwego GPS</button>':'')+
+    '<div style="display:flex;gap:8px;margin-top:8px"><input type="text" id="fakeq" placeholder="np. Warszawa Centrum, Rudziniec" value="'+esc(S.fakeQ||"")+'" style="flex:1"><button class="btn main" style="width:auto;padding:0 18px" data-a="fakesearch">Szukaj</button></div>'+
+    (S.fakeRes?(S.fakeRes.length?'<div class="opts" style="margin-top:8px">'+S.fakeRes.map(function(r,i){return '<button class="opt" data-a="fakeset" data-v="'+i+'"><span class="em">📍</span><span><b>'+esc(r.name)+'</b><span class="s">'+esc(r.full)+'</span></span></button>'}).join("")+'</div>':'<p class="small">Nic nie znaleziono.</p>'):'')+'</div>':'')+
   (D.g.tester?'<div class="grid2" style="margin-top:10px"><button class="btn ghost" data-a="skip" data-v="1">⏭️ Przeskocz dzień</button><button class="btn ghost" data-a="skip" data-v="7">⏩ Przeskocz tydzień</button></div>'+
     (D.g.offset?'<button class="btn link" data-a="skip" data-v="0">↩ Wróć do prawdziwej daty (teraz +'+D.g.offset+' dni)</button>':''):'')+
   '<span class="lbl">🚌 Autobus albo pociąg w pobliżu</span><div class="chips"><button class="chip'+(hasTransit()?" on":"")+'" data-a="transit" data-v="yes">Tak, jeździ</button><button class="chip'+(!hasTransit()?" on":"")+'" data-a="transit" data-v="no">Nie ma albo bardzo rzadko</button></div>'+
@@ -539,6 +543,12 @@ var ACT={
   usehome:function(v){if(v==="1"&&!D.g.home){toast("Najpierw zapisz swój punkt");return}D.g.useHome=v==="1";save();render()},
   sethome:function(){toast("Sprawdzam lokalizację…");getPos().then(function(p){D.g.home={lat:p.lat,lon:p.lon};D.g.useHome=true;save();render();toast("Zapisano punkt startowy 📌")}).catch(function(err){toast(err.message)})},
   bf:function(v){S.bf=v;render()},
+  fakesearch:function(){var q=(document.getElementById("fakeq")||{}).value||"";S.fakeQ=q;if(!q.trim())return;toast("Szukam…");
+    fetchT("https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=pl&countrycodes=pl&limit=6&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}},12000).then(function(r){return r.json()}).then(function(a){
+      S.fakeRes=(a||[]).map(function(j){return{name:j.name||j.display_name.split(",")[0],full:j.display_name,lat:+j.lat,lon:+j.lon}});render()}).catch(function(){toast("Nie udało się wyszukać")})},
+  fakeset:function(v){var r=S.fakeRes[+v];D.g.fake={lat:r.lat,lon:r.lon,name:r.full.split(",").slice(0,3).join(",")};S.fakeRes=null;
+    for(var k in D.g.act){if(D.g.act[k].target){D.g.act[k].target=null}}save();render();toast("Start misji z mapą: "+r.name)},
+  fakeclear:function(){D.g.fake=null;for(var k in D.g.act){if(D.g.act[k].target)D.g.act[k].target=null}save();render()},
   hero:function(){if(!S.heroArm){S.heroArm=true;render();setTimeout(function(){S.heroArm=false;if(S.step==="mission")render()},4000);return}
     S.heroArm=false;var I=curInst(),A=actOf(I);A.hero=true;A.target=null;A.timer=null;A.knownN=0;var I2=inst(I.mid,I.v);
     if(!D.g.tester){D.g.day.hero=I.key;D.g.day.heroXP=Math.round(10*Math.min(I2.eff,3*I2.i)*2)}else D.g.day.heroTester=true;
