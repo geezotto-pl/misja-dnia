@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 12:15";
+var APP_VER="13.11 12:40";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -106,14 +106,15 @@ function diag(t){MAPDIAG.unshift(new Date().toLocaleTimeString("pl-PL")+" "+t);M
 function fetchT(url,opt,ms){var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){ctl&&ctl.abort()},ms);opt=opt||{};if(ctl)opt.signal=ctl.signal;
   return fetch(url,opt).then(function(r){clearTimeout(tm);return r},function(e){clearTimeout(tm);throw new Error(e&&e.name==="AbortError"?"czas":"sieć")})}
 function overpass(q){
-  var i=0,errs=[];
-  function tryNext(){if(i>=OVERPASS.length){var m=errs.join(", ");diag("overpass: "+m);var er=new Error("Serwery map nie odpowiadają ("+m+").");er.all=true;return Promise.reject(er)}
-    var ep=OVERPASS[i++];
-    return fetchT(ep[1],{method:"POST",body:"data="+encodeURIComponent(q),headers:{"Content-Type":"application/x-www-form-urlencoded"}},20000)
-      .then(function(r){if(!r.ok)throw new Error(String(r.status));return r.json().catch(function(){throw new Error("zły JSON")})})
-      .then(function(j){diag("overpass "+ep[0]+": OK, "+(j.elements||[]).length+" obiektów");return j.elements||[]})
-      .catch(function(e){errs.push(ep[0]+": "+(e.message||"błąd"));return tryNext()})}
-  return tryNext();
+  return new Promise(function(res,rej){
+    var left=OVERPASS.length,errs=[],doneF=false;
+    OVERPASS.forEach(function(ep){
+      fetchT(ep[1],{method:"POST",body:"data="+encodeURIComponent(q),headers:{"Content-Type":"application/x-www-form-urlencoded"}},15000)
+        .then(function(r){if(!r.ok)throw new Error(String(r.status));return r.json().catch(function(){throw new Error("zły JSON")})})
+        .then(function(j){if(doneF)return;doneF=true;diag("overpass "+ep[0]+": OK, "+(j.elements||[]).length+" obiektów");res(j.elements||[])})
+        .catch(function(e){errs.push(ep[0]+": "+(e.message||"błąd"));if(--left===0&&!doneF){diag("overpass: "+errs.join(", "));var er=new Error("Serwery map nie odpowiadają ("+errs.join(", ")+").");er.all=true;rej(er)}});
+    });
+  });
 }
 /* zapasowe źródło: Nominatim (adres najbliżej punktu) */
 function nominatim(lat,lon,zoom){
@@ -131,7 +132,7 @@ function fallbackTarget(st,dist,kind){
     var p=dest(st.lat,st.lon,dist,b);
     return nominatim(p.lat,p.lon,kind==="place"?13:17).then(function(j){var la=+j.lat,lo=+j.lon,d=hav(st.lat,st.lon,la,lo);
       if(d<dist*.45||d>dist*1.7||nearUsed(la,lo,300)){D.g.sec[s]=D.g.ctr=(D.g.ctr||0)+1;if(tries<4)return attempt();throw new Error("Nie znalazłem celu. Spróbuj jeszcze raz.")}
-      return{lat:la,lon:lo,name:nomName(j,kind)+(kind==="place"?"":" (sprawdź, co tam jest)"),d:d,sec:sector(brg(st.lat,st.lon,la,lo)),start:{lat:st.lat,lon:st.lon},road:true,src:"nominatim"}})
+      return{lat:la,lon:lo,name:nomName(j,kind)+(kind==="place"?"":kind==="bus"?" (wysiądź na przystanku najbliżej tego miejsca)":" (sprawdź, co tam jest)"),d:d,sec:sector(brg(st.lat,st.lon,la,lo)),start:{lat:st.lat,lon:st.lon},road:true,src:"nominatim"}})
     .catch(function(e){if(tries<4&&/nominatim: brak/.test(e.message))return attempt();diag("nominatim: "+e.message);throw new Error("Mapy chwilowo nie działają ("+e.message+"). Spróbuj za kilka minut.")});
   }
   return attempt();
@@ -160,22 +161,36 @@ function chooseSector(list){ // list: elementy z .sec
   var best=null,bv=Infinity;Object.keys(secs).forEach(function(s){var v=D.g.sec[s]==null?-1:D.g.sec[s];if(v<bv||(v===bv&&Math.random()<.5)){bv=v;best=+s}});
   return best;
 }
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+var NOMKW={poi:["viewpoint","wayside shrine","monument","memorial","church","park","castle","ruins","attraction","artwork","lake","tower","fountain","chapel"],bus:["bus stop"]};
+function nominatimPOI(st,dist,kind){
+  var kws=(NOMKW[kind]||[]).slice().sort(function(){return Math.random()-.5}).slice(0,kind==="poi"?5:1);
+  var r=dist*1.5,dLat=r/111320,dLon=r/(111320*Math.cos(st.lat*Math.PI/180));
+  var vb=(st.lon-dLon).toFixed(4)+","+(st.lat+dLat).toFixed(4)+","+(st.lon+dLon).toFixed(4)+","+(st.lat-dLat).toFixed(4);
+  var out=[],seen={};
+  return kws.reduce(function(pr,kw,ix){return pr.then(function(){return(ix?sleep(1100):Promise.resolve()).then(function(){
+      var u="https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=pl&limit=40&bounded=1&viewbox="+vb+"&q="+encodeURIComponent("["+kw+"]");
+      return fetchT(u,{headers:{"Accept":"application/json"}},12000).then(function(x){if(!x.ok)throw new Error(String(x.status));return x.json()}).then(function(arr){
+        (arr||[]).forEach(function(j){var k=j.osm_type+j.osm_id;if(seen[k])return;seen[k]=1;var t={};t[j.category]=j.type;if(j.name)t.name=j.name;out.push({lat:+j.lat,lon:+j.lon,tags:t})});
+      }).catch(function(e){diag("nominatim ["+kw+"]: "+e.message)});
+    })})},Promise.resolve()).then(function(){diag("nominatim szukanie: "+out.length+" miejsc");return out});
+}
 function findTarget(I){
-  var e=I.e,dist=km(e,I.i)*1000,kind=MAPKIND[e.mapa];
-  return getStart().then(function(st){
-    return overpass(poiQuery(kind,st.lat,st.lon,dist*1.7)).catch(function(err){if(err.all)return fallbackTarget(st,dist,kind).then(function(t){return{fb:t}});throw err}).then(function(els){
-      if(els&&els.fb)return els.fb;
-      var c=els.map(function(el){var la=el.lat!=null?el.lat:el.center&&el.center.lat,lo=el.lon!=null?el.lon:el.center&&el.center.lon;if(la==null)return null;
-        var d=hav(st.lat,st.lon,la,lo);return{lat:la,lon:lo,tags:el.tags||{},d:d,sec:sector(brg(st.lat,st.lon,la,lo))}}).filter(Boolean)
-        .filter(function(x){return x.d>250&&!nearUsed(x.lat,x.lon,300)});
-      var ring=c.filter(function(x){return x.d>dist*.65&&x.d<dist*1.35});
-      if(!ring.length)ring=c.filter(function(x){return x.d>dist*.4&&x.d<dist*1.7});
-      if(kind==="poi"){var named=ring.filter(function(x){return x.tags.name});if(named.length>=3)ring=named}
-      if(ring.length){var s=chooseSector(ring),inS=ring.filter(function(x){return x.sec===s});var t=inS[Math.floor(Math.random()*inS.length)];
-        return{lat:t.lat,lon:t.lon,name:label(t.tags),d:t.d,sec:t.sec,start:{lat:st.lat,lon:st.lon}}}
-      if(kind!=="poi")throw new Error("Nie znalazłem w okolicy pasującego celu. Wymień misję.");
-      return roadPoint(st,dist);
-    });
+  var e=I.e,dist=km(e,I.i)*1000,kind=MAPKIND[e.mapa],st0;
+  return getStart().then(function(st){st0=st;
+    return overpass(poiQuery(kind,st.lat,st.lon,dist*1.7)).then(function(els){
+      return els.map(function(el){var la=el.lat!=null?el.lat:el.center&&el.center.lat,lo=el.lon!=null?el.lon:el.center&&el.center.lon;return la==null?null:{lat:la,lon:lo,tags:el.tags||{}}}).filter(Boolean)
+    }).catch(function(err){if(!err.all)throw err;return kind==="place"?[]:nominatimPOI(st,dist,kind)});
+  }).then(function(list){var st=st0;
+    var c=list.map(function(x){x.d=hav(st.lat,st.lon,x.lat,x.lon);x.sec=sector(brg(st.lat,st.lon,x.lat,x.lon));return x})
+      .filter(function(x){return x.d>250&&!nearUsed(x.lat,x.lon,300)});
+    var ring=c.filter(function(x){return x.d>dist*.65&&x.d<dist*1.35});
+    if(!ring.length)ring=c.filter(function(x){return x.d>dist*.4&&x.d<dist*1.7});
+    if(kind==="poi"){var named=ring.filter(function(x){return x.tags.name});if(named.length>=3)ring=named}
+    if(ring.length){var s=chooseSector(ring),inS=ring.filter(function(x){return x.sec===s});var t=inS[Math.floor(Math.random()*inS.length)];
+      return{lat:t.lat,lon:t.lon,name:label(t.tags),d:t.d,sec:t.sec,start:{lat:st.lat,lon:st.lon}}}
+    if(kind==="poi"&&list.length)return roadPoint(st,dist);
+    return fallbackTarget(st,dist,kind);
   }).then(function(t){D.g.sec[t.sec]=D.g.ctr=(D.g.ctr||0)+1;save();return t});
 }
 function roadPoint(st,dist){
