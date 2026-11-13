@@ -608,11 +608,15 @@ R.edit=function(){
   return head()+'<div class="page"><h2>Strefy komfortu</h2><p class="lead">0 to „nie ma mowy”, 10 to „luz”.</p>'+
   AREAS.map(function(a){return '<div class="slider"><div class="lab"><span>'+a.em+' '+a.n+'</span><span id="v'+a.k+'">'+editVals[a.k]+'</span></div>'+
   '<input type="range" min="0" max="10" step="0.5" value="'+editVals[a.k]+'" oninput="editVals.'+a.k+'=+this.value;document.getElementById(\'v'+a.k+'\').textContent=this.value"></div>'}).join("")+
-  '<div class="note">Zmiany zaczną działać od poniedziałku <b>'+fmtDate(mon)+'</b>, tak jak wybór trybu tygodnia. Po każdej misji aplikacja i tak sama poprawia te wartości.</div>'+
+  (D.started?'<div class="note">Zmiany zaczną działać od poniedziałku <b>'+fmtDate(mon)+'</b>, tak jak wybór trybu tygodnia. Po każdej misji aplikacja i tak sama poprawia te wartości.</div>'
+   :'<div class="note">Dopóki nie wykonasz pierwszej misji, zmiany działają od razu. Potem będą wchodzić od poniedziałku, tak jak wybór trybu tygodnia.</div>')+
   '<button class="btn ghost" onclick="startSceneEdit()">🔁 Przejdź scenki jeszcze raz</button>'+
-  '</div>'+bar("Zapisz od "+fmtDate(mon),false,"saveEdit()");
+  '</div>'+bar(D.started?"Zapisz od "+fmtDate(mon):"Zapisz",false,"saveEdit()");
 };
-function saveEdit(){D.pending={c:editVals,from:nextMonday().toISOString()};save();toast("Zapisano. Działa od poniedziałku");S.hist=[];go("card",false)}
+function saveEdit(){
+  if(!D.started){D.comfort=editVals;delete D.pending;save();toast("Zapisano ✓")}
+  else{D.pending={c:editVals,from:nextMonday().toISOString()};save();toast("Zapisano. Działa od poniedziałku")}
+  S.hist=[];go("card",false)}
 function startSceneEdit(){S.editScenes=true;S.hist=["edit"];S.step="sc0";render();window.scrollTo(0,0)}
 function finishSceneEdit(){
   S.editScenes=false;
