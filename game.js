@@ -1,5 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
+var APP_VER="13.11 12:15";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -354,6 +355,7 @@ R.char=function(){
   '<button class="btn link" data-a="sethome">'+(D.g.home?"📌 Zapisz obecne miejsce jako nowy punkt (jest zapisany)":"📌 Zapisz obecne miejsce jako mój punkt")+'</button>'+
   '<p class="small">Punkt zostaje tylko w tym telefonie. Bez śledzenia w tle.</p>'+
   '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button>'+
+  '<p class="small">Wersja aplikacji: <b>'+APP_VER+'</b></p>'+
   '<button class="btn link" style="color:var(--red)" onclick="resetAll()">'+(S.resetArmed?"Na pewno? Usunie postać, punkty i dziennik. Stuknij jeszcze raz":"Zacznij od nowa")+'</button></div>';
   return h+nav();
 };
@@ -416,7 +418,7 @@ var ACT={
   sethome:function(){toast("Sprawdzam lokalizację…");getPos().then(function(p){D.g.home={lat:p.lat,lon:p.lon};D.g.useHome=true;save();render();toast("Zapisano punkt startowy 📌")}).catch(function(err){toast(err.message)})},
   bf:function(v){S.bf=v;render()},
   sug:function(v){var p=v.split(":");S.sug[p[0]]=S.sug[p[0]]===p[1]?"":p[1];render()},
-  sharediag:function(){shareText("🧪 Misja Dnia: diagnostyka map\n"+navigator.userAgent+"\n"+MAPDIAG.join("\n"))},
+  sharediag:function(){shareText("🧪 Misja Dnia: diagnostyka map (wersja "+APP_VER+")\n"+navigator.userAgent+"\n"+MAPDIAG.join("\n"))},
   sharelog:function(){var L=D.g.log,ok=L.filter(function(l){return l.rate==="ok"}).length;
     var t="🧭 Misja Dnia: testy "+(D.nick||"")+"\nMisji: "+L.length+", XP: "+D.g.xp+", w sam raz: "+Math.round(ok/L.length*100)+"%\n"+
       L.slice(0,40).map(function(l){return "• "+l.day+" "+l.mid+" ["+LV[l.lvl].n+"] "+({easy:"za łatwe",ok:"w sam raz",hard:"za trudne"}[l.rate])+(l.like==="y"?" 👍":l.like==="n"?" 👎":"")+(l.note?" – "+l.note:"")}).join("\n");
