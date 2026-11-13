@@ -1,13 +1,13 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 13:00";
+var APP_VER="13.11 13:30";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
 var KAT={ludzie:"🗣️ Ludzie",relacje:"❤️ Relacje",ruch:"🥾 Ruch",telefon:"📵 Mniej telefonu",nauka:"📖 Umysł i nauka",kreat:"🎨 Kreatywność",okolica:"🧭 Przygoda i okolica",porzadek:"🧹 Porządek"};
 var DOWOD={zdjecie:"📷 zdjęcie",zrzut:"🖼️ zrzut ekranu",notatka:"✍️ notatka",stoper:"⏱️ stoper",gps:"📍 GPS na miejscu"};
 var AVOIDMAP={jedzenie:"food",dzwonienie:"phone",zakupy:"shop",wieczor:"evening"};
-var MAPKM={pieszo:[1,2,4,7,10],"pieszo-daleko":[1,2,4,7,10],rower:[4,7,10,14,20],bus:[3,5,8,12,15],wyprawa:[8,12,16,20,25],miejscowosc:[15,25,40,60,80]};
+var MAPKM={pieszo:[1,2,4,7,10],"pieszo-daleko":[1,2,4,7,10],rower:[4,7,10,14,20],bus:[2,3,5,8,12],wyprawa:[8,12,16,20,25],miejscowosc:[15,25,40,60,80]};
 var MAPKIND={pieszo:"poi","pieszo-daleko":"poi",rower:"poi",bus:"bus",wyprawa:"poi",miejscowosc:"place"};
 var TRAVEL={pieszo:"walking","pieszo-daleko":"walking",rower:"bicycling",bus:"transit",wyprawa:"driving",miejscowosc:"driving"};
 var DIRS=["na północ","na północny wschód","na wschód","na południowy wschód","na południe","na południowy zachód","na zachód","na północny zachód"];
@@ -217,6 +217,9 @@ function mapPreview(t){var s=t.start||t,la1=Math.min(s.lat,t.lat),la2=Math.max(s
   var bb=[(lo1-mo).toFixed(5),(la1-ml).toFixed(5),(lo2+mo).toFixed(5),(la2+ml).toFixed(5)].join(",");
   return '<iframe class="mapframe" loading="lazy" title="Mapa celu" src="https://www.openstreetmap.org/export/embed.html?bbox='+bb+'&layer=mapnik&marker='+t.lat.toFixed(5)+','+t.lon.toFixed(5)+'"></iframe><p class="small">Pinezka to cel. Mapa obejmuje też twój punkt startu.</p>'}
 function pinUrl(t){return "https://www.google.com/maps/search/?api=1&query="+t.lat.toFixed(6)+","+t.lon.toFixed(6)}
+function mapTime(e,i){var k=km(e,i),m;
+  if(e.mapa==="pieszo"||e.mapa==="pieszo-daleko")m=k*2*12;else if(e.mapa==="rower")m=k*2*4;else if(e.mapa==="bus")m=k*2*3+30;else return "wyprawa na kilka godzin";
+  m=Math.round(m/5)*5;return "ok. "+k+" km · "+(m<60?m+" min":(Math.floor(m/60)+" h"+(m%60?" "+m%60+" min":"")))+" w obie strony"}
 function navUrl(t,e){return "https://www.google.com/maps/dir/?api=1&destination="+t.lat.toFixed(6)+","+t.lon.toFixed(6)+"&travelmode="+(TRAVEL[e.mapa]||"walking")}
 
 /* ---------- aktywne misje ---------- */
@@ -269,7 +272,7 @@ R.today=function(){
     h+='<div class="mcard '+I.lvl+(done?" done":"")+'" data-a="open" data-v="'+ix+'">'+
       '<div class="mtop"><span class="kat">'+KAT[I.e.kat]+'</span>'+(D.g.tester&&cd.want!==I.lvl?lvlBadge(I.lvl):lvlBadge(I.lvl))+'</div>'+
       '<div class="mt">'+missionText(I)+'</div>'+
-      '<div class="meta">⏱️ '+(I.e.mapa?"ok. "+km(I.e,I.i)+" km":I.e.czas+" min")+' · '+I.e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</div>'+
+      '<div class="meta">⏱️ '+(I.e.mapa?mapTime(I.e,I.i):I.e.czas+" min")+' · '+I.e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</div>'+
       (D.g.tester&&cd.want==="X"&&I.lvl!=="X"?'<div class="small">Brak misji Hero dla twojego profilu, pokazuję najtrudniejszą dostępną.</div>':'')+
       (done?'<div class="donebadge">✓ Zaliczona</div>':'')+
       (D.g.tester?'<div class="rowbtn"><button class="mini" data-a="reroll" data-v="'+ix+'">🎲 Losuj inną</button></div>':'')+'</div>';
@@ -291,7 +294,8 @@ R.mission=function(){
     '<div class="mt" style="font-size:23px;margin:8px 0 10px">'+missionText(I)+'</div>'+
     lvlBadge(I.lvl,"Dla ciebie: ")+(o!==I.lvl?' <span class="small">(dla przeciętnej osoby: '+LV[o].n.toLowerCase()+')</span>':'')+
     (D.g.tester?reason(I):'')+
-    '<p class="small">⏱️ '+(e.mapa?"cel ok. "+km(e,I.i)+" km od startu":"ok. "+e.czas+" min")+' · Dowód: '+e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</p>';
+    (e.podpowiedz?'<details class="hint"><summary>💡 Jak to zrobić? Podpowiedzi</summary><ul>'+e.podpowiedz.map(function(x){return '<li>'+gtxt(x)+'</li>'}).join("")+'</ul></details>':'')+
+    '<p class="small">⏱️ '+(e.mapa?mapTime(e,I.i):"ok. "+e.czas+" min")+' · Dowód: '+e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</p>';
   if(done){var lg=D.g.log.filter(function(l){return l.day===D.g.day.key&&l.key===I.key})[0];
     h+='<div class="note">✓ Misja zaliczona'+(lg?': <b>+'+lg.xp+' XP</b>':'')+'.</div></div>';return h}
   if(e.mapa){

@@ -1,5 +1,5 @@
 {
- "wersja": 1,
+ "wersja": 2,
  "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie.",
  "misje": [
   {
@@ -16,7 +16,11 @@
    ],
    "wym": [],
    "t": "Podziękuj komuś w sklepie albo urzędzie, zwracając się po imieniu z plakietki.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Przy płaceniu zerknij na plakietkę i powiedz: „Dziękuję, pani Ilono, miłego dnia”.",
+    "Wystarczy uśmiech i imię, nic więcej nie trzeba."
+   ]
   },
   {
    "id": "lu-002",
@@ -32,7 +36,11 @@
    ],
    "wym": [],
    "t": "Powiedz „dzień dobry” trzem nieznajomym osobom: sąsiadowi, kierowcy, sprzedawcy.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Najłatwiej tam, gdzie i tak się mijacie: winda, klatka schodowa, przystanek.",
+    "Krótko i z uśmiechem. Nie musisz czekać na odpowiedź."
+   ]
   },
   {
    "id": "lu-003",
@@ -53,7 +61,12 @@
    "t": "Zapytaj obcą osobę o drogę, nawet jeśli ją znasz.",
    "latwiej": "Zapytaj obcą osobę o godzinę.",
    "trudniej": "Zapytaj o drogę i o to, co warto zobaczyć w okolicy.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Wystarczy: „Przepraszam, którędy najbliżej do…?”.",
+    "Wybierz kogoś, kto się nie spieszy, np. czeka na przystanku.",
+    "Na koniec podziękuj. To naturalnie kończy rozmowę."
+   ]
   },
   {
    "id": "lu-004",
@@ -69,7 +82,11 @@
    ],
    "wym": [],
    "t": "Pochwal szczerze nieznajomą osobę: za obsługę, styl albo psa.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Chwal konkret: „Świetnie to pani zapakowała”, „Piękny pies, jak się wabi?”.",
+    "Nie musisz ciągnąć rozmowy. Sam komplement wystarczy."
+   ]
   },
   {
    "id": "lu-005",
@@ -89,7 +106,11 @@
     "zakupy"
    ],
    "t": "Zapytaj sprzedawcę albo baristę, co poleca, i weź właśnie to.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "„Co by pan/pani dziś wybrał(a)?” Ludzie lubią doradzać.",
+    "Możesz dodać z uśmiechem: „Biorę w ciemno”."
+   ]
   },
   {
    "id": "lu-006",
@@ -107,7 +128,12 @@
    "t": "Zagadaj do kogoś w kolejce albo poczekalni i porozmawiaj chociaż 2 minuty.",
    "latwiej": "Zagadaj jednym zdaniem do kogoś w kolejce.",
    "trudniej": "Rozmowa w kolejce na co najmniej 5 minut.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Zacznij od tego, co widzicie oboje: „Długo dziś ta kolejka”, „Też pan/pani czeka na…?”.",
+    "Potem pytanie otwarte: „Poleca pan/pani coś stąd?”, „Często pan/pani tu bywa?”.",
+    "Możesz skończyć w każdej chwili: „Miło się gadało, miłego dnia”."
+   ]
   },
   {
    "id": "lu-007",
@@ -124,7 +150,11 @@
    ],
    "wym": [],
    "t": "Zapytaj sąsiada albo kogoś z pracy o jego pasję i dowiedz się o niej trzech rzeczy.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Zacznij od tego, co wiesz: „{Słyszałem|Słyszałam}, że łowisz ryby. Od kiedy?”.",
+    "Dopytuj: „Co w tym lubisz najbardziej?”, „Jak się zaczyna?”. Ludzie chętnie mówią o swoich pasjach."
+   ]
   },
   {
    "id": "lu-008",
@@ -142,7 +172,11 @@
     "dzwonienie"
    ],
    "t": "Zadzwoń w sprawie, którą zwykle załatwiasz przez internet: sklep, przychodnia, urząd.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Zapisz sobie wcześniej 2–3 zdania, co chcesz powiedzieć.",
+    "Pierwsze zdanie: kim jesteś i w jakiej sprawie dzwonisz."
+   ]
   },
   {
    "id": "lu-009",
@@ -161,7 +195,11 @@
     "zewn"
    ],
    "t": "Poproś nieznajomą osobę, żeby zrobiła ci zdjęcie w ciekawym miejscu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Wybierz kogoś, kto spaceruje bez pośpiechu albo sam robi zdjęcia.",
+    "„Przepraszam, zrobi mi pan/pani zdjęcie? Wystarczy nacisnąć tutaj.”"
+   ]
   },
   {
    "id": "lu-010",
@@ -177,7 +215,11 @@
    ],
    "wym": [],
    "t": "Powiedz na głos swoje zdanie w rozmowie grupowej albo na spotkaniu, na którym zwykle milczysz.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Przygotuj wcześniej jedno zdanie, np. „Mam inny pomysł…”.",
+    "Nie musisz mieć racji. Wystarczy, że się odezwiesz."
+   ]
   },
   {
    "id": "lu-011",
@@ -196,7 +238,11 @@
     "wieczor"
    ],
    "t": "Pójdź {sam|sama} na wydarzenie (wykład, warsztat, spotkanie) i poznaj jedną osobę z imienia.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Przyjdź 10 minut wcześniej. Gdy wszyscy czekają, łatwiej zagadać.",
+    "Pytanie na start: „Pierwszy raz tutaj?”."
+   ]
   },
   {
    "id": "lu-012",
@@ -212,7 +258,11 @@
    ],
    "wym": [],
    "t": "W tym tygodniu porozmawiaj z trzema nieznajomymi osobami, każda rozmowa co najmniej minutę.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Najłatwiej w kolejkach, poczekalniach i na przystankach.",
+    "Pytaj o to, co dookoła: pogoda, autobus, co warto kupić."
+   ]
   },
   {
    "id": "lu-013",
@@ -231,7 +281,11 @@
     "koszt"
    ],
    "t": "Zapisz się na zajęcia grupowe (planszówki, chór, bieganie, wolontariat) i pójdź na nie co najmniej dwa razy w tym miesiącu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Szukaj zajęć w domu kultury, bibliotece albo na lokalnych grupach na Facebooku.",
+    "Pierwszy raz jest najtrudniejszy. Drugi idzie dużo łatwiej."
+   ]
   },
   {
    "id": "re-001",
@@ -320,7 +374,11 @@
    "t": "Zadzwoń (nie pisz!) do kogoś, z kim nie {rozmawiałeś|rozmawiałaś} od pół roku.",
    "latwiej": "Napisz do kogoś, z kim dawno nie {rozmawiałeś|rozmawiałaś}.",
    "trudniej": "Zadzwoń i umów się na spotkanie.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Zacznij od: „{Przypomniałem|Przypomniałam} sobie o tobie, bo…”.",
+    "Nie musisz tłumaczyć przerwy. Ludzie po prostu się cieszą."
+   ]
   },
   {
    "id": "re-006",
@@ -358,7 +416,10 @@
     "zewn"
    ],
    "t": "Zaproś kogoś bliskiego na spacer, na którym oboje chowacie telefony.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Zaproponuj konkret: „Idę o 18 na spacer, idziesz ze mną?”."
+   ]
   },
   {
    "id": "re-008",
@@ -392,7 +453,10 @@
    ],
    "wym": [],
    "t": "Przeproś kogoś za drobną rzecz, która od dawna ci leży na sercu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Krótko: „Przepraszam za…, głupio mi z tym było”. Bez długich tłumaczeń."
+   ]
   },
   {
    "id": "re-010",
@@ -1023,7 +1087,11 @@
    ],
    "wym": [],
    "t": "Opowiedz komuś w 3 zdaniach o czymś, czego się dziś {nauczyłeś|nauczyłaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Najprostszy początek: „Wiesz, że…?”.",
+    "Wystarczy przy obiedzie albo w wiadomości głosowej."
+   ]
   },
   {
    "id": "na-008",
@@ -1267,7 +1335,10 @@
    ],
    "wym": [],
    "t": "Zrób coś własnego (rysunek, wiersz, zdjęcie) i pokaż to rodzinie albo znajomym.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Pokaż bez przepraszania za jakość: „{Zrobiłem|Zrobiłam} coś, zobacz”."
+   ]
   },
   {
    "id": "kr-009",
@@ -1407,7 +1478,10 @@
     "zewn"
    ],
    "t": "Wejdź do sklepu albo miejsca, w którym nigdy nie {byłeś|byłaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Na wsi też się da: sklep, którego nie znasz, świetlica, kościół, biblioteka."
+   ]
   },
   {
    "id": "ok-004",
@@ -1466,7 +1540,7 @@
     "zewn",
     "koszt"
    ],
-   "t": "Wsiądź w autobus, wysiądź na przystanku wskazanym przez aplikację ({cel}) i przejdź się tam 30 minut.",
+   "t": "Wsiądź w autobus, wysiądź na przystanku wskazanym przez aplikację ({cel}), zrób tam zdjęcie czegoś ciekawego i wróć.",
    "mapa": "bus",
    "autor": "Claude"
   },
@@ -1526,7 +1600,10 @@
     "zewn"
    ],
    "t": "Zapytaj kogoś miejscowego o najciekawsze miejsce w okolicy i idź tam.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "„Przepraszam, co tu warto zobaczyć?” Ludzie lubią polecać swoje okolice."
+   ]
   },
   {
    "id": "ok-010",
@@ -1722,7 +1799,11 @@
    ],
    "wym": [],
    "t": "Sprzedaj albo oddaj coś i przekaż to osobiście.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "podpowiedz": [
+    "Wystaw rzecz na OLX, Vinted albo lokalnej grupie „Oddam za darmo”.",
+    "Umów się w ruchliwym miejscu."
+   ]
   },
   {
    "id": "po-009",
