@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 12:40";
+var APP_VER="13.11 13:00";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -132,7 +132,8 @@ function fallbackTarget(st,dist,kind){
     var p=dest(st.lat,st.lon,dist,b);
     return nominatim(p.lat,p.lon,kind==="place"?13:17).then(function(j){var la=+j.lat,lo=+j.lon,d=hav(st.lat,st.lon,la,lo);
       if(d<dist*.45||d>dist*1.7||nearUsed(la,lo,300)){D.g.sec[s]=D.g.ctr=(D.g.ctr||0)+1;if(tries<4)return attempt();throw new Error("Nie znalazłem celu. Spróbuj jeszcze raz.")}
-      return{lat:la,lon:lo,name:nomName(j,kind)+(kind==="place"?"":kind==="bus"?" (wysiądź na przystanku najbliżej tego miejsca)":" (sprawdź, co tam jest)"),d:d,sec:sector(brg(st.lat,st.lon,la,lo)),start:{lat:st.lat,lon:st.lon},road:true,src:"nominatim"}})
+      var ad=j.address||{},town=ad.village||ad.town||ad.city||ad.hamlet||ad.suburb||"";
+      return{lat:la,lon:lo,loc:kind==="place"?"":town,name:kind==="place"?nomName(j,kind):((ad.road||ad.path||ad.track||"Punkt na mapie")+(kind==="bus"?" (wysiądź na przystanku najbliżej)":" (sprawdź, co tam jest)")),d:d,sec:sector(brg(st.lat,st.lon,la,lo)),start:{lat:st.lat,lon:st.lon},road:true,src:"nominatim"}})
     .catch(function(e){if(tries<4&&/nominatim: brak/.test(e.message))return attempt();diag("nominatim: "+e.message);throw new Error("Mapy chwilowo nie działają ("+e.message+"). Spróbuj za kilka minut.")});
   }
   return attempt();
@@ -186,12 +187,12 @@ function findTarget(I){
       .filter(function(x){return x.d>250&&!nearUsed(x.lat,x.lon,300)});
     var ring=c.filter(function(x){return x.d>dist*.65&&x.d<dist*1.35});
     if(!ring.length)ring=c.filter(function(x){return x.d>dist*.4&&x.d<dist*1.7});
-    if(kind==="poi"){var named=ring.filter(function(x){return x.tags.name});if(named.length>=3)ring=named}
+    if(kind!=="place"){var named=ring.filter(function(x){return x.tags.name});if(named.length>=(kind==="bus"?1:3))ring=named}
     if(ring.length){var s=chooseSector(ring),inS=ring.filter(function(x){return x.sec===s});var t=inS[Math.floor(Math.random()*inS.length)];
       return{lat:t.lat,lon:t.lon,name:label(t.tags),d:t.d,sec:t.sec,start:{lat:st.lat,lon:st.lon}}}
     if(kind==="poi"&&list.length)return roadPoint(st,dist);
     return fallbackTarget(st,dist,kind);
-  }).then(function(t){D.g.sec[t.sec]=D.g.ctr=(D.g.ctr||0)+1;save();return t});
+  }).then(addLocality).then(function(t){D.g.sec[t.sec]=D.g.ctr=(D.g.ctr||0)+1;save();return t});
 }
 function roadPoint(st,dist){
   var s=chooseSector([0,1,2,3,4,5,6,7].map(function(i){return{sec:i}}));var b=s*45+(Math.random()*40-20);
@@ -205,6 +206,17 @@ function roadPoint(st,dist){
     return{lat:best.lat,lon:best.lon,name:"Punkt na drodze. Sprawdź, co tam jest",d:d,sec:sector(brg(st.lat,st.lon,best.lat,best.lon)),start:{lat:st.lat,lon:st.lon},road:true};
   });
 }
+function addLocality(t){
+  if(t.loc||t.src==="nominatim")return t;
+  return sleep(1100).then(function(){return nominatim(t.lat,t.lon,14)}).then(function(j){var a=j.address||{};var loc=a.village||a.town||a.city||a.hamlet||a.suburb||a.municipality||"";
+    if(loc&&a.city&&a.suburb&&loc===a.city&&a.suburb!==a.city)loc=a.suburb+", "+a.city;
+    if(loc&&t.name.toLowerCase().indexOf(loc.toLowerCase())<0)t.loc=loc;else if(loc)t.loc="";return t}).catch(function(){return t});
+}
+function mapPreview(t){var s=t.start||t,la1=Math.min(s.lat,t.lat),la2=Math.max(s.lat,t.lat),lo1=Math.min(s.lon,t.lon),lo2=Math.max(s.lon,t.lon);
+  var ml=Math.max((la2-la1)*.25,.004),mo=Math.max((lo2-lo1)*.25,.006);
+  var bb=[(lo1-mo).toFixed(5),(la1-ml).toFixed(5),(lo2+mo).toFixed(5),(la2+ml).toFixed(5)].join(",");
+  return '<iframe class="mapframe" loading="lazy" title="Mapa celu" src="https://www.openstreetmap.org/export/embed.html?bbox='+bb+'&layer=mapnik&marker='+t.lat.toFixed(5)+','+t.lon.toFixed(5)+'"></iframe><p class="small">Pinezka to cel. Mapa obejmuje też twój punkt startu.</p>'}
+function pinUrl(t){return "https://www.google.com/maps/search/?api=1&query="+t.lat.toFixed(6)+","+t.lon.toFixed(6)}
 function navUrl(t,e){return "https://www.google.com/maps/dir/?api=1&destination="+t.lat.toFixed(6)+","+t.lon.toFixed(6)+"&travelmode="+(TRAVEL[e.mapa]||"walking")}
 
 /* ---------- aktywne misje ---------- */
@@ -285,8 +297,10 @@ R.mission=function(){
   if(e.mapa){
     h+='<div class="box"><b>🗺️ Cel</b>';
     if(S.mapBusy)h+='<p>Szukam celu w okolicy… 🧭</p>';
-    else if(A.target){var t=A.target;h+='<p class="big">'+esc(t.name)+'</p><p class="small">'+fmtKm(t.d)+' '+DIRS[t.sec]+' od punktu startu</p>'+
-      '<div class="grid2"><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+navUrl(t,e)+'" target="_blank" rel="noopener">🧭 Nawiguj</a><button class="btn ghost" data-a="known">🙅 Znam to miejsce</button></div>'}
+    else if(A.target){var t=A.target;h+='<p class="big">'+esc(t.name)+'</p>'+(t.loc?'<p>📍 <b>'+esc(t.loc)+'</b></p>':'')+'<p class="small">'+fmtKm(t.d)+' '+DIRS[t.sec]+' od punktu startu</p>'+
+      mapPreview(t)+
+      '<div class="grid2"><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+pinUrl(t)+'" target="_blank" rel="noopener">📌 Pokaż punkt</a><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+navUrl(t,e)+'" target="_blank" rel="noopener">🧭 Nawiguj</a></div>'+
+      '<button class="btn ghost" data-a="known">🙅 Znam to miejsce, daj inne</button>'}
     else h+='<p class="small">Aplikacja wybierze miejsce, w którym jeszcze nie byłeś/aś, za każdym razem w innym kierunku.</p>'.replace("byłeś/aś",G("byłeś","byłaś"))+'<button class="btn ghost" data-a="target">📍 Wyznacz cel</button>'+
       (D.g.home?'<p class="small">Start: '+(D.g.useHome?"twój zapisany punkt":"bieżąca lokalizacja")+'</p>':'');
     if(S.mapErr)h+='<div class="err">'+esc(S.mapErr)+'</div>';
