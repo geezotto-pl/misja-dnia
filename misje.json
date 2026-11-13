@@ -1,5 +1,5 @@
 {
- "wersja": 3,
+ "wersja": 4,
  "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie.",
  "misje": [
   {
@@ -21,7 +21,13 @@
     "Przy płaceniu zerknij na plakietkę i powiedz: „Dziękuję, pani Ilono, miłego dnia”.",
     "Wystarczy uśmiech i imię, nic więcej nie trzeba."
    ],
-   "hero": "Podziękuj po imieniu trzem różnym osobom w ciągu dnia: w sklepie, urzędzie albo na poczcie."
+   "hero": "Podziękuj po imieniu trzem różnym osobom w ciągu dnia: w sklepie, urzędzie albo na poczcie.",
+   "notatka": {
+    "pytanie": "Komu {podziękowałeś|podziękowałaś} i jak ta osoba zareagowała?",
+    "min": 15,
+    "pytanieHero": "Komu {podziękowałeś|podziękowałaś}? Wypisz trzy osoby i ich reakcje.",
+    "zdaniaHero": 3
+   }
   },
   {
    "id": "lu-002",
@@ -42,7 +48,11 @@
     "Najłatwiej tam, gdzie i tak się mijacie: winda, klatka schodowa, przystanek.",
     "Krótko i z uśmiechem. Nie musisz czekać na odpowiedź."
    ],
-   "hero": "Powiedz „dzień dobry” dziesięciu nieznajomym osobom w ciągu dnia."
+   "hero": "Powiedz „dzień dobry” dziesięciu nieznajomym osobom w ciągu dnia.",
+   "notatka": {
+    "pytanie": "Komu {powiedziałeś|powiedziałaś} „dzień dobry”? Ktoś odpowiedział?",
+    "min": 15
+   }
   },
   {
    "id": "lu-003",
@@ -69,7 +79,13 @@
     "Wybierz kogoś, kto się nie spieszy, np. czeka na przystanku.",
     "Na koniec podziękuj. To naturalnie kończy rozmowę."
    ],
-   "hero": "Zapytaj obcą osobę o drogę, a potem dopytaj, co ciekawego jest w okolicy, i idź to zobaczyć."
+   "hero": "Zapytaj obcą osobę o drogę, a potem dopytaj, co ciekawego jest w okolicy, i idź to zobaczyć.",
+   "notatka": {
+    "pytanie": "Kogo {zapytałeś|zapytałaś} i co ci {odpowiedział|odpowiedziała}?",
+    "min": 20,
+    "pytanieHero": "Co ci poleciła ta osoba i co tam {zobaczyłeś|zobaczyłaś}?",
+    "zdaniaHero": 2
+   }
   },
   {
    "id": "lu-004",
@@ -90,7 +106,13 @@
     "Chwal konkret: „Świetnie to pani zapakowała”, „Piękny pies, jak się wabi?”.",
     "Nie musisz ciągnąć rozmowy. Sam komplement wystarczy."
    ],
-   "hero": "Pochwal szczerze trzy nieznajome osoby w ciągu jednego dnia."
+   "hero": "Pochwal szczerze trzy nieznajome osoby w ciągu jednego dnia.",
+   "notatka": {
+    "pytanie": "Kogo i za co {pochwaliłeś|pochwaliłaś}? Jak zareagował?",
+    "min": 15,
+    "pytanieHero": "Wypisz trzy osoby i za co je {pochwaliłeś|pochwaliłaś}.",
+    "zdaniaHero": 3
+   }
   },
   {
    "id": "lu-005",
@@ -139,7 +161,13 @@
     "Potem pytanie otwarte: „Poleca pan/pani coś stąd?”, „Często pan/pani tu bywa?”.",
     "Możesz skończyć w każdej chwili: „Miło się gadało, miłego dnia”."
    ],
-   "hero": "Zagadaj do kogoś w kolejce albo poczekalni, porozmawiaj co najmniej 5 minut i dowiedz się, jak ta osoba ma na imię."
+   "hero": "Zagadaj do kogoś w kolejce albo poczekalni, porozmawiaj co najmniej 5 minut i dowiedz się, jak ta osoba ma na imię.",
+   "notatka": {
+    "pytanie": "O czym rozmawialiście?",
+    "min": 20,
+    "pytanieHero": "Jak ta osoba ma na imię i o czym rozmawialiście?",
+    "zdaniaHero": 2
+   }
   },
   {
    "id": "lu-007",
@@ -161,7 +189,14 @@
     "Zacznij od tego, co wiesz: „{Słyszałem|Słyszałam}, że łowisz ryby. Od kiedy?”.",
     "Dopytuj: „Co w tym lubisz najbardziej?”, „Jak się zaczyna?”. Ludzie chętnie mówią o swoich pasjach."
    ],
-   "hero": "Zapytaj kogoś o jego pasję, dowiedz się o niej pięciu rzeczy i umów się, że ci ją pokaże."
+   "hero": "Zapytaj kogoś o jego pasję, dowiedz się o niej pięciu rzeczy i umów się, że ci ją pokaże.",
+   "notatka": {
+    "pytanie": "Jaka to pasja? Wypisz trzy rzeczy, których się {dowiedziałeś|dowiedziałaś}.",
+    "min": 30,
+    "zdania": 3,
+    "pytanieHero": "Wypisz pięć rzeczy o tej pasji i kiedy ci ją pokaże.",
+    "zdaniaHero": 5
+   }
   },
   {
    "id": "lu-008",
@@ -184,7 +219,11 @@
     "Zapisz sobie wcześniej 2–3 zdania, co chcesz powiedzieć.",
     "Pierwsze zdanie: kim jesteś i w jakiej sprawie dzwonisz."
    ],
-   "hero": "Załatw przez telefon dwie sprawy, które zwykle załatwiasz przez internet."
+   "hero": "Załatw przez telefon dwie sprawy, które zwykle załatwiasz przez internet.",
+   "notatka": {
+    "pytanie": "Gdzie {dzwoniłeś|dzwoniłaś} i jak poszło?",
+    "min": 15
+   }
   },
   {
    "id": "lu-009",
@@ -229,7 +268,12 @@
     "Przygotuj wcześniej jedno zdanie, np. „Mam inny pomysł…”.",
     "Nie musisz mieć racji. Wystarczy, że się odezwiesz."
    ],
-   "hero": "Zabierz głos jako pierwszy albo pierwsza w rozmowie grupowej lub na spotkaniu i zaproponuj własny pomysł."
+   "hero": "Zabierz głos jako pierwszy albo pierwsza w rozmowie grupowej lub na spotkaniu i zaproponuj własny pomysł.",
+   "notatka": {
+    "pytanie": "Co {powiedziałeś|powiedziałaś} i jak zareagowali inni?",
+    "min": 20,
+    "pytanieHero": "Jaki pomysł {zaproponowałeś|zaproponowałaś}?"
+   }
   },
   {
    "id": "lu-011",
@@ -331,7 +375,13 @@
    "wym": [],
    "t": "Zapytaj kogoś bliskiego „co było najlepsze w twoim dniu?” i naprawdę posłuchaj.",
    "autor": "Claude",
-   "hero": "Porozmawiaj z bliską osobą 20 minut bez telefonów: co było najlepsze, a co najtrudniejsze w jej tygodniu."
+   "hero": "Porozmawiaj z bliską osobą 20 minut bez telefonów: co było najlepsze, a co najtrudniejsze w jej tygodniu.",
+   "notatka": {
+    "pytanie": "Co było najlepsze w dniu tej osoby?",
+    "min": 15,
+    "pytanieHero": "Co było najlepsze, a co najtrudniejsze w jej tygodniu?",
+    "zdaniaHero": 2
+   }
   },
   {
    "id": "re-003",
@@ -367,7 +417,13 @@
    "wym": [],
    "t": "Podziękuj komuś bliskiemu za konkretną rzecz, za którą nigdy nie {podziękowałeś|podziękowałaś}.",
    "autor": "Claude",
-   "hero": "Podziękuj trzem bliskim osobom za konkretne rzeczy, za które nigdy nie {podziękowałeś|podziękowałaś}."
+   "hero": "Podziękuj trzem bliskim osobom za konkretne rzeczy, za które nigdy nie {podziękowałeś|podziękowałaś}.",
+   "notatka": {
+    "pytanie": "Komu i za co {podziękowałeś|podziękowałaś}?",
+    "min": 15,
+    "pytanieHero": "Wypisz trzy osoby i za co im {podziękowałeś|podziękowałaś}.",
+    "zdaniaHero": 3
+   }
   },
   {
    "id": "re-005",
@@ -475,7 +531,11 @@
    "podpowiedz": [
     "Krótko: „Przepraszam za…, głupio mi z tym było”. Bez długich tłumaczeń."
    ],
-   "hero": "Przeproś osobiście, nie w wiadomości, za rzecz, która od dawna ci leży na sercu."
+   "hero": "Przeproś osobiście, nie w wiadomości, za rzecz, która od dawna ci leży na sercu.",
+   "notatka": {
+    "pytanie": "Jak poszło? Jak się teraz czujesz?",
+    "min": 10
+   }
   },
   {
    "id": "re-010",
@@ -588,7 +648,11 @@
    "wym": [],
    "t": "Przez cały dzień chodź schodami zamiast windą.",
    "autor": "Claude",
-   "hero": "Przez cały dzień schody zamiast windy i dodatkowo wejdź raz na najwyższe piętro budynku, w którym jesteś."
+   "hero": "Przez cały dzień schody zamiast windy i dodatkowo wejdź raz na najwyższe piętro budynku, w którym jesteś.",
+   "notatka": {
+    "pytanie": "Ile pięter dziś {wszedłeś|weszłaś}, mniej więcej?",
+    "min": 3
+   }
   },
   {
    "id": "ru-004",
@@ -829,7 +893,12 @@
    "wym": [],
    "t": "Wyłącz powiadomienia z jednej aplikacji, która najbardziej cię rozprasza.",
    "autor": "Claude",
-   "hero": "Wyłącz powiadomienia ze wszystkich aplikacji społecznościowych na cały dzień."
+   "hero": "Wyłącz powiadomienia ze wszystkich aplikacji społecznościowych na cały dzień.",
+   "notatka": {
+    "pytanie": "Z której aplikacji {wyłączyłeś|wyłączyłaś} powiadomienia?",
+    "min": 3,
+    "pytanieHero": "Z jakich aplikacji {wyłączyłeś|wyłączyłaś} powiadomienia?"
+   }
   },
   {
    "id": "te-003",
@@ -887,7 +956,12 @@
    "wym": [],
    "t": "Usuń z ekranu głównego aplikację, w której spędzasz najwięcej czasu.",
    "autor": "Claude",
-   "hero": "Usuń z telefonu (nie tylko z ekranu) aplikację, w której spędzasz najwięcej czasu, na co najmniej tydzień."
+   "hero": "Usuń z telefonu (nie tylko z ekranu) aplikację, w której spędzasz najwięcej czasu, na co najmniej tydzień.",
+   "notatka": {
+    "pytanie": "Którą aplikację {usunąłeś|usunęłaś} z ekranu?",
+    "min": 3,
+    "pytanieHero": "Którą aplikację {usunąłeś|usunęłaś} z telefonu?"
+   }
   },
   {
    "id": "te-006",
@@ -907,7 +981,11 @@
    "t": "Pierwsza godzina po przebudzeniu bez telefonu.",
    "autor": "Claude",
    "hero": "Pierwsze dwie godziny po przebudzeniu bez telefonu.",
-   "heroCzas": 120
+   "heroCzas": 120,
+   "notatka": {
+    "pytanie": "Co {robiłeś|robiłaś} zamiast telefonu?",
+    "min": 15
+   }
   },
   {
    "id": "te-007",
@@ -925,7 +1003,11 @@
    "t": "Ostatnia godzina przed snem bez ekranu: książka, rozmowa albo spokój.",
    "autor": "Claude",
    "hero": "Ostatnie dwie godziny przed snem bez ekranu.",
-   "heroCzas": 120
+   "heroCzas": 120,
+   "notatka": {
+    "pytanie": "Co {robiłeś|robiłaś} zamiast ekranu?",
+    "min": 15
+   }
   },
   {
    "id": "te-008",
@@ -1033,7 +1115,14 @@
    "latwiej": "2 strony.",
    "trudniej": "20 stron.",
    "autor": "Claude",
-   "hero": "Przeczytaj 30 stron i zapisz trzy zdania, które zostały ci w głowie."
+   "hero": "Przeczytaj 30 stron i zapisz trzy zdania, które zostały ci w głowie.",
+   "notatka": {
+    "pytanie": "Wpisz zdanie, które zostało ci w głowie.",
+    "min": 15,
+    "zdania": 1,
+    "pytanieHero": "Wpisz trzy zdania, które zostały ci w głowie.",
+    "zdaniaHero": 3
+   }
   },
   {
    "id": "na-002",
@@ -1050,7 +1139,12 @@
    "wym": [],
    "t": "Dowiedz się, skąd pochodzi nazwa twojej miejscowości albo ulicy.",
    "autor": "Claude",
-   "hero": "Dowiedz się, skąd pochodzi nazwa twojej miejscowości, i opowiedz o tym komuś."
+   "hero": "Dowiedz się, skąd pochodzi nazwa twojej miejscowości, i opowiedz o tym komuś.",
+   "notatka": {
+    "pytanie": "Skąd pochodzi ta nazwa? Napisz w jednym, dwóch zdaniach.",
+    "min": 30,
+    "zdania": 1
+   }
   },
   {
    "id": "na-003",
@@ -1069,7 +1163,13 @@
    "latwiej": "5 słówek.",
    "trudniej": "20 słówek.",
    "autor": "Claude",
-   "hero": "Naucz się 25 słówek w nowym języku i ułóż z nich trzy zdania."
+   "hero": "Naucz się 25 słówek w nowym języku i ułóż z nich trzy zdania.",
+   "notatka": {
+    "pytanie": "Wypisz słówka z tłumaczeniem, każde w nowej linii.",
+    "min": 40,
+    "pytanieHero": "Wpisz trzy zdania ułożone z nowych słówek.",
+    "zdaniaHero": 3
+   }
   },
   {
    "id": "na-004",
@@ -1108,7 +1208,14 @@
    "wym": [],
    "t": "Obejrzyj krótki wykład albo film popularnonaukowy i zapisz trzy rzeczy, których nie {wiedziałeś|wiedziałaś}.",
    "autor": "Claude",
-   "hero": "Obejrzyj wykład lub film popularnonaukowy (min. 30 min) i zapisz pięć rzeczy, których nie {wiedziałeś|wiedziałaś}."
+   "hero": "Obejrzyj wykład lub film popularnonaukowy (min. 30 min) i zapisz pięć rzeczy, których nie {wiedziałeś|wiedziałaś}.",
+   "notatka": {
+    "pytanie": "Wypisz trzy rzeczy, których nie {wiedziałeś|wiedziałaś}.",
+    "min": 40,
+    "zdania": 3,
+    "pytanieHero": "Wypisz pięć rzeczy, których nie {wiedziałeś|wiedziałaś}.",
+    "zdaniaHero": 5
+   }
   },
   {
    "id": "na-006",
@@ -1148,7 +1255,12 @@
     "Najprostszy początek: „Wiesz, że…?”.",
     "Wystarczy przy obiedzie albo w wiadomości głosowej."
    ],
-   "hero": "Opowiedz dwóm różnym osobom o czymś, czego się dziś {nauczyłeś|nauczyłaś}, i odpowiedz na ich pytania."
+   "hero": "Opowiedz dwóm różnym osobom o czymś, czego się dziś {nauczyłeś|nauczyłaś}, i odpowiedz na ich pytania.",
+   "notatka": {
+    "pytanie": "Wpisz te trzy zdania, które {powiedziałeś|powiedziałaś}.",
+    "min": 40,
+    "zdania": 3
+   }
   },
   {
    "id": "na-008",
@@ -1165,7 +1277,12 @@
    "wym": [],
    "t": "Naucz się na pamięć krótkiego wiersza albo cytatu i wyrecytuj go.",
    "autor": "Claude",
-   "hero": "Naucz się na pamięć dłuższego wiersza (min. 12 wersów) i wyrecytuj go komuś."
+   "hero": "Naucz się na pamięć dłuższego wiersza (min. 12 wersów) i wyrecytuj go komuś.",
+   "notatka": {
+    "pytanie": "Wpisz z pamięci wiersz albo cytat.",
+    "min": 30,
+    "pytanieHero": "Wpisz z pamięci cały wiersz."
+   }
   },
   {
    "id": "na-009",
@@ -1307,7 +1424,12 @@
    "wym": [],
    "t": "Ułóż i zapisz 4 wersy wierszyka o swoim dniu.",
    "autor": "Claude",
-   "hero": "Napisz wiersz o swoim dniu, co najmniej 12 wersów."
+   "hero": "Napisz wiersz o swoim dniu, co najmniej 12 wersów.",
+   "notatka": {
+    "pytanie": "Wpisz swój wierszyk.",
+    "min": 40,
+    "pytanieHero": "Wpisz swój wiersz."
+   }
   },
   {
    "id": "kr-004",
@@ -1443,7 +1565,11 @@
    "wym": [],
    "t": "Nagraj wiadomość głosową z historią z dzieciństwa i wyślij ją bliskiej osobie.",
    "autor": "Claude",
-   "hero": "Nagraj trzy wiadomości głosowe z historiami z dzieciństwa i wyślij je trzem bliskim osobom."
+   "hero": "Nagraj trzy wiadomości głosowe z historiami z dzieciństwa i wyślij je trzem bliskim osobom.",
+   "notatka": {
+    "pytanie": "O czym była twoja historia i komu ją {wysłałeś|wysłałaś}?",
+    "min": 20
+   }
   },
   {
    "id": "kr-011",
@@ -1684,7 +1810,11 @@
    "podpowiedz": [
     "„Przepraszam, co tu warto zobaczyć?” Ludzie lubią polecać swoje okolice."
    ],
-   "hero": "Zapytaj dwie miejscowe osoby o najciekawsze miejsca w okolicy i odwiedź oba."
+   "hero": "Zapytaj dwie miejscowe osoby o najciekawsze miejsca w okolicy i odwiedź oba.",
+   "notatka": {
+    "pytanie": "Co ci polecono i co tam {zobaczyłeś|zobaczyłaś}?",
+    "min": 20
+   }
   },
   {
    "id": "ok-010",
@@ -1799,7 +1929,14 @@
    "wym": [],
    "t": "Zapisz trzy sprawy, które od dawna odkładasz, i załatw najkrótszą.",
    "autor": "Claude",
-   "hero": "Zapisz pięć spraw, które od dawna odkładasz, i załatw trzy."
+   "hero": "Zapisz pięć spraw, które od dawna odkładasz, i załatw trzy.",
+   "notatka": {
+    "pytanie": "Wypisz trzy sprawy i zaznacz, którą {załatwiłeś|załatwiłaś}.",
+    "min": 30,
+    "zdania": 3,
+    "pytanieHero": "Wypisz pięć spraw i zaznacz, które trzy {załatwiłeś|załatwiłaś}.",
+    "zdaniaHero": 5
+   }
   },
   {
    "id": "po-004",
@@ -1910,7 +2047,11 @@
    "wym": [],
    "t": "Załatw jedną zaległą sprawę domową albo urzędową, którą odkładasz od tygodni.",
    "autor": "Claude",
-   "hero": "Załatw dwie zaległe sprawy, które odkładasz od tygodni."
+   "hero": "Załatw dwie zaległe sprawy, które odkładasz od tygodni.",
+   "notatka": {
+    "pytanie": "Jaką sprawę {załatwiłeś|załatwiłaś}?",
+    "min": 10
+   }
   },
   {
    "id": "po-010",

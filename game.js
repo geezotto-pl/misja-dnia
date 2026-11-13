@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 15:30";
+var APP_VER="13.11 16:00";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -255,11 +255,16 @@ function cleanAct(){var k=D.g.day&&D.g.day.key;for(var a in D.g.act)if(a.indexOf
 function proofOk(I,A){
   return(I.e.dowod||[]).every(function(d){
     if(d==="zdjecie"||d==="zrzut")return A.photos.length>0;
-    if(d==="notatka")return(A.note||"").trim().length>=3;
+    if(d==="notatka")return noteOk(I,A.note);
     if(d==="stoper")return A.timer&&(A.timer.skip||(Date.now()-A.timer.start)>=czasI(I)*60000);
     if(d==="gps")return !!A.gps;
     return true});
 }
+function noteReq(I){var n=I.e.notatka||{},z=I.hero&&n.zdaniaHero!=null?n.zdaniaHero:(I.hero&&n.pytanieHero?0:n.zdania||0);
+  return{q:gtxt(I.hero&&n.pytanieHero?n.pytanieHero:n.pytanie||"Jak poszło? Co się wydarzyło?"),min:n.min||3,zd:z}}
+function sentences(t){return(t||"").split(/[.!?\n]+/).filter(function(x){return x.trim().length>=3}).length}
+function noteInfo(I,t){var r=noteReq(I),n=sentences(t);if(noteOk(I,t))return "✓ Gotowe";return r.zd>1?"Zdania: "+Math.min(n,r.zd)+" / "+r.zd:"Napisz kilka słów"}
+function noteOk(I,t){var r=noteReq(I);t=(t||"").trim();return t.length>=r.min&&sentences(t)>=r.zd}
 function isDone(I){return D.g.day.done.indexOf(I.key)>=0}
 
 /* ---------- UI: wspólne ---------- */
@@ -353,7 +358,8 @@ R.mission=function(){
     if(d==="zdjecie"||d==="zrzut"){h+='<b>'+DOWOD[d]+'</b><div class="thumbs">'+A.photos.map(function(pk){return '<img data-pk="'+pk+'" alt="">'}).join("")+'</div>'+
       '<button class="btn ghost" data-a="photo" data-v="'+(d==="zdjecie"?"cam":"gal")+'">'+(d==="zdjecie"?"📷 Zrób zdjęcie":"🖼️ Dodaj zrzut ekranu")+'</button>'+
       (d==="zdjecie"?'<button class="btn link" data-a="photo" data-v="gal">albo wybierz z galerii</button>':'')}
-    if(d==="notatka")h+='<b>✍️ Notatka</b><textarea rows="3" placeholder="Jak poszło? Co się wydarzyło?" data-in="note">'+esc(A.note)+'</textarea>';
+    if(d==="notatka"){var nr=noteReq(I);h+='<b>✍️ '+esc(nr.q)+'</b><textarea rows="'+(nr.zd>=3||nr.min>=30?5:3)+'" placeholder="Wpisz tutaj…" data-in="note">'+esc(A.note)+'</textarea>'+
+      '<p class="small" id="noteinfo">'+noteInfo(I,A.note)+'</p>'}
     if(d==="stoper"){var need=czasI(I)*60000;
       if(!A.timer)h+='<b>⏱️ Stoper: '+czasI(I)+' min</b><button class="btn ghost" data-a="timer">▶ Start</button>';
       else{var left=Math.max(0,need-(Date.now()-A.timer.start));h+='<b>⏱️ Stoper</b><div class="timer" id="tmr">'+(A.timer.skip||!left?"✓ Gotowe":mmss(left))+'</div>'+
@@ -551,7 +557,7 @@ var ACT={
 };
 document.addEventListener("click",function(ev){var b=ev.target.closest("[data-a]");if(!b||b.disabled)return;var f=ACT[b.getAttribute("data-a")];if(f){ev.preventDefault&&b.tagName!=="A"&&ev.preventDefault();f(b.getAttribute("data-v"),b)}});
 document.addEventListener("input",function(ev){var k=ev.target.getAttribute&&ev.target.getAttribute("data-in");if(!k)return;
-  if(k==="note"){var I=curInst();actOf(I).note=ev.target.value;save();var nb=document.getElementById("nextBtn");if(nb)nb.disabled=!proofOk(I,actOf(I))}
+  if(k==="note"){var I=curInst();actOf(I).note=ev.target.value;save();var nb=document.getElementById("nextBtn");if(nb)nb.disabled=!proofOk(I,actOf(I));var ni=document.getElementById("noteinfo");if(ni)ni.textContent=noteInfo(I,ev.target.value)}
   if(k==="sugt"){S.sug.t=ev.target.value}});
 function onProof(ev){var f=ev.target.files&&ev.target.files[0];ev.target.value="";if(!f)return;var I=curInst();if(!I)return;var A=actOf(I);
   compress(f,1000).then(function(data){var pk="p"+Date.now();return pput(pk,data).then(function(){A.photos.push(pk);save();render();toast("Dodano zdjęcie 📸")})}).catch(function(){toast("Nie udało się zapisać zdjęcia")})}
