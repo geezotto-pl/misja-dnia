@@ -129,6 +129,46 @@ input[type=range]{width:100%;accent-color:var(--red);height:32px}
 .hidden{display:none!important}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sep{border:none;border-top:2px dotted var(--line);margin:22px 0}
+/* ===== gra ===== */
+body.withnav #app{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:4px;background:var(--paper2);border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom));z-index:5;box-shadow:0 -4px 14px rgba(80,60,30,.08)}
+.nav button{flex:1;max-width:170px;border:none;background:none;font:inherit;font-size:13px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:12px;cursor:pointer}
+.nav button span{font-size:22px}
+.nav button.on{color:var(--red);background:#FFF1EA;font-weight:700}
+.dayhead{display:flex;justify-content:space-between;align-items:flex-end;margin:4px 0 8px}
+.xpbox{text-align:right;font-size:14px;color:var(--ink2)}.xpbox b{font-size:26px;color:var(--ink);font-family:var(--hand)}
+.modebar{font-size:15px;color:var(--ink2);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mini{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font:inherit;font-size:14px;cursor:pointer;color:var(--ink)}
+.tester{background:#EEF3F8;border:1px dashed var(--blue);color:var(--blue);border-radius:12px;padding:10px 12px;font-size:15px;margin-bottom:12px}
+.mcard{background:#fff;border:2px solid var(--line);border-left:7px solid var(--green);border-radius:14px;padding:14px;margin:12px 0;cursor:pointer;position:relative;box-shadow:0 2px 0 var(--line)}
+.mcard.N{border-left-color:var(--gold)}.mcard.H{border-left-color:var(--red)}.mcard.X{border-left-color:#5b2a86}
+.mcard.done{opacity:.6}.mcard.empty{cursor:default;border-left-color:var(--line)}
+.mtop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.kat{font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
+.mt{font-weight:600;font-size:19px;line-height:1.35}
+.meta{font-size:14px;color:var(--ink2);margin-top:8px}
+.donebadge{position:absolute;right:12px;bottom:10px;font-family:var(--hand);font-size:24px;color:var(--green);transform:rotate(-6deg);border:2px solid var(--green);border-radius:8px;padding:0 8px;background:#fff}
+.rowbtn{margin-top:10px}
+.links{margin-top:10px}.center{text-align:center}
+.why{font-size:13px;color:var(--blue);background:#EEF3F8;border-radius:10px;padding:8px 10px;margin:10px 0}
+.box{background:#fff;border:2px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.box .btn{margin-top:8px}.box p{margin:6px 0}
+.big{font-size:20px;font-weight:700}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.thumbs img{width:84px;height:84px;object-fit:cover;border-radius:10px;border:2px solid var(--line);background:#eee}
+.timer{font-family:var(--hand);font-size:56px;text-align:center;color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0 6px}
+.stats div{background:#fff;border:2px solid var(--line);border-radius:12px;text-align:center;padding:8px 2px}
+.stats b{display:block;font-family:var(--hand);font-size:30px;line-height:1}.stats span{font-size:12px;color:var(--ink2)}
+.jday{font-family:var(--hand);font-size:24px;margin:18px 0 6px;color:var(--ink2)}
+.jentry{display:flex;gap:12px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;margin:8px 0}
+.jstamp{flex:none;width:74px;height:74px;border-radius:50%;border:3px double var(--green);color:var(--green);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;text-align:center;transform:rotate(-8deg);font-weight:600;line-height:1.1}
+.jstamp b{font-family:var(--hand);font-size:22px}
+.jstamp.N{border-color:var(--gold);color:#8a5f12}.jstamp.H{border-color:var(--red);color:var(--red)}.jstamp.X{border-color:#5b2a86;color:#5b2a86}
+.jbody{flex:1;min-width:0}.jnote{font-style:italic;color:var(--ink2);font-size:15px;margin:4px 0}
+.brow{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;font-size:16px}
+.brow.off{opacity:.45}
+.tag{background:#EEF3F8;color:var(--blue);border-radius:999px;padding:1px 8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -239,10 +279,12 @@ function go(id,push){
 function next(){var s=steps(),i=s.indexOf(S.step);go(s[Math.min(i+1,s.length-1)])}
 function back(){
   if(D.avatar&&D.avatar.kind==="building"&&D.avatar.o&&S.step==="editAvatar")D.avatar.kind="drawn";
-  if(S.step==="edit"||S.step==="editAvatar"){S.editScenes=false;S.hist=[];go("card",false);return}
+  if(S.step==="edit"||S.step==="editAvatar"){S.editScenes=false;S.hist=[];go(homeStep(),false);return}
+  if(window.gameBack&&gameBack())return;
   if(S.hist.length){var p=S.hist.pop();if(p==="edit")S.editScenes=false;S.step=p;D.last=p;save();render();window.scrollTo(0,0)}
 }
-window.addEventListener("popstate",function(){if(S.step!=="welcome"&&S.step!=="card")back()});
+function homeStep(){return D.g?"char":"card"}
+window.addEventListener("popstate",function(){if(["welcome","card","today","journal","char"].indexOf(S.step)<0)back()});
 
 /* ====== Obliczenia ====== */
 function axisVals(){
@@ -313,7 +355,8 @@ function charClass(){
   return{name:name,desc:desc[top],top:top,low:r[4].k};
 }
 function sampleMissions(c){
-  var ok=MISSIONS.filter(function(m){
+  var src=window.BASE?BASE.filter(function(e){return e.rytm==="d"&&!e.mapa}).map(function(e){var w=e.wym||[];return{t:e.t,i:e.i,w:e.w,g:[e.kat],tag:(w.indexOf("koszt")>=0?["cost"]:[]).concat(w.indexOf("intens")>=0?["intense"]:[]).concat(w.indexOf("jedzenie")>=0?["food"]:[]).concat(w.indexOf("dzwonienie")>=0?["phone"]:[])}}):MISSIONS;
+  var ok=src.filter(function(m){
     var t=m.tag||[];
     if(D.budget==="free"&&t.indexOf("cost")>=0)return false;
     if(D.mobility&&D.mobility!=="none"&&t.indexOf("intense")>=0)return false;
@@ -336,7 +379,7 @@ var $app=document.getElementById("app");
 function head(){
   var s=steps(),i=s.indexOf(S.step),n=s.length-2;
   var showBack=S.hist.length>0||S.step==="edit"||S.step==="editAvatar";
-  var pct=S.step==="edit"||S.step==="editAvatar"?100:Math.max(0,Math.min(100,(i)/(n)*100));
+  var pct=S.step==="edit"||S.step==="editAvatar"||i<0?100:Math.max(0,Math.min(100,(i)/(n)*100));
   return '<div class="top">'+(showBack?'<button class="back" onclick="back()" aria-label="Wstecz">←</button>':'<span style="width:30px"></span>')+
     '<div class="prog"><i style="width:'+pct+'%"></i></div><span class="step-label">'+""+'</span></div>';
 }
@@ -517,7 +560,7 @@ R.avatar=function(){
   '</div><p class="small" style="margin-top:14px">Zdjęcie zostaje na twoim telefonie. Później zobaczą je tylko osoby z twoich lig.</p></div>'+
   bar(has?"Dalej":"Pomiń na razie",false,"avDone()");
 };
-function avDone(){if(S.step==="editAvatar"){S.hist=[];go("card",false)}else next()}
+function avDone(){if(S.step==="editAvatar"){S.hist=[];go(homeStep(),false)}else next()}
 function cyc(d){var O=window.MDAvatarOptions,cat=S.avcat,o=D.avatar.o;var def=AVCATS.filter(function(x){return x.k===cat})[0];var list=(def.none?[""]:[]).concat(O[cat]);var i=list.indexOf(o[cat]);if(i<0)i=0;i=(i+d+list.length)%list.length;o[cat]=list[i];save();render()}
 function onFile(e){
   var f=e.target.files&&e.target.files[0];e.target.value="";if(!f)return;
@@ -572,13 +615,14 @@ R.card=function(){
   ms.map(function(x){var o=level(effDiff(x.m,avg));
     return '<div class="mission '+x.l.c+'"><div class="t">'+gtxt(x.m.t)+'</div><span class="lvl '+x.l.c+'">Dla ciebie: '+x.l.n+'</span>'+
     (o.c!==x.l.c?'<div class="cmp">Dla przeciętnej osoby byłaby: '+o.n.toLowerCase()+'</div>':'')+'</div>'}).join("")+'</div>';
+  if(S.step==="card")h+='<div style="height:16px"></div><button class="btn main" onclick="startGame()">🚀 Zaczynam grę</button>';
   h+='<hr class="sep"><div class="sec"><h3>Czy to ty?</h3><p class="small">Oceń, jak bardzo karta do ciebie pasuje. To bardzo pomoże w testach.</p>'+
   '<div class="rate">'+["😕","🙁","😐","🙂","🤩"].map(function(e,i){return '<button class="'+(D.rating===i+1?"on":"")+'" onclick="D.rating='+(i+1)+';save();render()">'+e+'</button>'}).join("")+'</div>'+
   '<textarea id="cm" rows="3" placeholder="Co się zgadza, a co nie? (opcjonalnie)" oninput="D.comment=this.value;save()">'+esc(D.comment||"")+'</textarea>'+
   '<div style="height:10px"></div><button class="btn main" onclick="share()">📤 Wyślij opinię i kartę</button></div>';
   h+='<hr class="sep"><div class="grid2"><button class="btn ghost" onclick="openEdit()">⚙️ Strefy komfortu</button><button class="btn ghost" onclick="editAv()">🖼️ Zdjęcie</button></div>'+
   '<button class="btn link hidden" id="installBtn" onclick="doInstall()">📲 Zainstaluj na telefonie</button>'+
-  '<button class="btn link" style="color:var(--red)" onclick="resetAll()">'+(S.resetArmed?"Na pewno? Stuknij jeszcze raz, by wszystko usunąć":"Zacznij od nowa")+'</button>';
+  (D.g?'':'<button class="btn link" style="color:var(--red)" onclick="resetAll()">'+(S.resetArmed?"Na pewno? Stuknij jeszcze raz, by wszystko usunąć":"Zacznij od nowa")+'</button>');
   return h;
 };
 R.editAvatar=function(){return R.avatar()};
@@ -596,8 +640,8 @@ function share(){
   else if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast("Skopiowano. Wklej w wiadomości")})}
   else toast("Nie mogę udostępnić na tym urządzeniu");
 }
-function resetAll(){if(!S.resetArmed){S.resetArmed=true;render();setTimeout(function(){S.resetArmed=false;if(S.step==="card")render()},4000);return}
-  try{localStorage.removeItem(KEY)}catch(e){}D={};S.hist=[];S.resetArmed=false;go("welcome",false)}
+function resetAll(){if(!S.resetArmed){S.resetArmed=true;render();setTimeout(function(){S.resetArmed=false;if(S.step==="card"||S.step==="char")render()},4000);return}
+  try{localStorage.removeItem(KEY)}catch(e){}try{indexedDB.deleteDatabase("misja-dnia")}catch(e){}D={};S.hist=[];S.resetArmed=false;go("welcome",false)}
 function startNew(){go("name")}
 
 /* ====== Edycja stref komfortu ====== */
@@ -616,7 +660,7 @@ R.edit=function(){
 function saveEdit(){
   if(!D.started){D.comfort=editVals;delete D.pending;save();toast("Zapisano ✓")}
   else{D.pending={c:editVals,from:nextMonday().toISOString()};save();toast("Zapisano. Działa od poniedziałku")}
-  S.hist=[];go("card",false)}
+  S.hist=[];go(homeStep(),false)}
 function startSceneEdit(){S.editScenes=true;S.hist=["edit"];S.step="sc0";render();window.scrollTo(0,0)}
 function finishSceneEdit(){
   S.editScenes=false;
@@ -645,15 +689,16 @@ function doInstall(){if(!deferred)return;deferred.prompt();deferred.userChoice.t
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
 
 /* ====== Start ====== */
-(function(){
+function boot(){
   var st=D.last;
-  if(D.done){S.step="card"}
+  if(D.done){S.step=D.g?"today":"card"}
   else if(st&&st!=="welcome"&&steps().indexOf(st)>=0){S.step=st;var s=steps();S.hist=s.slice(0,s.indexOf(st))}
   else S.step="welcome";
   if(S.step==="avatar"&&D.avatar&&D.avatar.kind==="building")loadAv(function(){});
   try{history.replaceState({s:S.step},"")}catch(e){}
   render();
-})();
+}
 </script>
+<script src="game.js"></script>
 </body>
 </html>
