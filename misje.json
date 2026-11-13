@@ -1,0 +1,1795 @@
+{
+ "wersja": 1,
+ "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie.",
+ "misje": [
+  {
+   "id": "lu-001",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "S": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Podziękuj komuś w sklepie albo urzędzie, zwracając się po imieniu z plakietki.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-002",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "S": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Powiedz „dzień dobry” trzem nieznajomym osobom: sąsiadowi, kierowcy, sprzedawcy.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-003",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "S": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "zdjecie",
+    "notatka"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Zapytaj obcą osobę o drogę, nawet jeśli ją znasz.",
+   "latwiej": "Zapytaj obcą osobę o godzinę.",
+   "trudniej": "Zapytaj o drogę i o to, co warto zobaczyć w okolicy.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-004",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "S": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Pochwal szczerze nieznajomą osobę: za obsługę, styl albo psa.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-005",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "S": 0.7,
+    "A": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "koszt",
+    "zakupy"
+   ],
+   "t": "Zapytaj sprzedawcę albo baristę, co poleca, i weź właśnie to.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-006",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Zagadaj do kogoś w kolejce albo poczekalni i porozmawiaj chociaż 2 minuty.",
+   "latwiej": "Zagadaj jednym zdaniem do kogoś w kolejce.",
+   "trudniej": "Rozmowa w kolejce na co najmniej 5 minut.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-007",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 0.8,
+    "M": 0.2
+   },
+   "czas": 15,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Zapytaj sąsiada albo kogoś z pracy o jego pasję i dowiedz się o niej trzech rzeczy.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-008",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 1
+   },
+   "czas": 15,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [
+    "dzwonienie"
+   ],
+   "t": "Zadzwoń w sprawie, którą zwykle załatwiasz przez internet: sklep, przychodnia, urząd.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-009",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 0.8,
+    "A": 0.2
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Poproś nieznajomą osobę, żeby zrobiła ci zdjęcie w ciekawym miejscu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-010",
+   "kat": "ludzie",
+   "rytm": "d",
+   "i": 4,
+   "w": {
+    "S": 1
+   },
+   "czas": 15,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Powiedz na głos swoje zdanie w rozmowie grupowej albo na spotkaniu, na którym zwykle milczysz.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-011",
+   "kat": "ludzie",
+   "rytm": "t",
+   "i": 4,
+   "w": {
+    "S": 0.8,
+    "A": 0.2
+   },
+   "czas": 120,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "wieczor"
+   ],
+   "t": "Pójdź {sam|sama} na wydarzenie (wykład, warsztat, spotkanie) i poznaj jedną osobę z imienia.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-012",
+   "kat": "ludzie",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "S": 1
+   },
+   "czas": 30,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "W tym tygodniu porozmawiaj z trzema nieznajomymi osobami, każda rozmowa co najmniej minutę.",
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-013",
+   "kat": "ludzie",
+   "rytm": "m",
+   "i": 5,
+   "w": {
+    "S": 0.7,
+    "A": 0.3
+   },
+   "czas": 240,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "koszt"
+   ],
+   "t": "Zapisz się na zajęcia grupowe (planszówki, chór, bieganie, wolontariat) i pójdź na nie co najmniej dwa razy w tym miesiącu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-001",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "S": 0.5,
+    "C": 0.5
+   },
+   "czas": 5,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [],
+   "t": "Wyślij bliskiej osobie zdjęcie czegoś, co ci ją przypomniało.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-002",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "S": 0.6,
+    "M": 0.4
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Zapytaj kogoś bliskiego „co było najlepsze w twoim dniu?” i naprawdę posłuchaj.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-003",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 0.5,
+    "S": 0.5
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Napisz odręczny liścik i zostaw go komuś z domowników.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-004",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "S": 0.6,
+    "M": 0.4
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Podziękuj komuś bliskiemu za konkretną rzecz, za którą nigdy nie {podziękowałeś|podziękowałaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-005",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 0.8,
+    "A": 0.2
+   },
+   "czas": 15,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [
+    "dzwonienie"
+   ],
+   "t": "Zadzwoń (nie pisz!) do kogoś, z kim nie {rozmawiałeś|rozmawiałaś} od pół roku.",
+   "latwiej": "Napisz do kogoś, z kim dawno nie {rozmawiałeś|rozmawiałaś}.",
+   "trudniej": "Zadzwoń i umów się na spotkanie.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-006",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "S": 0.5,
+    "C": 0.5
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "jedzenie"
+   ],
+   "t": "Zrób coś do jedzenia albo picia dla bliskiej osoby, bez okazji.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-007",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 0.6,
+    "B": 0.4
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Zaproś kogoś bliskiego na spacer, na którym oboje chowacie telefony.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-008",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 0.5,
+    "S": 0.5
+   },
+   "czas": 15,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [],
+   "t": "Znajdź stare wspólne zdjęcie i wyślij je osobie, która na nim jest, z jednym wspomnieniem.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-009",
+   "kat": "relacje",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 0.7,
+    "M": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Przeproś kogoś za drobną rzecz, która od dawna ci leży na sercu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-010",
+   "kat": "relacje",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "S": 0.6,
+    "C": 0.4
+   },
+   "czas": 120,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zorganizuj wieczór z bliskimi bez ekranów: planszówki, karty albo po prostu rozmowa.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-011",
+   "kat": "relacje",
+   "rytm": "t",
+   "i": 4,
+   "w": {
+    "S": 0.7,
+    "A": 0.3
+   },
+   "czas": 180,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Odwiedź osobiście kogoś z rodziny, kogo dawno nie {widziałeś|widziałaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "re-012",
+   "kat": "relacje",
+   "rytm": "m",
+   "i": 4,
+   "w": {
+    "S": 0.6,
+    "C": 0.4
+   },
+   "czas": 240,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "koszt"
+   ],
+   "t": "Zorganizuj spotkanie ludzi, których dawno nie {widziałeś|widziałaś} razem w jednym miejscu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-001",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "B": 1
+   },
+   "czas": 3,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [
+    "intens"
+   ],
+   "t": "Zrób 20 przysiadów, zanim zrobisz sobie poranną kawę.",
+   "latwiej": "10 przysiadów.",
+   "trudniej": "40 przysiadów.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-002",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "B": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [
+    "rano"
+   ],
+   "t": "Rozciągaj się 5 minut zaraz po wstaniu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-003",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "B": 0.7,
+    "M": 0.3
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Przez cały dzień chodź schodami zamiast windą.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-004",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 0.5,
+    "M": 0.5
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "30 minut spaceru bez telefonu w ręce.",
+   "latwiej": "15 minut spaceru.",
+   "trudniej": "60 minut spaceru.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-005",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 1
+   },
+   "czas": 20,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Dojdź pieszo do miejsca wskazanego przez aplikację: {cel}. Zrób tam zdjęcie.",
+   "mapa": "pieszo",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-006",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 0.8,
+    "A": 0.2
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wysiądź przystanek wcześniej albo zaparkuj dalej i resztę drogi przejdź pieszo.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-007",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [
+    "intens"
+   ],
+   "t": "Deska (plank): 3 razy po 30 sekund.",
+   "latwiej": "3 razy po 15 sekund.",
+   "trudniej": "3 razy po minucie.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-008",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "B": 0.7,
+    "A": 0.3
+   },
+   "czas": 40,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn",
+    "rower"
+   ],
+   "t": "Dojedź rowerem do miejsca wskazanego przez aplikację: {cel}.",
+   "mapa": "rower",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-009",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "B": 1
+   },
+   "czas": 45,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "45 minut spaceru szybkim krokiem.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-010",
+   "kat": "ruch",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 0.6,
+    "M": 0.4
+   },
+   "czas": 15,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [],
+   "t": "15 minut ćwiczeń z filmikiem dla początkujących: joga albo rozciąganie.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-011",
+   "kat": "ruch",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "B": 1
+   },
+   "czas": 150,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Trzy spacery po co najmniej 40 minut w tym tygodniu, każdy inną trasą.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-012",
+   "kat": "ruch",
+   "rytm": "t",
+   "i": 4,
+   "w": {
+    "B": 0.6,
+    "A": 0.4
+   },
+   "czas": 90,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Dojdź pieszo do miejsca wskazanego przez aplikację, dwa razy dalej niż zwykle: {cel}.",
+   "mapa": "pieszo-daleko",
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-013",
+   "kat": "ruch",
+   "rytm": "m",
+   "i": 5,
+   "w": {
+    "B": 1
+   },
+   "czas": 600,
+   "dowod": [
+    "gps"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Przejdź pieszo 50 km w tym miesiącu. Liczą się też spacery z misji.",
+   "latwiej": "30 km w miesiąc.",
+   "trudniej": "100 km w miesiąc.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-001",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zjedz posiłek bez żadnego ekranu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-002",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 2,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Wyłącz powiadomienia z jednej aplikacji, która najbardziej cię rozprasza.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-003",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 60,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [],
+   "t": "Godzina bez telefonu: zostaw go w innym pokoju.",
+   "latwiej": "30 minut.",
+   "trudniej": "2 godziny.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-004",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 0.7,
+    "B": 0.3
+   },
+   "czas": 30,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wyjdź z domu na 30 minut bez telefonu. Stoper włącz przed wyjściem.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-005",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 2,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Usuń z ekranu głównego aplikację, w której spędzasz najwięcej czasu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-006",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "M": 1
+   },
+   "czas": 60,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [
+    "rano"
+   ],
+   "t": "Pierwsza godzina po przebudzeniu bez telefonu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-007",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "M": 1
+   },
+   "czas": 60,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Ostatnia godzina przed snem bez ekranu: książka, rozmowa albo spokój.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-008",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 0.6,
+    "C": 0.4
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zamiast przewijania: 30 minut robienia czegoś rękami (gotowanie, majsterkowanie, rysowanie).",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-009",
+   "kat": "telefon",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "M": 0.7,
+    "A": 0.3
+   },
+   "czas": 30,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Usiądź w kawiarni albo w parku na 30 minut i ani razu nie wyjmuj telefonu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-010",
+   "kat": "telefon",
+   "rytm": "t",
+   "i": 4,
+   "w": {
+    "M": 1
+   },
+   "czas": 360,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Trzy wieczory w tym tygodniu offline od 20:00.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-011",
+   "kat": "telefon",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "M": 1
+   },
+   "czas": 0,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [],
+   "t": "Skróć w tym tygodniu czas ekranu o godzinę dziennie w porównaniu z poprzednim tygodniem.",
+   "autor": "Claude"
+  },
+  {
+   "id": "te-012",
+   "kat": "telefon",
+   "rytm": "m",
+   "i": 5,
+   "w": {
+    "M": 0.8,
+    "A": 0.2
+   },
+   "czas": 720,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Jeden pełny dzień w tym miesiącu bez telefonu (tylko pilne rozmowy).",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-001",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Przeczytaj 5 stron i zapisz jedno zdanie, które zostało ci w głowie.",
+   "latwiej": "2 strony.",
+   "trudniej": "20 stron.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-002",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Dowiedz się, skąd pochodzi nazwa twojej miejscowości albo ulicy.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-003",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 15,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Naucz się 10 słówek w nowym języku.",
+   "latwiej": "5 słówek.",
+   "trudniej": "20 słówek.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-004",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 0.6,
+    "A": 0.4
+   },
+   "czas": 30,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Przeczytaj 10 stron w miejscu wskazanym przez aplikację: {cel}.",
+   "mapa": "pieszo",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-005",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 20,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Obejrzyj krótki wykład albo film popularnonaukowy i zapisz trzy rzeczy, których nie {wiedziałeś|wiedziałaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-006",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 0.7,
+    "C": 0.3
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Rozwiąż sudoku, krzyżówkę albo zagadkę logiczną.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-007",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "M": 0.6,
+    "S": 0.4
+   },
+   "czas": 20,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Opowiedz komuś w 3 zdaniach o czymś, czego się dziś {nauczyłeś|nauczyłaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-008",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "M": 1
+   },
+   "czas": 30,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Naucz się na pamięć krótkiego wiersza albo cytatu i wyrecytuj go.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-009",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [],
+   "t": "10 minut medytacji albo spokojnego oddychania.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-010",
+   "kat": "nauka",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "M": 0.6,
+    "C": 0.4
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Naucz się jednej nowej sztuczki z poradnika: węzeł, żonglowanie albo trik z kartami.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-011",
+   "kat": "nauka",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "M": 1
+   },
+   "czas": 180,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Przeczytaj w tym tygodniu 50 stron jednej książki.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-012",
+   "kat": "nauka",
+   "rytm": "t",
+   "i": 4,
+   "w": {
+    "M": 0.7,
+    "S": 0.3
+   },
+   "czas": 150,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Naucz się 50 słówek i porozmawiaj chwilę w tym języku z kimś albo z aplikacją do nauki.",
+   "autor": "Claude"
+  },
+  {
+   "id": "na-013",
+   "kat": "nauka",
+   "rytm": "m",
+   "i": 5,
+   "w": {
+    "M": 0.8,
+    "C": 0.2
+   },
+   "czas": 600,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Przeczytaj w tym miesiącu całą książkę.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-001",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Narysuj w 5 minut to, co widzisz za oknem.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-002",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.7,
+    "A": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Zrób zdjęcie czegoś zwyczajnego tak, żeby wyglądało niezwykle.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-003",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 0.6,
+    "M": 0.4
+   },
+   "czas": 15,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Ułóż i zapisz 4 wersy wierszyka o swoim dniu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-004",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 0.7,
+    "A": 0.3
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "jedzenie"
+   ],
+   "t": "Ugotuj coś bez przepisu, z tego, co jest w lodówce.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-005",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "C": 0.6,
+    "A": 0.4
+   },
+   "czas": 45,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "jedzenie",
+    "koszt"
+   ],
+   "t": "Ugotuj danie z kuchni, której nigdy nie {próbowałeś|próbowałaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-006",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 1
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zbuduj coś z tego, co masz w domu: papieru, kartonu albo klocków.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-007",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 0.6,
+    "A": 0.4
+   },
+   "czas": 40,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Narysuj albo artystycznie sfotografuj miejsce wskazane przez aplikację: {cel}.",
+   "mapa": "pieszo",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-008",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "C": 0.6,
+    "S": 0.4
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zrób coś własnego (rysunek, wiersz, zdjęcie) i pokaż to rodzinie albo znajomym.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-009",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 1
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zmień ustawienie trzech rzeczy w pokoju tak, żeby było ładniej.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-010",
+   "kat": "kreat",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "C": 0.7,
+    "S": 0.3
+   },
+   "czas": 15,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Nagraj wiadomość głosową z historią z dzieciństwa i wyślij ją bliskiej osobie.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-011",
+   "kat": "kreat",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "C": 1
+   },
+   "czas": 70,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Przez tydzień prowadź mini-dziennik: każdego dnia jedno zdanie i jeden rysunek.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-012",
+   "kat": "kreat",
+   "rytm": "t",
+   "i": 4,
+   "w": {
+    "C": 0.6,
+    "S": 0.4
+   },
+   "czas": 180,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zrób własnoręcznie prezent dla kogoś i go wręcz.",
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-013",
+   "kat": "kreat",
+   "rytm": "m",
+   "i": 5,
+   "w": {
+    "C": 0.7,
+    "S": 0.3
+   },
+   "czas": 300,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Stwórz serię 10 zdjęć na jeden temat i pokaż ją innym.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-001",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "A": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Znajdź w okolicy coś, czego nigdy wcześniej nie {zauważyłeś|zauważyłaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-002",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 1
+   },
+   "czas": 30,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Dojdź do miejsca wskazanego przez aplikację i zrób tam zdjęcie: {cel}.",
+   "mapa": "pieszo",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-003",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 0.7,
+    "S": 0.3
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wejdź do sklepu albo miejsca, w którym nigdy nie {byłeś|byłaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-004",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "A": 0.6,
+    "B": 0.4
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wróć do domu inną drogą niż zwykle.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-005",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 0.8,
+    "C": 0.2
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "jedzenie",
+    "koszt"
+   ],
+   "t": "Zjedz albo wypij coś, czego nigdy nie {próbowałeś|próbowałaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-006",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "A": 0.8,
+    "B": 0.2
+   },
+   "czas": 60,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn",
+    "koszt"
+   ],
+   "t": "Wsiądź w autobus, wysiądź na przystanku wskazanym przez aplikację ({cel}) i przejdź się tam 30 minut.",
+   "mapa": "bus",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-007",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 0.6,
+    "M": 0.4
+   },
+   "czas": 40,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Odwiedź bibliotekę, muzeum, galerię albo zabytek w okolicy, w którym nie {byłeś|byłaś}.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-008",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "A": 1
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn",
+    "rano"
+   ],
+   "t": "Zobacz wschód albo zachód słońca z miejsca z widokiem.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-009",
+   "kat": "okolica",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "A": 0.7,
+    "S": 0.3
+   },
+   "czas": 45,
+   "dowod": [
+    "zdjecie",
+    "notatka"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Zapytaj kogoś miejscowego o najciekawsze miejsce w okolicy i idź tam.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-010",
+   "kat": "okolica",
+   "rytm": "t",
+   "i": 4,
+   "w": {
+    "A": 0.7,
+    "B": 0.3
+   },
+   "czas": 180,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wyprawa do miejsca wskazanego przez aplikację, 10–20 km od domu (rowerem, autobusem albo autem): {cel}.",
+   "mapa": "wyprawa",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-011",
+   "kat": "okolica",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "A": 0.8,
+    "C": 0.2
+   },
+   "czas": 60,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Spróbuj w tym tygodniu trzech nowych rzeczy: jedzenia, miejsca i zajęcia.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ok-012",
+   "kat": "okolica",
+   "rytm": "m",
+   "i": 5,
+   "w": {
+    "A": 0.8,
+    "B": 0.2
+   },
+   "czas": 480,
+   "dowod": [
+    "gps",
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn",
+    "koszt"
+   ],
+   "t": "Jednodniowa wyprawa do miejscowości wylosowanej przez aplikację, w której nigdy nie {byłeś|byłaś}: {cel}.",
+   "mapa": "miejscowosc",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-001",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.6,
+    "B": 0.4
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zrób porządek w jednej szufladzie. Zdjęcie przed i po.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-002",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.6,
+    "B": 0.4
+   },
+   "czas": 3,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "rano"
+   ],
+   "t": "Pościel łóżko zaraz po wstaniu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-003",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Zapisz trzy sprawy, które od dawna odkładasz, i załatw najkrótszą.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-004",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 0.5,
+    "B": 0.5
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Odłóż do oddania 5 rzeczy, których nie używasz.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-005",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 15,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [],
+   "t": "Posprzątaj telefon: usuń 50 zdjęć i 3 nieużywane aplikacje.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-006",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 0.6,
+    "M": 0.4
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Opróżnij jeden blat albo stół ze wszystkiego, co zbędne, i niech zostanie pusty do wieczora.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-007",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Wieczorem zaplanuj na kartce jutrzejszy dzień.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-008",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "S": 0.5,
+    "M": 0.3,
+    "B": 0.2
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Sprzedaj albo oddaj coś i przekaż to osobiście.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-009",
+   "kat": "porzadek",
+   "rytm": "d",
+   "i": 3,
+   "w": {
+    "M": 0.7,
+    "B": 0.3
+   },
+   "czas": 30,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Załatw jedną zaległą sprawę domową albo urzędową, którą odkładasz od tygodni.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-010",
+   "kat": "porzadek",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "B": 0.5,
+    "M": 0.5
+   },
+   "czas": 120,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Uporządkuj miejsce, którego unikasz: piwnicę, szafę, garaż albo balkon.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-011",
+   "kat": "porzadek",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "M": 1
+   },
+   "czas": 70,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Przez tydzień codziennie wieczorem odłóż na miejsce 10 rzeczy.",
+   "autor": "Claude"
+  },
+  {
+   "id": "po-012",
+   "kat": "porzadek",
+   "rytm": "m",
+   "i": 4,
+   "w": {
+    "M": 0.6,
+    "B": 0.4
+   },
+   "czas": 300,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Pozbądź się w tym miesiącu 30 rzeczy, których nie używasz.",
+   "autor": "Claude"
+  }
+ ]
+}
