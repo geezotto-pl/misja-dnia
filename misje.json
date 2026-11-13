@@ -1,5 +1,5 @@
 {
- "wersja": 4,
+ "wersja": 5,
  "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie.",
  "misje": [
   {
@@ -306,7 +306,7 @@
    "w": {
     "S": 1
    },
-   "czas": 30,
+   "czas": 10,
    "dowod": [
     "notatka"
    ],
@@ -316,7 +316,12 @@
    "podpowiedz": [
     "Najłatwiej w kolejkach, poczekalniach i na przystankach.",
     "Pytaj o to, co dookoła: pogoda, autobus, co warto kupić."
-   ]
+   ],
+   "kroki": 3,
+   "notatka": {
+    "pytanie": "Z kim {rozmawiałeś|rozmawiałaś} i o czym?",
+    "min": 10
+   }
   },
   {
    "id": "lu-013",
@@ -810,7 +815,7 @@
    "w": {
     "B": 1
    },
-   "czas": 150,
+   "czas": 40,
    "dowod": [
     "zdjecie"
    ],
@@ -818,7 +823,8 @@
     "zewn"
    ],
    "t": "Trzy spacery po co najmniej 40 minut w tym tygodniu, każdy inną trasą.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "kroki": 3
   },
   {
    "id": "ru-012",
@@ -1057,13 +1063,18 @@
    "w": {
     "M": 1
    },
-   "czas": 360,
+   "czas": 240,
    "dowod": [
     "notatka"
    ],
    "wym": [],
    "t": "Trzy wieczory w tym tygodniu offline od 20:00.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "kroki": 3,
+   "notatka": {
+    "pytanie": "Co {robiłeś|robiłaś} zamiast telefonu?",
+    "min": 5
+   }
   },
   {
    "id": "te-011",
@@ -1579,13 +1590,14 @@
    "w": {
     "C": 1
    },
-   "czas": 70,
+   "czas": 10,
    "dowod": [
     "zdjecie"
    ],
    "wym": [],
    "t": "Przez tydzień prowadź mini-dziennik: każdego dnia jedno zdanie i jeden rysunek.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "kroki": 7
   },
   {
    "id": "kr-012",
@@ -1846,13 +1858,14 @@
     "A": 0.8,
     "C": 0.2
    },
-   "czas": 60,
+   "czas": 20,
    "dowod": [
     "zdjecie"
    ],
    "wym": [],
    "t": "Spróbuj w tym tygodniu trzech nowych rzeczy: jedzenia, miejsca i zajęcia.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "kroki": 3
   },
   {
    "id": "ok-012",
@@ -2078,13 +2091,14 @@
    "w": {
     "M": 1
    },
-   "czas": 70,
+   "czas": 10,
    "dowod": [
     "zdjecie"
    ],
    "wym": [],
    "t": "Przez tydzień codziennie wieczorem odłóż na miejsce 10 rzeczy.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "kroki": 7
   },
   {
    "id": "po-012",
@@ -2102,6 +2116,348 @@
    "wym": [],
    "t": "Pozbądź się w tym miesiącu 30 rzeczy, których nie używasz.",
    "autor": "Claude"
+  },
+  {
+   "id": "ru-020",
+   "kat": "ruch",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "B": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "stoper"
+   ],
+   "wym": [],
+   "t": "Trzy razy w tym tygodniu 10 minut ruchu: spacer, rozciąganie albo schody.",
+   "kroki": 3,
+   "autor": "Claude"
+  },
+  {
+   "id": "ru-021",
+   "kat": "ruch",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "B": 0.8,
+    "A": 0.2
+   },
+   "czas": 20,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Dwa razy w tym tygodniu wróć do domu pieszo albo wysiądź przystanek wcześniej.",
+   "kroki": 2,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Którędy {szedłeś|szłaś}?",
+    "min": 5
+   }
+  },
+  {
+   "id": "te-020",
+   "kat": "telefon",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Trzy razy w tym tygodniu zjedz posiłek bez telefonu.",
+   "kroki": 3,
+   "autor": "Claude"
+  },
+  {
+   "id": "te-021",
+   "kat": "telefon",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Przez 3 noce w tym tygodniu nie bierz telefonu do łóżka.",
+   "kroki": 3,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Jak ci się zasypiało bez telefonu?",
+    "min": 5
+   }
+  },
+  {
+   "id": "na-020",
+   "kat": "nauka",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Trzy razy w tym tygodniu przeczytaj 5 stron.",
+   "kroki": 3,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Wpisz zdanie, które {zapamiętałeś|zapamiętałaś}.",
+    "min": 15,
+    "zdania": 1
+   }
+  },
+  {
+   "id": "na-021",
+   "kat": "nauka",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Przez 5 dni ucz się 5 słówek dziennie w nowym języku.",
+   "kroki": 5,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Wpisz dzisiejsze słówka z tłumaczeniem.",
+    "min": 20
+   }
+  },
+  {
+   "id": "na-022",
+   "kat": "nauka",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "M": 1
+   },
+   "czas": 20,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Wysłuchaj w tym tygodniu dwóch odcinków podcastu o czymś nowym dla ciebie.",
+   "kroki": 2,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Czego nowego się {dowiedziałeś|dowiedziałaś}?",
+    "min": 15
+   }
+  },
+  {
+   "id": "re-020",
+   "kat": "relacje",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "S": 0.7,
+    "C": 0.3
+   },
+   "czas": 5,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [],
+   "t": "Wyślij w tym tygodniu trzy wiadomości do dawnych znajomych, zwykłe „co u ciebie?”.",
+   "kroki": 3,
+   "autor": "Claude"
+  },
+  {
+   "id": "re-021",
+   "kat": "relacje",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "S": 0.8,
+    "M": 0.2
+   },
+   "czas": 15,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [
+    "dzwonienie"
+   ],
+   "t": "Dwa razy w tym tygodniu zadzwoń do kogoś z rodziny tylko po to, żeby pogadać.",
+   "kroki": 2,
+   "autor": "Claude"
+  },
+  {
+   "id": "re-022",
+   "kat": "relacje",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "S": 0.5,
+    "M": 0.5
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zjedz w tym tygodniu wspólny posiłek z bliskimi, bez telefonów na stole.",
+   "kroki": 1,
+   "autor": "Claude"
+  },
+  {
+   "id": "lu-020",
+   "kat": "ludzie",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "S": 1
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Trzy razy w tym tygodniu podziękuj komuś po imieniu: w sklepie, na poczcie, w urzędzie.",
+   "kroki": 3,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Komu {podziękowałeś|podziękowałaś}?",
+    "min": 5
+   }
+  },
+  {
+   "id": "lu-021",
+   "kat": "ludzie",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "S": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Dwa razy w tym tygodniu zapytaj kogoś w pracy albo w sklepie, jak mu minął dzień, i naprawdę posłuchaj.",
+   "kroki": 2,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Kogo {zapytałeś|zapytałaś} i co ci {odpowiedział|odpowiedziała}?",
+    "min": 10
+   }
+  },
+  {
+   "id": "kr-020",
+   "kat": "kreat",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "C": 0.7,
+    "A": 0.3
+   },
+   "czas": 5,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Trzy razy w tym tygodniu sfotografuj coś pięknego, co mijasz na co dzień.",
+   "kroki": 3,
+   "autor": "Claude"
+  },
+  {
+   "id": "kr-021",
+   "kat": "kreat",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "C": 0.4,
+    "M": 0.6
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Przez 3 wieczory zapisz jedną rzecz, za którą jesteś {wdzięczny|wdzięczna}.",
+   "kroki": 3,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Za co jesteś dziś {wdzięczny|wdzięczna}?",
+    "min": 5
+   }
+  },
+  {
+   "id": "ok-020",
+   "kat": "okolica",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "A": 0.7,
+    "B": 0.3
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Dwa razy w tym tygodniu idź gdzieś inną drogą niż zwykle.",
+   "kroki": 2,
+   "autor": "Claude"
+  },
+  {
+   "id": "po-020",
+   "kat": "porzadek",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "M": 0.5,
+    "B": 0.5
+   },
+   "czas": 5,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Przez 5 dni rób 5-minutowe porządki: jedna półka, szuflada albo kąt.",
+   "kroki": 5,
+   "autor": "Claude"
+  },
+  {
+   "id": "po-021",
+   "kat": "porzadek",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "M": 1
+   },
+   "czas": 15,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Załatw w tym tygodniu dwie drobne zaległe sprawy: telefon, mail albo rachunek.",
+   "kroki": 2,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Jaką sprawę {załatwiłeś|załatwiłaś}?",
+    "min": 5
+   }
   }
  ]
 }

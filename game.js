@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 16:20";
+var APP_VER="13.11 17:00";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -250,8 +250,8 @@ function walkInstead(I){
 function navUrl(t,e){return "https://www.google.com/maps/dir/?api=1&destination="+t.lat.toFixed(6)+","+t.lon.toFixed(6)+"&travelmode="+(TRAVEL[e.mapa]||"walking")}
 
 /* ---------- aktywne misje ---------- */
-function actOf(I){var k=D.g.day.key+"|"+I.key;return D.g.act[k]||(D.g.act[k]={photos:[],note:"",timer:null,gps:false,target:null})}
-function cleanAct(){var k=D.g.day&&D.g.day.key;for(var a in D.g.act)if(a.indexOf(k+"|")!==0)delete D.g.act[a]}
+function actOf(I){var k=(I.weekly?"W"+D.g.week.start:D.g.day.key)+"|"+I.key;return D.g.act[k]||(D.g.act[k]={photos:[],note:"",timer:null,gps:false,target:null})}
+function cleanAct(){var k=D.g.day&&D.g.day.key,w=D.g.week&&"W"+D.g.week.start;for(var a in D.g.act)if(a.indexOf(k+"|")!==0&&a.indexOf(w+"|")!==0)delete D.g.act[a]}
 function proofOk(I,A){
   return(I.e.dowod||[]).every(function(d){
     if(d==="zdjecie"||d==="zrzut")return A.photos.length>0;
@@ -265,7 +265,7 @@ function noteReq(I){var n=I.e.notatka||{},z=I.hero&&n.zdaniaHero!=null?n.zdaniaH
 function sentences(t){return(t||"").split(/[.!?\n]+/).filter(function(x){return x.trim().length>=3}).length}
 function noteInfo(I,t){var r=noteReq(I),n=sentences(t);if(noteOk(I,t))return "✓ Gotowe";return r.zd>1?"Zdania: "+Math.min(n,r.zd)+" / "+r.zd:"Napisz kilka słów"}
 function noteOk(I,t){var r=noteReq(I);t=(t||"").trim();return t.length>=r.min&&sentences(t)>=r.zd}
-function isDone(I){return D.g.day.done.indexOf(I.key)>=0}
+function isDone(I){return I.weekly?!!(D.g.week.wk&&D.g.week.wk.done):D.g.day.done.indexOf(I.key)>=0}
 
 /* ---------- UI: wspólne ---------- */
 function nav(){var t=S.step;function b(id,em,n){return '<button class="'+(t===id?"on":"")+'" data-a="tab" data-v="'+id+'"><span>'+em+'</span>'+n+'</button>'}
@@ -312,13 +312,43 @@ R.today=function(){
   if(!D.g.tester){var c0=D.g.day.cands[0];var I0=c0&&c0.mid&&inst(c0.mid,c0.v);
     if(I0&&!isDone(I0))h+=D.g.day.swaps<1?'<button class="btn ghost" data-a="swap">🔄 Wymień misję (1 dziennie)</button>':'<p class="small center">Dzisiejsza wymiana już wykorzystana.</p>';
     if(I0&&isDone(I0))h+='<p class="center">Na dziś wszystko. Wracaj jutro po nową misję! 🌙</p>'}
+  ensureWeekly();var wk=D.g.week.wk;
+  if(wk&&wk.mid){var saveMix=S.mix;S.mix="w";var IW=curInst();S.mix=saveMix;
+    if(IW){var left=7-((new Date(dkey()+"T12:00:00").getDay()+6)%7);
+      h+='<div class="wkhead">📅 Misja tygodnia <span class="small">· '+(wk.done?"ukończona 🎉":left===1?"ostatni dzień!":"zostało "+left+" dni")+'</span></div>'+
+      '<div class="mcard wk '+IW.lvl+(wk.done?" done":"")+'" data-a="open" data-v="w"><div class="mtop"><span class="kat">'+KAT[IW.e.kat]+'</span>'+lvlBadge(IW.lvl)+'</div>'+
+      '<div class="mt">'+missionText(IW)+'</div><div class="meta">'+(IW.n>1?stepDots(IW.n,IW.k,wk.done)+' '+(wk.done?IW.n:IW.k)+'/'+IW.n+' · ':'')+'⏱️ '+(IW.e.mapa?mapTime(IW.e,IW.i,IW):IW.e.czas+" min"+(IW.n>1?" na raz":""))+' · ok. '+weekXP(IW)+' XP</div>'+
+      (wk.done?'<div class="donebadge">✓ Zaliczona</div>':'')+
+      ((D.g.tester||(!wk.steps.length&&!wk.swaps&&!wk.done))?'<div class="rowbtn"><button class="mini" data-a="wkswap">'+(D.g.tester?"🎲 Losuj inną":"🔄 Wymień (1 na tydzień)")+'</button></div>':'')+'</div>'}}
   h+='<div class="links">'+(D.g.tester?'<button class="btn link" data-a="go" data-v="browse">📚 Podgląd całej bazy misji</button>':'')+
     '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button></div>';
   return h+nav();
 };
 
 /* ---------- ekran: misja ---------- */
-function curInst(){var cd=D.g.day.cands[S.mix];return cd&&cd.mid?inst(cd.mid,cd.v):null}
+function curInst(){if(S.mix==="w"){var w=D.g.week.wk;if(!w||!w.mid)return null;var I=inst(w.mid,w.v);if(I){I.weekly=true;I.hero=false;I.n=I.e.kroki||1;I.k=w.steps.length}return I}
+  var cd=D.g.day.cands[S.mix];return cd&&cd.mid?inst(cd.mid,cd.v):null}
+/* ---------- misja tygodniowa ---------- */
+function pickWeekly(want,excl){var c=comfort(),pool=[];excl=excl||{};
+  (BASE||[]).forEach(function(e){if(e.rytm!=="t"||!allowed(e)||excl[e.id])return;var x=effI(e,e.i,c);pool.push({mid:e.id,v:"b",x:x,l:lvlOf(x),kat:e.kat})});
+  if(!pool.length)return null;var order=["E","N","H","X"],wi=order.indexOf(want);
+  var best=null;for(var dd=0;dd<4&&!best;dd++){[wi-dd,wi+dd].forEach(function(j){if(best||j<0||j>3)return;var p=pool.filter(function(q){return q.l===order[j]});if(p.length){
+    if((D.goals||[]).length&&Math.random()<.6){var g=p.filter(function(q){return D.goals.indexOf(q.kat)>=0});if(g.length)p=g}best=p[Math.floor(Math.random()*p.length)]}})}
+  return best?{mid:best.mid,v:"b",steps:[],done:false,swaps:0}:null}
+function ensureWeekly(){if(!D.g.week)return;var w=D.g.week.wk;if(w&&(w.mid||w.none))return;var m=D.g.week.mode==="X"?"H":D.g.week.mode;
+  D.g.week.wk=pickWeekly(m)||{none:true};save()}
+function weekXP(I){var mult=D.g.tester?LV[I.lvl].mult:LV[D.g.week.mode==="X"?"H":D.g.week.mode].mult;return Math.round(10*Math.min(I.eff,3*I.i)*4*mult)}
+function bumpStreak(){var k=dkey();if(D.g.lastDone!==k){var gap=D.g.lastDone?daysBetween(D.g.lastDone,k):99;D.g.streak=gap===1?D.g.streak+1:1;D.g.lastDone=k}}
+function stepDone(){var I=curInst(),A=actOf(I),w=D.g.week.wk;
+  if(I.k+1>=I.n){go("rate");return}
+  bumpStreak();var xp=Math.round(weekXP(I)/I.n);D.g.xp+=xp;
+  w.steps.push({day:dkey(),note:A.note||"",photos:A.photos.slice()});
+  D.g.log.unshift({day:dkey(),mid:I.mid,v:"b",key:I.key,text:"Krok "+w.steps.length+"/"+I.n+": "+missionText(I).replace(/<[^>]+>/g,""),kat:I.e.kat,lvl:I.lvl,xp:xp,note:A.note||"",photos:A.photos.slice(),place:A.target?A.target.name:null,step:true,tester:D.g.tester});
+  if(A.target&&A.gps)D.g.visited.push({lat:A.target.lat,lon:A.target.lon});
+  report(D.g.tester?"tydzien-krok-test":"tydzien-krok",{misja:I.mid,poziom:LV[I.lvl].n,ocena:"krok "+w.steps.length+"/"+I.n,d:{xp:xp,dzien:dkey(),notatka:S.sendNote&&A.note?A.note:null,wersja:APP_VER}});
+  var k2=(I.weekly?"W"+D.g.week.start:D.g.day.key)+"|"+I.key;delete D.g.act[k2];save();S.hist=[];go("today",false);
+  toast("✓ Krok "+w.steps.length+"/"+I.n+": +"+xp+" XP")}
+function stepDots(n,k,done){var h="";for(var i=0;i<n;i++)h+='<i class="'+(done||i<k?"on":"")+'"></i>';return '<span class="steps">'+h+'</span>'}
 R.mission=function(){
   var I=curInst();if(!I){setTimeout(function(){go("today",false)});return ""}
   var A=actOf(I),e=I.e,done=isDone(I),avg={S:5,B:5,M:5,C:5,A:5},o=lvlOf(effI(e,I.i,avg));
@@ -331,7 +361,8 @@ R.mission=function(){
     '<p class="small">⏱️ '+(e.mapa?mapTime(e,I.i,I):"ok. "+czasI(I)+" min")+' · Dowód: '+e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</p>';
   if(done){var lg=D.g.log.filter(function(l){return l.day===D.g.day.key&&l.key===I.key})[0];
     h+='<div class="note">✓ Misja zaliczona'+(lg?': <b>+'+lg.xp+' XP</b>':'')+'.</div></div>';return h}
-  if(!I.hero&&(D.g.tester||!D.g.day.hero)){
+  if(I.weekly)h+='<div class="note">📅 Misja tygodnia, do niedzieli.'+(I.n>1?' Krok <b>'+Math.min(I.k+1,I.n)+' z '+I.n+'</b> '+stepDots(I.n,I.k)+'<br>Każdy krok to osobny dzień i osobny dowód. Punkty dostajesz za każdy krok.':'')+'</div>';
+  if(!I.weekly&&!I.hero&&(D.g.tester||!D.g.day.hero)){
     h+='<div class="herobox"><b>⚔️ Podbij do Hero</b><p class="small">'+(e.hero?'Wersja Hero: „'+gtxt(e.hero).replace("{cel}","miejsce dalej niż zwykle")+'”':'Ta sama misja, ale półtora raza dalej.')+'</p><p class="small">Punkty ×2. Raz dziennie, bez cofania. Jeśli nie zdążysz do północy, stracisz 40% punktów, które można było zdobyć.</p>'+
       '<button class="btn ghost" data-a="hero">'+(S.heroArm?'⚔️ Na pewno? Stuknij jeszcze raz':'⚔️ Podbijam do Hero')+'</button></div>';
   }
@@ -367,7 +398,9 @@ R.mission=function(){
     if(d==="gps")h+='<b>📍 Na miejscu</b>'+(A.gps?'<p>✓ Jesteś na miejscu!</p>':'<button class="btn ghost" data-a="checkin" '+(A.target?"":"disabled")+'>📍 Jestem na miejscu</button>'+(D.g.tester&&A.target?'<button class="btn link" data-a="gpsskip">⏩ Zalicz bez GPS (tester)</button>':''));
     h+='</div>';
   });
-  h+='</div>'+bar("✅ Zaliczam misję",!proofOk(I,A),"go('rate')");
+  var stepToday=I.weekly&&I.n>1&&!D.g.tester&&D.g.week.wk.steps.some(function(s){return s.day===dkey()});
+  if(stepToday){h+='<div class="note">Dzisiejszy krok już zaliczony. Kolejny jutro! 🌙</div></div>';return h}
+  h+='</div>'+(I.weekly&&I.n>1&&I.k+1<I.n?bar("✅ Zaliczam krok "+(I.k+1)+"/"+I.n,!proofOk(I,A),"stepDone()"):bar("✅ Zaliczam misję",!proofOk(I,A),"go('rate')"));
   return h;
 };
 function mmss(ms){var s=Math.ceil(ms/1000),m=Math.floor(s/60);return(m>=60?Math.floor(m/60)+":"+("0"+m%60).slice(-2):m)+":"+("0"+s%60).slice(-2)}
@@ -387,19 +420,18 @@ R.rate=function(){
 function finishMission(){
   var I=curInst(),A=actOf(I),c=comfort();
   var mult=I.hero?2:D.g.tester?LV[I.lvl].mult:LV[D.g.week.mode==="X"?"H":D.g.week.mode].mult;
-  var k=dkey();
-  if(D.g.lastDone!==k){var gap=D.g.lastDone?daysBetween(D.g.lastDone,k):99;D.g.streak=gap===1?D.g.streak+1:1;D.g.lastDone=k}
+  bumpStreak();
   var sb=1+Math.min(.3,.02*Math.max(0,D.g.streak-1));
-  var xp=Math.round(10*Math.min(I.eff,3*I.i)*mult*sb);
+  var xp=I.weekly?Math.round(weekXP(I)/I.n*sb):Math.round(10*Math.min(I.eff,3*I.i)*mult*sb);
   D.g.xp+=xp;
   // kalibracja stref komfortu
   if(S.rate!=="ok"){var sg=S.rate==="easy"?1:-1;if(!D.comfort)D.comfort=c;
     for(var a in I.e.w){D.comfort[a]=r1(clamp(D.comfort[a]+sg*.3*I.e.w[a],0,10));if(D.pending)D.pending.c[a]=r1(clamp(D.pending.c[a]+sg*.3*I.e.w[a],0,10))}}
   D.started=true;
   if(A.target&&A.gps)D.g.visited.push({lat:A.target.lat,lon:A.target.lon});
-  D.g.log.unshift({day:D.g.day.key,mid:I.mid,v:I.v,key:I.key,text:missionText(I).replace(/<[^>]+>/g,""),kat:I.e.kat,lvl:I.hero?"X":I.lvl,xp:xp,rate:S.rate,like:S.like||null,note:A.note||"",photos:A.photos.slice(),place:A.target?A.target.name:null,tester:D.g.tester});
-  D.g.day.done.push(I.key);
-  report(D.g.tester?"misja-test":"misja",{misja:I.mid+(I.v!=="b"?"/"+I.v:""),poziom:LV[I.lvl].n+(I.hero?" + Hero":""),ocena:S.rate,d:{like:S.like||null,xp:xp,trudnosc:r1(I.eff),tryb:D.g.week.mode,hero:I.hero,kat:I.e.kat,dzien:D.g.day.key,seria:D.g.streak,cel:A.target?A.target.name:null,notatka:S.sendNote&&A.note?A.note:null,strefy:D.comfort,wersja:APP_VER}});
+  D.g.log.unshift({day:dkey(),mid:I.mid,v:I.v,key:I.key,weekly:!!I.weekly,text:(I.weekly?"📅 Misja tygodnia"+(I.n>1?" (ukończona, "+I.n+"/"+I.n+")":"")+": ":"")+missionText(I).replace(/<[^>]+>/g,""),kat:I.e.kat,lvl:I.hero?"X":I.lvl,xp:xp,rate:S.rate,like:S.like||null,note:A.note||"",photos:A.photos.slice(),place:A.target?A.target.name:null,tester:D.g.tester});
+  if(I.weekly){D.g.week.wk.steps.push({day:dkey(),note:A.note||"",photos:A.photos.slice()});D.g.week.wk.done=true}else D.g.day.done.push(I.key);
+  report((I.weekly?"tydzien-misja":"misja")+(D.g.tester?"-test":""),{misja:I.mid+(I.v!=="b"?"/"+I.v:""),poziom:LV[I.lvl].n+(I.hero?" + Hero":""),ocena:S.rate,d:{like:S.like||null,xp:xp,trudnosc:r1(I.eff),tryb:D.g.week.mode,hero:I.hero,kat:I.e.kat,dzien:D.g.day.key,seria:D.g.streak,cel:A.target?A.target.name:null,notatka:S.sendNote&&A.note?A.note:null,strefy:D.comfort,wersja:APP_VER}});
   S.rate=null;S.like=null;S.sendNote=false;save();S.hist=[];go("today",false);
   toast("+"+xp+" XP 🎉"+(D.g.streak>1?"  Seria: "+D.g.streak+" dni":""));
 }
@@ -519,7 +551,7 @@ var ACT={
   setweek:function(v){var ms=mondayKey();D.g.week={start:ms,mode:v};if(!D.g.day||!D.g.day.done.length)D.g.day=null;save();report("tydzien",{poziom:LV[v].mode,d:{tydzien:ms}});S.hist=[];go(D.g.introDone?"today":"intro",false)},
   lowermenu:function(){S.lowerOpen=!S.lowerOpen;render()},
   lower:function(v){D.g.week.mode=v;S.lowerOpen=false;if(!D.g.tester){var c=D.g.day.cands[0];var I=c&&c.mid&&inst(c.mid,c.v);if(!I||!isDone(I))D.g.day=null}save();render();toast("Tryb obniżony: "+LV[v].mode)},
-  open:function(v){S.mix=+v;S.mapErr=null;go("mission")},
+  open:function(v){S.mix=v==="w"?"w":+v;S.mapErr=null;go("mission")},
   reroll:function(v){var ix=+v,cd=D.g.day.cands[ix],excl={};D.g.day.cands.forEach(function(x){if(x.mid)excl[x.mid]=1});var p=pickLevel(cd.want,excl);if(p){D.g.day.cands[ix]=p;save();render()}else toast("Brak innych misji na tym poziomie")},
   swap:function(){var cd=D.g.day.cands[0],excl={};excl[cd.mid]=1;var I=inst(cd.mid,cd.v);var p=pickLevel(I?I.lvl:cd.want,excl);if(p){p.want=cd.want;D.g.day.cands[0]=p;D.g.day.swaps++;save();render();toast("Nowa misja 🎲")}else toast("Brak innych misji na tym poziomie")},
   target:function(){var I=curInst(),A=actOf(I);S.mapBusy=true;S.mapErr=null;render();
@@ -543,6 +575,7 @@ var ACT={
   usehome:function(v){if(v==="1"&&!D.g.home){toast("Najpierw zapisz swój punkt");return}D.g.useHome=v==="1";save();render()},
   sethome:function(){toast("Sprawdzam lokalizację…");getPos().then(function(p){D.g.home={lat:p.lat,lon:p.lon};D.g.useHome=true;save();render();toast("Zapisano punkt startowy 📌")}).catch(function(err){toast(err.message)})},
   bf:function(v){S.bf=v;render()},
+  wkswap:function(){var w=D.g.week.wk,ex={};ex[w.mid]=1;var m=D.g.week.mode==="X"?"H":D.g.week.mode;var nw=pickWeekly(m,ex);if(!nw){toast("Brak innych misji tygodniowych");return}nw.swaps=(w.swaps||0)+1;D.g.week.wk=nw;save();render();toast("Nowa misja tygodnia 🎲")},
   fakesearch:function(){var q=(document.getElementById("fakeq")||{}).value||"";S.fakeQ=q;if(!q.trim())return;toast("Szukam…");
     fetchT("https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=pl&countrycodes=pl&limit=6&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}},12000).then(function(r){return r.json()}).then(function(a){
       S.fakeRes=(a||[]).map(function(j){return{name:j.name||j.display_name.split(",")[0],full:j.display_name,lat:+j.lat,lon:+j.lon}});render()}).catch(function(){toast("Nie udało się wyszukać")})},
