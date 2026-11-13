@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 13:30";
+var APP_VER="13.11 14:00";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -28,6 +28,7 @@ function daysBetween(a,b){return Math.round((new Date(b+"T12:00:00")-new Date(a+
 var DNI=["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
 
 /* ---------- warianty i poziomy ---------- */
+function hasTransit(){return D.transit?D.transit==="yes":D.place!=="village"}
 function allowed(e){
   var w=e.wym||[],has=D.has||[],av=D.avoid||[];
   if(w.indexOf("rower")>=0&&has.indexOf("bike")<0)return false;
@@ -37,6 +38,7 @@ function allowed(e){
   if(w.indexOf("koszt")>=0&&D.budget==="free")return false;
   for(var k in AVOIDMAP)if(w.indexOf(k)>=0&&av.indexOf(AVOIDMAP[k])>=0)return false;
   if(e.mapa==="wyprawa"&&has.indexOf("car")<0&&has.indexOf("bike")<0)return false;
+  if(e.mapa==="bus"&&!hasTransit())return false;
   if(!e.mapa){var t=+(D.time||15);if(e.czas>Math.max(t*3,15))return false}
   return true;
 }
@@ -185,6 +187,7 @@ function findTarget(I){
   }).then(function(list){var st=st0;
     var c=list.map(function(x){x.d=hav(st.lat,st.lon,x.lat,x.lon);x.sec=sector(brg(st.lat,st.lon,x.lat,x.lon));return x})
       .filter(function(x){return x.d>250&&!nearUsed(x.lat,x.lon,300)});
+    if(kind==="bus"){var near=list.some(function(x){return hav(st.lat,st.lon,x.lat,x.lon)<1500});if(list.length&&!near){var er=new Error("nostop");er.nostop=true;throw er}}
     var ring=c.filter(function(x){return x.d>dist*.65&&x.d<dist*1.35});
     if(!ring.length)ring=c.filter(function(x){return x.d>dist*.4&&x.d<dist*1.7});
     if(kind!=="place"){var named=ring.filter(function(x){return x.tags.name});if(named.length>=(kind==="bus"?1:3))ring=named}
@@ -201,7 +204,7 @@ function roadPoint(st,dist){
   return overpass(q).catch(function(err){if(err.all)return fallbackTarget(st,dist,"poi").then(function(t){return{fb:t}});throw err}).then(function(els){
     if(els&&els.fb)return els.fb;
     var best=null,bd=Infinity;els.forEach(function(n){if(n.lat==null)return;if(nearUsed(n.lat,n.lon,300))return;var d=hav(p.lat,p.lon,n.lat,n.lon);if(d<bd){bd=d;best=n}});
-    if(!best)throw new Error("Nie znalazłem drogi w tym kierunku. Spróbuj „Znam to miejsce” albo wymień misję.");
+    if(!best)return fallbackTarget(st,dist,"poi");
     var d=hav(st.lat,st.lon,best.lat,best.lon);
     return{lat:best.lat,lon:best.lon,name:"Punkt na drodze. Sprawdź, co tam jest",d:d,sec:sector(brg(st.lat,st.lon,best.lat,best.lon)),start:{lat:st.lat,lon:st.lon},road:true};
   });
@@ -220,6 +223,12 @@ function pinUrl(t){return "https://www.google.com/maps/search/?api=1&query="+t.l
 function mapTime(e,i){var k=km(e,i),m;
   if(e.mapa==="pieszo"||e.mapa==="pieszo-daleko")m=k*2*12;else if(e.mapa==="rower")m=k*2*4;else if(e.mapa==="bus")m=k*2*3+30;else return "wyprawa na kilka godzin";
   m=Math.round(m/5)*5;return "ok. "+k+" km · "+(m<60?m+" min":(Math.floor(m/60)+" h"+(m%60?" "+m%60+" min":"")))+" w obie strony"}
+function walkInstead(I){
+  var e=byId("ok-002"),c=comfort(),best=null,bd=Infinity;
+  variants(e).forEach(function(v){var d=Math.abs(effI(e,v.i,c)-I.eff);if(d<bd){bd=d;best=v}});
+  var cd=D.g.day.cands[S.mix];cd.mid="ok-002";cd.v=best.v;save();render();
+  toast("W pobliżu nie ma przystanku, więc misja zmieniła się na pieszą 🥾");
+}
 function navUrl(t,e){return "https://www.google.com/maps/dir/?api=1&destination="+t.lat.toFixed(6)+","+t.lon.toFixed(6)+"&travelmode="+(TRAVEL[e.mapa]||"walking")}
 
 /* ---------- aktywne misje ---------- */
@@ -304,7 +313,7 @@ R.mission=function(){
     else if(A.target){var t=A.target;h+='<p class="big">'+esc(t.name)+'</p>'+(t.loc?'<p>📍 <b>'+esc(t.loc)+'</b></p>':'')+'<p class="small">'+fmtKm(t.d)+' '+DIRS[t.sec]+' od punktu startu</p>'+
       mapPreview(t)+
       '<div class="grid2"><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+pinUrl(t)+'" target="_blank" rel="noopener">📌 Pokaż punkt</a><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+navUrl(t,e)+'" target="_blank" rel="noopener">🧭 Nawiguj</a></div>'+
-      '<button class="btn ghost" data-a="known">🙅 Znam to miejsce, daj inne</button>'}
+      ((D.g.tester||(A.knownN||0)<2)?'<button class="btn ghost" data-a="known">🙅 Znam to miejsce, daj inne'+(D.g.tester?'':' ('+(2-(A.knownN||0))+')')+'</button>':'<p class="small">Wykorzystano obie wymiany celu. Idź śmiało, może cię zaskoczy! 🧭</p>')}
     else h+='<p class="small">Aplikacja wybierze miejsce, w którym jeszcze nie byłeś/aś, za każdym razem w innym kierunku.</p>'.replace("byłeś/aś",G("byłeś","byłaś"))+'<button class="btn ghost" data-a="target">📍 Wyznacz cel</button>'+
       (D.g.home?'<p class="small">Start: '+(D.g.useHome?"twój zapisany punkt":"bieżąca lokalizacja")+'</p>':'');
     if(S.mapErr)h+='<div class="err">'+esc(S.mapErr)+'</div>';
@@ -384,6 +393,7 @@ R.char=function(){
   '<button class="opt'+(D.g.tester?" on":"")+'" data-a="tester"><span class="em">🧪</span><span><b>Tryb testera '+(D.g.tester?"✓":"")+'</b><span class="s">Misje ze wszystkich poziomów naraz, podgląd bazy, przeskakiwanie dni</span></span></button>'+
   (D.g.tester?'<div class="grid2" style="margin-top:10px"><button class="btn ghost" data-a="skip" data-v="1">⏭️ Przeskocz dzień</button><button class="btn ghost" data-a="skip" data-v="7">⏩ Przeskocz tydzień</button></div>'+
     (D.g.offset?'<button class="btn link" data-a="skip" data-v="0">↩ Wróć do prawdziwej daty (teraz +'+D.g.offset+' dni)</button>':''):'')+
+  '<span class="lbl">🚌 Autobus albo pociąg w pobliżu</span><div class="chips"><button class="chip'+(hasTransit()?" on":"")+'" data-a="transit" data-v="yes">Tak, jeździ</button><button class="chip'+(!hasTransit()?" on":"")+'" data-a="transit" data-v="no">Nie ma albo bardzo rzadko</button></div>'+
   '<span class="lbl">📍 Punkt startowy misji z mapą</span><div class="chips"><button class="chip'+(!D.g.useHome?" on":"")+'" data-a="usehome" data-v="0">Bieżąca lokalizacja</button><button class="chip'+(D.g.useHome?" on":"")+'" data-a="usehome" data-v="1">Mój zapisany punkt</button></div>'+
   '<button class="btn link" data-a="sethome">'+(D.g.home?"📌 Zapisz obecne miejsce jako nowy punkt (jest zapisany)":"📌 Zapisz obecne miejsce jako mój punkt")+'</button>'+
   '<p class="small">Punkt zostaje tylko w tym telefonie. Bez śledzenia w tle.</p>'+
@@ -435,8 +445,12 @@ var ACT={
   reroll:function(v){var ix=+v,cd=D.g.day.cands[ix],excl={};D.g.day.cands.forEach(function(x){if(x.mid)excl[x.mid]=1});var p=pickLevel(cd.want,excl);if(p){D.g.day.cands[ix]=p;save();render()}else toast("Brak innych misji na tym poziomie")},
   swap:function(){var cd=D.g.day.cands[0],excl={};excl[cd.mid]=1;var I=inst(cd.mid,cd.v);var p=pickLevel(I?I.lvl:cd.want,excl);if(p){p.want=cd.want;D.g.day.cands[0]=p;D.g.day.swaps++;save();render();toast("Nowa misja 🎲")}else toast("Brak innych misji na tym poziomie")},
   target:function(){var I=curInst(),A=actOf(I);S.mapBusy=true;S.mapErr=null;render();
-    findTarget(I).then(function(t){A.target=t;A.gps=false;S.mapBusy=false;save();render()}).catch(function(err){S.mapBusy=false;S.mapErr=err.message||"Nie udało się wyznaczyć celu";render()})},
-  known:function(){var I=curInst(),A=actOf(I);if(A.target)D.g.known.push({lat:A.target.lat,lon:A.target.lon});A.target=null;save();ACT.target()},
+    findTarget(I).then(function(t){A.target=t;A.gps=false;S.mapBusy=false;save();render()}).catch(function(err){S.mapBusy=false;
+      if(err.nostop){walkInstead(I);return}
+      S.mapErr=err.message||"Nie udało się wyznaczyć celu";render()})},
+  known:function(){var I=curInst(),A=actOf(I);
+    if(!D.g.tester&&(A.knownN||0)>=2){toast("Limit wymian celu dla tej misji. Spróbuj, może cię zaskoczy!");return}
+    A.knownN=(A.knownN||0)+1;if(A.target)D.g.known.push({lat:A.target.lat,lon:A.target.lon});A.target=null;save();ACT.target()},
   checkin:function(){var I=curInst(),A=actOf(I);if(!A.target)return;toast("Sprawdzam lokalizację…");
     getPos().then(function(p){var d=hav(p.lat,p.lon,A.target.lat,A.target.lon);if(d<=75+Math.min(p.acc||0,50)){A.gps=true;save();render();toast("Jesteś na miejscu! 📍")}else toast("Jesteś "+fmtKm(d)+" od celu")}).catch(function(err){toast(err.message)})},
   gpsskip:function(){var A=actOf(curInst());A.gps=true;save();render()},
@@ -450,6 +464,7 @@ var ACT={
   usehome:function(v){if(v==="1"&&!D.g.home){toast("Najpierw zapisz swój punkt");return}D.g.useHome=v==="1";save();render()},
   sethome:function(){toast("Sprawdzam lokalizację…");getPos().then(function(p){D.g.home={lat:p.lat,lon:p.lon};D.g.useHome=true;save();render();toast("Zapisano punkt startowy 📌")}).catch(function(err){toast(err.message)})},
   bf:function(v){S.bf=v;render()},
+  transit:function(v){D.transit=v;if(D.g.day&&!D.g.day.done.length)D.g.day=null;save();render()},
   sug:function(v){var p=v.split(":");S.sug[p[0]]=S.sug[p[0]]===p[1]?"":p[1];render()},
   sharediag:function(){shareText("🧪 Misja Dnia: diagnostyka map (wersja "+APP_VER+")\n"+navigator.userAgent+"\n"+MAPDIAG.join("\n"))},
   sharelog:function(){var L=D.g.log,ok=L.filter(function(l){return l.rate==="ok"}).length;
