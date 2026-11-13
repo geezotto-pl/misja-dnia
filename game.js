@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 14:20";
+var APP_VER="13.11 14:30";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -326,9 +326,9 @@ R.mission=function(){
       if(t.nearby===undefined&&S.nbFor!==t){S.nbFor=t;findNearby(t).then(function(n){t.nearby=n;save();if(S.step==="mission")render()})}
       h+='<p class="big">'+esc(t.name)+'</p>'+(t.loc?'<p>📍 <b>'+esc(t.loc)+'</b></p>':'')+'<p class="small">'+fmtKm(t.d)+' '+DIRS[t.sec]+' od punktu startu</p>'+
       mapPreview(t)+
-      '<div class="nearby"><b>👀 Co zobaczyć na miejscu</b>'+(t.nearby==null?'<p class="small">Szukam ciekawych miejsc w okolicy celu…</p>':
-        t.nearby.length?'<ul>'+t.nearby.map(function(n){return '<li><a href="'+pinUrl(n)+'" target="_blank" rel="noopener">'+esc(n.name)+'</a> <span class="small">· '+fmtKm(n.d)+' od celu</span></li>'}).join("")+'</ul>':
-        '<p class="small">Na mapie nic tu nie zaznaczono. Może to ty coś odkryjesz? Zrób zdjęcie najciekawszej rzeczy, jaką znajdziesz. 🔎</p>')+'</div>'+
+      '<details class="nearby"'+(S.nbOpen?' open':'')+' ontoggle="S.nbOpen=this.open"><summary>👀 Co jeszcze warto zobaczyć w okolicy? <span class="small">(opcjonalnie'+(t.nearby&&t.nearby.length?', '+t.nearby.length:'')+')</span></summary>'+(t.nearby==null?'<p class="small">Szukam ciekawych miejsc w okolicy celu…</p>':
+        t.nearby.length?'<p class="small">Nie musisz nic z tego zaliczać. To tylko podpowiedź, jeśli masz ochotę się rozejrzeć.</p><ul>'+t.nearby.map(function(n){return '<li><a href="'+pinUrl(n)+'" target="_blank" rel="noopener">'+esc(n.name)+'</a> <span class="small">· '+fmtKm(n.d)+' od celu</span></li>'}).join("")+'</ul>':
+        '<p class="small">Na mapie nic tu nie zaznaczono. Może to ty coś odkryjesz? Zrób zdjęcie najciekawszej rzeczy, jaką znajdziesz. 🔎</p>')+'</details>'+
       '<div class="grid2"><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+pinUrl(t)+'" target="_blank" rel="noopener">📌 Pokaż punkt</a><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+navUrl(t,e)+'" target="_blank" rel="noopener">🧭 Nawiguj</a></div>'+
       ((D.g.tester||(A.knownN||0)<2)?'<button class="btn ghost" data-a="known">🙅 Znam to miejsce, daj inne'+(D.g.tester?'':' ('+(2-(A.knownN||0))+')')+'</button>':'<p class="small">Wykorzystano obie wymiany celu. Idź śmiało, może cię zaskoczy! 🧭</p>')}
     else h+='<p class="small">Aplikacja wybierze miejsce, w którym jeszcze nie byłeś/aś, za każdym razem w innym kierunku.</p>'.replace("byłeś/aś",G("byłeś","byłaś"))+'<button class="btn ghost" data-a="target">📍 Wyznacz cel</button>'+
