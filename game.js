@@ -99,14 +99,41 @@ function fmtKm(m){return m<1000?Math.round(m/10)*10+" m":(Math.round(m/100)/10).
 function getPos(){return new Promise(function(res,rej){if(!navigator.geolocation)return rej(new Error("Brak GPS w tym urządzeniu"));
   navigator.geolocation.getCurrentPosition(function(p){res({lat:p.coords.latitude,lon:p.coords.longitude,acc:p.coords.accuracy})},function(e){rej(new Error(e.code===1?"Brak zgody na lokalizację. Włącz ją w ustawieniach przeglądarki.":"Nie udało się ustalić lokalizacji. Spróbuj na zewnątrz."))},{enableHighAccuracy:true,timeout:20000,maximumAge:30000})})}
 function getStart(){if(D.g.useHome&&D.g.home)return Promise.resolve(D.g.home);return getPos().catch(function(err){if(D.g.home)return D.g.home;throw err})}
-var OVERPASS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://maps.mail.ru/osm/tools/overpass/api/interpreter"];
+var OVERPASS=[["de","https://overpass-api.de/api/interpreter"],["coffee","https://overpass.private.coffee/api/interpreter"],["kumi","https://overpass.kumi.systems/api/interpreter"],["mailru","https://maps.mail.ru/osm/tools/overpass/api/interpreter"]];
+var MAPDIAG=[];
+function diag(t){MAPDIAG.unshift(new Date().toLocaleTimeString("pl-PL")+" "+t);MAPDIAG=MAPDIAG.slice(0,12)}
+function fetchT(url,opt,ms){var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){ctl&&ctl.abort()},ms);opt=opt||{};if(ctl)opt.signal=ctl.signal;
+  return fetch(url,opt).then(function(r){clearTimeout(tm);return r},function(e){clearTimeout(tm);throw new Error(e&&e.name==="AbortError"?"czas":"sieć")})}
 function overpass(q){
-  var i=0;
-  function tryNext(){if(i>=OVERPASS.length)return Promise.reject(new Error("Serwer map nie odpowiada. Spróbuj za chwilę."));
-    var ep=OVERPASS[i++],ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){ctl&&ctl.abort()},30000);
-    return fetch(ep,{method:"POST",body:"data="+encodeURIComponent(q),headers:{"Content-Type":"application/x-www-form-urlencoded"},signal:ctl?ctl.signal:undefined})
-      .then(function(r){clearTimeout(tm);if(!r.ok)throw 0;return r.json()}).then(function(j){return j.elements||[]}).catch(function(){clearTimeout(tm);return tryNext()})}
+  var i=0,errs=[];
+  function tryNext(){if(i>=OVERPASS.length){var m=errs.join(", ");diag("overpass: "+m);var er=new Error("Serwery map nie odpowiadają ("+m+").");er.all=true;return Promise.reject(er)}
+    var ep=OVERPASS[i++];
+    return fetchT(ep[1],{method:"POST",body:"data="+encodeURIComponent(q),headers:{"Content-Type":"application/x-www-form-urlencoded"}},20000)
+      .then(function(r){if(!r.ok)throw new Error(String(r.status));return r.json().catch(function(){throw new Error("zły JSON")})})
+      .then(function(j){diag("overpass "+ep[0]+": OK, "+(j.elements||[]).length+" obiektów");return j.elements||[]})
+      .catch(function(e){errs.push(ep[0]+": "+(e.message||"błąd"));return tryNext()})}
   return tryNext();
+}
+/* zapasowe źródło: Nominatim (adres najbliżej punktu) */
+function nominatim(lat,lon,zoom){
+  var u="https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=pl&zoom="+zoom+"&lat="+lat.toFixed(5)+"&lon="+lon.toFixed(5);
+  return fetchT(u,{headers:{"Accept":"application/json"}},15000).then(function(r){if(!r.ok)throw new Error("nominatim "+r.status);return r.json()}).then(function(j){if(!j||j.error||j.lat==null)throw new Error("nominatim: brak");diag("nominatim: OK");return j});
+}
+function nomName(j,kind){var a=j.address||{};var town=a.village||a.town||a.city||a.hamlet||a.suburb||"";
+  if(kind==="place")return(town||j.name||"Miejscowość");
+  var road=a.road||a.path||a.footway||a.track||"";
+  return road?(road+(town?", "+town:"")):(j.name||town||"Punkt na mapie");}
+function fallbackTarget(st,dist,kind){
+  var tries=0;
+  function attempt(){tries++;
+    var s=chooseSector([0,1,2,3,4,5,6,7].map(function(i){return{sec:i}}));var b=s*45+(Math.random()*40-20);
+    var p=dest(st.lat,st.lon,dist,b);
+    return nominatim(p.lat,p.lon,kind==="place"?13:17).then(function(j){var la=+j.lat,lo=+j.lon,d=hav(st.lat,st.lon,la,lo);
+      if(d<dist*.45||d>dist*1.7||nearUsed(la,lo,300)){D.g.sec[s]=D.g.ctr=(D.g.ctr||0)+1;if(tries<4)return attempt();throw new Error("Nie znalazłem celu. Spróbuj jeszcze raz.")}
+      return{lat:la,lon:lo,name:nomName(j,kind)+(kind==="place"?"":" (sprawdź, co tam jest)"),d:d,sec:sector(brg(st.lat,st.lon,la,lo)),start:{lat:st.lat,lon:st.lon},road:true,src:"nominatim"}})
+    .catch(function(e){if(tries<4&&/nominatim: brak/.test(e.message))return attempt();diag("nominatim: "+e.message);throw new Error("Mapy chwilowo nie działają ("+e.message+"). Spróbuj za kilka minut.")});
+  }
+  return attempt();
 }
 function poiQuery(kind,lat,lon,r){
   var a="(around:"+Math.round(r)+","+lat.toFixed(5)+","+lon.toFixed(5)+")";
@@ -124,7 +151,7 @@ function label(t){
   else if(t.leisure==="park")L="Park";else if(t.leisure==="nature_reserve")L="Rezerwat przyrody";
   else if(t.natural==="water")L="Staw / jezioro";else if(t.natural==="peak")L="Wzniesienie";else if(t.natural==="spring")L="Źródło";else if(t.natural==="tree")L="Pomnik przyrody (drzewo)";
   else if(t.man_made==="water_tower")L="Wieża ciśnień";else if(t.man_made)L="Wieża";
-  return t.name?t.name+" ("+L.toLowerCase()+")":L;
+  if(!t.name)return L;var n=t.name.toLowerCase(),l=L.toLowerCase().split(/[ \/(]/)[0];return n.indexOf(l)>=0?t.name:t.name+" ("+L.toLowerCase()+")";
 }
 function nearUsed(lat,lon,r){var all=(D.g.visited||[]).concat(D.g.known||[]);for(var i=0;i<all.length;i++)if(hav(lat,lon,all[i].lat,all[i].lon)<r)return true;return false}
 function chooseSector(list){ // list: elementy z .sec
@@ -135,7 +162,8 @@ function chooseSector(list){ // list: elementy z .sec
 function findTarget(I){
   var e=I.e,dist=km(e,I.i)*1000,kind=MAPKIND[e.mapa];
   return getStart().then(function(st){
-    return overpass(poiQuery(kind,st.lat,st.lon,dist*1.7)).then(function(els){
+    return overpass(poiQuery(kind,st.lat,st.lon,dist*1.7)).catch(function(err){if(err.all)return fallbackTarget(st,dist,kind).then(function(t){return{fb:t}});throw err}).then(function(els){
+      if(els&&els.fb)return els.fb;
       var c=els.map(function(el){var la=el.lat!=null?el.lat:el.center&&el.center.lat,lo=el.lon!=null?el.lon:el.center&&el.center.lon;if(la==null)return null;
         var d=hav(st.lat,st.lon,la,lo);return{lat:la,lon:lo,tags:el.tags||{},d:d,sec:sector(brg(st.lat,st.lon,la,lo))}}).filter(Boolean)
         .filter(function(x){return x.d>250&&!nearUsed(x.lat,x.lon,300)});
@@ -153,7 +181,8 @@ function roadPoint(st,dist){
   var s=chooseSector([0,1,2,3,4,5,6,7].map(function(i){return{sec:i}}));var b=s*45+(Math.random()*40-20);
   var p=dest(st.lat,st.lon,dist,b);
   var q="[out:json][timeout:25];way(around:600,"+p.lat.toFixed(5)+","+p.lon.toFixed(5)+")[highway~\"^(track|path|footway|residential|unclassified|service|tertiary|living_street|cycleway|secondary)$\"];node(w);out 400;";
-  return overpass(q).then(function(els){
+  return overpass(q).catch(function(err){if(err.all)return fallbackTarget(st,dist,"poi").then(function(t){return{fb:t}});throw err}).then(function(els){
+    if(els&&els.fb)return els.fb;
     var best=null,bd=Infinity;els.forEach(function(n){if(n.lat==null)return;if(nearUsed(n.lat,n.lon,300))return;var d=hav(p.lat,p.lon,n.lat,n.lon);if(d<bd){bd=d;best=n}});
     if(!best)throw new Error("Nie znalazłem drogi w tym kierunku. Spróbuj „Znam to miejsce” albo wymień misję.");
     var d=hav(st.lat,st.lon,best.lat,best.lon);
@@ -180,7 +209,7 @@ function nav(){var t=S.step;function b(id,em,n){return '<button class="'+(t===id
   return '<nav class="nav">'+b("today","🧭","Dziś")+b("journal","📔","Dziennik")+b("char","🪪","Postać")+'</nav>'}
 function lvlBadge(c,pref){return '<span class="lvl '+c+'">'+(pref||"")+LV[c].n+'</span>'}
 function missionText(I){var t=instText(I.e,I.v);if(I.e.mapa){var A=actOf(I);t=t.replace("{cel}",A.target?"<b>"+esc(A.target.name)+"</b>":"<i>miejsce wskaże mapa</i>")}return t}
-function reason(I){var c=comfort(),parts=[];for(var k in I.e.w)parts.push(AREA[k].n+" "+Math.round(I.e.w[k]*100)+"% (twoja strefa "+c[k]+")");
+function reason(I){var c=comfort(),parts=[];for(var k in I.e.w)parts.push(AREA[k].n+" "+Math.round(I.e.w[k]*100)+"% (twoja strefa "+String(c[k]).replace(".",",")+")");
   var g=(D.goals||[]).indexOf(I.e.kat)>=0;return '<div class="why">🔍 '+(g?"pasuje do twojego celu · ":"")+parts.join(", ")+" · intensywność "+I.i+" → trudność "+(Math.round(I.eff*10)/10).toString().replace(".",",")+(I.v!=="b"?" · wersja "+(I.v==="l"?"łatwiejsza":"trudniejsza"):"")+(I.e.mapa?" · cel ok. "+km(I.e,I.i)+" km":"")+'</div>'}
 
 /* ---------- ekran: tryb tygodnia ---------- */
@@ -245,6 +274,7 @@ R.mission=function(){
     else h+='<p class="small">Aplikacja wybierze miejsce, w którym jeszcze nie byłeś/aś, za każdym razem w innym kierunku.</p>'.replace("byłeś/aś",G("byłeś","byłaś"))+'<button class="btn ghost" data-a="target">📍 Wyznacz cel</button>'+
       (D.g.home?'<p class="small">Start: '+(D.g.useHome?"twój zapisany punkt":"bieżąca lokalizacja")+'</p>':'');
     if(S.mapErr)h+='<div class="err">'+esc(S.mapErr)+'</div>';
+    if(D.g.tester&&MAPDIAG.length)h+='<details class="small"><summary>🧪 Diagnostyka map</summary>'+MAPDIAG.map(function(x){return '<div>'+esc(x)+'</div>'}).join("")+'<button class="btn link" data-a="sharediag">📤 Wyślij diagnostykę</button></details>';
     h+='</div>';
   }
   e.dowod.forEach(function(d){
@@ -386,6 +416,7 @@ var ACT={
   sethome:function(){toast("Sprawdzam lokalizację…");getPos().then(function(p){D.g.home={lat:p.lat,lon:p.lon};D.g.useHome=true;save();render();toast("Zapisano punkt startowy 📌")}).catch(function(err){toast(err.message)})},
   bf:function(v){S.bf=v;render()},
   sug:function(v){var p=v.split(":");S.sug[p[0]]=S.sug[p[0]]===p[1]?"":p[1];render()},
+  sharediag:function(){shareText("🧪 Misja Dnia: diagnostyka map\n"+navigator.userAgent+"\n"+MAPDIAG.join("\n"))},
   sharelog:function(){var L=D.g.log,ok=L.filter(function(l){return l.rate==="ok"}).length;
     var t="🧭 Misja Dnia: testy "+(D.nick||"")+"\nMisji: "+L.length+", XP: "+D.g.xp+", w sam raz: "+Math.round(ok/L.length*100)+"%\n"+
       L.slice(0,40).map(function(l){return "• "+l.day+" "+l.mid+" ["+LV[l.lvl].n+"] "+({easy:"za łatwe",ok:"w sam raz",hard:"za trudne"}[l.rate])+(l.like==="y"?" 👍":l.like==="n"?" 👎":"")+(l.note?" – "+l.note:"")}).join("\n");

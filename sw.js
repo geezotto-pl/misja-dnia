@@ -1,5 +1,5 @@
 // Misja Dnia: zawsze najnowsza wersja z internetu, bez internetu kopia z pamięci.
-var C="misja-dnia-v3";
+var C="misja-dnia-v4";
 var FILES=["./","index.html","game.js","misje.json","manifest.json","avatar.js","icon-192.png","icon-512.png","fonts/caveat-latin-700-normal.woff2","fonts/caveat-latin-ext-700-normal.woff2"];
 self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(caches.open(C).then(function(c){return c.addAll(FILES)}).catch(function(){}))});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.filter(function(x){return x!==C}).map(function(x){return caches.delete(x)}))}).then(function(){return self.clients.claim()}))});
