@@ -1,5 +1,5 @@
 {
- "wersja": 2,
+ "wersja": 3,
  "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie.",
  "misje": [
   {
@@ -20,7 +20,8 @@
    "podpowiedz": [
     "Przy płaceniu zerknij na plakietkę i powiedz: „Dziękuję, pani Ilono, miłego dnia”.",
     "Wystarczy uśmiech i imię, nic więcej nie trzeba."
-   ]
+   ],
+   "hero": "Podziękuj po imieniu trzem różnym osobom w ciągu dnia: w sklepie, urzędzie albo na poczcie."
   },
   {
    "id": "lu-002",
@@ -40,7 +41,8 @@
    "podpowiedz": [
     "Najłatwiej tam, gdzie i tak się mijacie: winda, klatka schodowa, przystanek.",
     "Krótko i z uśmiechem. Nie musisz czekać na odpowiedź."
-   ]
+   ],
+   "hero": "Powiedz „dzień dobry” dziesięciu nieznajomym osobom w ciągu dnia."
   },
   {
    "id": "lu-003",
@@ -66,7 +68,8 @@
     "Wystarczy: „Przepraszam, którędy najbliżej do…?”.",
     "Wybierz kogoś, kto się nie spieszy, np. czeka na przystanku.",
     "Na koniec podziękuj. To naturalnie kończy rozmowę."
-   ]
+   ],
+   "hero": "Zapytaj obcą osobę o drogę, a potem dopytaj, co ciekawego jest w okolicy, i idź to zobaczyć."
   },
   {
    "id": "lu-004",
@@ -86,7 +89,8 @@
    "podpowiedz": [
     "Chwal konkret: „Świetnie to pani zapakowała”, „Piękny pies, jak się wabi?”.",
     "Nie musisz ciągnąć rozmowy. Sam komplement wystarczy."
-   ]
+   ],
+   "hero": "Pochwal szczerze trzy nieznajome osoby w ciągu jednego dnia."
   },
   {
    "id": "lu-005",
@@ -110,7 +114,8 @@
    "podpowiedz": [
     "„Co by pan/pani dziś wybrał(a)?” Ludzie lubią doradzać.",
     "Możesz dodać z uśmiechem: „Biorę w ciemno”."
-   ]
+   ],
+   "hero": "Zapytaj sprzedawcę, co poleca, weź to i porozmawiaj z nim chwilę o tym, dlaczego to lubi."
   },
   {
    "id": "lu-006",
@@ -133,7 +138,8 @@
     "Zacznij od tego, co widzicie oboje: „Długo dziś ta kolejka”, „Też pan/pani czeka na…?”.",
     "Potem pytanie otwarte: „Poleca pan/pani coś stąd?”, „Często pan/pani tu bywa?”.",
     "Możesz skończyć w każdej chwili: „Miło się gadało, miłego dnia”."
-   ]
+   ],
+   "hero": "Zagadaj do kogoś w kolejce albo poczekalni, porozmawiaj co najmniej 5 minut i dowiedz się, jak ta osoba ma na imię."
   },
   {
    "id": "lu-007",
@@ -154,7 +160,8 @@
    "podpowiedz": [
     "Zacznij od tego, co wiesz: „{Słyszałem|Słyszałam}, że łowisz ryby. Od kiedy?”.",
     "Dopytuj: „Co w tym lubisz najbardziej?”, „Jak się zaczyna?”. Ludzie chętnie mówią o swoich pasjach."
-   ]
+   ],
+   "hero": "Zapytaj kogoś o jego pasję, dowiedz się o niej pięciu rzeczy i umów się, że ci ją pokaże."
   },
   {
    "id": "lu-008",
@@ -176,7 +183,8 @@
    "podpowiedz": [
     "Zapisz sobie wcześniej 2–3 zdania, co chcesz powiedzieć.",
     "Pierwsze zdanie: kim jesteś i w jakiej sprawie dzwonisz."
-   ]
+   ],
+   "hero": "Załatw przez telefon dwie sprawy, które zwykle załatwiasz przez internet."
   },
   {
    "id": "lu-009",
@@ -199,7 +207,8 @@
    "podpowiedz": [
     "Wybierz kogoś, kto spaceruje bez pośpiechu albo sam robi zdjęcia.",
     "„Przepraszam, zrobi mi pan/pani zdjęcie? Wystarczy nacisnąć tutaj.”"
-   ]
+   ],
+   "hero": "Poproś trzy różne nieznajome osoby o zdjęcie w trzech różnych miejscach."
   },
   {
    "id": "lu-010",
@@ -219,7 +228,8 @@
    "podpowiedz": [
     "Przygotuj wcześniej jedno zdanie, np. „Mam inny pomysł…”.",
     "Nie musisz mieć racji. Wystarczy, że się odezwiesz."
-   ]
+   ],
+   "hero": "Zabierz głos jako pierwszy albo pierwsza w rozmowie grupowej lub na spotkaniu i zaproponuj własny pomysł."
   },
   {
    "id": "lu-011",
@@ -302,7 +312,8 @@
    ],
    "wym": [],
    "t": "Wyślij bliskiej osobie zdjęcie czegoś, co ci ją przypomniało.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Wyślij trzem bliskim osobom zdjęcia rzeczy, które ci ich przypomniały, każde z krótkim komentarzem."
   },
   {
    "id": "re-002",
@@ -319,7 +330,8 @@
    ],
    "wym": [],
    "t": "Zapytaj kogoś bliskiego „co było najlepsze w twoim dniu?” i naprawdę posłuchaj.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Porozmawiaj z bliską osobą 20 minut bez telefonów: co było najlepsze, a co najtrudniejsze w jej tygodniu."
   },
   {
    "id": "re-003",
@@ -336,7 +348,8 @@
    ],
    "wym": [],
    "t": "Napisz odręczny liścik i zostaw go komuś z domowników.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Napisz odręczne liściki do trzech domowników albo bliskich i zostaw je tak, żeby je znaleźli."
   },
   {
    "id": "re-004",
@@ -353,7 +366,8 @@
    ],
    "wym": [],
    "t": "Podziękuj komuś bliskiemu za konkretną rzecz, za którą nigdy nie {podziękowałeś|podziękowałaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Podziękuj trzem bliskim osobom za konkretne rzeczy, za które nigdy nie {podziękowałeś|podziękowałaś}."
   },
   {
    "id": "re-005",
@@ -378,7 +392,8 @@
    "podpowiedz": [
     "Zacznij od: „{Przypomniałem|Przypomniałam} sobie o tobie, bo…”.",
     "Nie musisz tłumaczyć przerwy. Ludzie po prostu się cieszą."
-   ]
+   ],
+   "hero": "Zadzwoń do kogoś, z kim nie {rozmawiałeś|rozmawiałaś} od roku, i umów się na spotkanie."
   },
   {
    "id": "re-006",
@@ -397,7 +412,8 @@
     "jedzenie"
    ],
    "t": "Zrób coś do jedzenia albo picia dla bliskiej osoby, bez okazji.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Przygotuj cały posiłek dla bliskiej osoby, bez okazji."
   },
   {
    "id": "re-007",
@@ -419,7 +435,8 @@
    "autor": "Claude",
    "podpowiedz": [
     "Zaproponuj konkret: „Idę o 18 na spacer, idziesz ze mną?”."
-   ]
+   ],
+   "hero": "Idź z bliską osobą na godzinny spacer w miejsce, w którym razem nie byliście, oboje bez telefonów."
   },
   {
    "id": "re-008",
@@ -436,7 +453,8 @@
    ],
    "wym": [],
    "t": "Znajdź stare wspólne zdjęcie i wyślij je osobie, która na nim jest, z jednym wspomnieniem.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Znajdź trzy stare wspólne zdjęcia i wyślij je osobom, które na nich są, każde z innym wspomnieniem."
   },
   {
    "id": "re-009",
@@ -456,7 +474,8 @@
    "autor": "Claude",
    "podpowiedz": [
     "Krótko: „Przepraszam za…, głupio mi z tym było”. Bez długich tłumaczeń."
-   ]
+   ],
+   "hero": "Przeproś osobiście, nie w wiadomości, za rzecz, która od dawna ci leży na sercu."
   },
   {
    "id": "re-010",
@@ -529,7 +548,9 @@
    "t": "Zrób 20 przysiadów, zanim zrobisz sobie poranną kawę.",
    "latwiej": "10 przysiadów.",
    "trudniej": "40 przysiadów.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zrób 50 przysiadów w ciągu dnia, w seriach po 10.",
+   "heroCzas": 10
   },
   {
    "id": "ru-002",
@@ -547,7 +568,9 @@
     "rano"
    ],
    "t": "Rozciągaj się 5 minut zaraz po wstaniu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Rozciągaj się 15 minut zaraz po wstaniu.",
+   "heroCzas": 15
   },
   {
    "id": "ru-003",
@@ -564,7 +587,8 @@
    ],
    "wym": [],
    "t": "Przez cały dzień chodź schodami zamiast windą.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Przez cały dzień schody zamiast windy i dodatkowo wejdź raz na najwyższe piętro budynku, w którym jesteś."
   },
   {
    "id": "ru-004",
@@ -585,7 +609,9 @@
    "t": "30 minut spaceru bez telefonu w ręce.",
    "latwiej": "15 minut spaceru.",
    "trudniej": "60 minut spaceru.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "60 minut spaceru bez telefonu w ręce, trasą, której nie znasz.",
+   "heroCzas": 60
   },
   {
    "id": "ru-005",
@@ -605,7 +631,8 @@
    ],
    "t": "Dojdź pieszo do miejsca wskazanego przez aplikację: {cel}. Zrób tam zdjęcie.",
    "mapa": "pieszo",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Dojdź pieszo do miejsca wskazanego przez aplikację ({cel}), dalej niż zwykle. Zrób tam zdjęcie."
   },
   {
    "id": "ru-006",
@@ -624,7 +651,8 @@
     "zewn"
    ],
    "t": "Wysiądź przystanek wcześniej albo zaparkuj dalej i resztę drogi przejdź pieszo.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Wysiądź dwa przystanki wcześniej albo zaparkuj dużo dalej i dojdź pieszo, rano i po południu."
   },
   {
    "id": "ru-007",
@@ -644,7 +672,9 @@
    "t": "Deska (plank): 3 razy po 30 sekund.",
    "latwiej": "3 razy po 15 sekund.",
    "trudniej": "3 razy po minucie.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Deska (plank): 3 razy po minucie.",
+   "heroCzas": 5
   },
   {
    "id": "ru-008",
@@ -666,7 +696,8 @@
    ],
    "t": "Dojedź rowerem do miejsca wskazanego przez aplikację: {cel}.",
    "mapa": "rower",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Dojedź rowerem do miejsca wskazanego przez aplikację ({cel}), dalej niż zwykle."
   },
   {
    "id": "ru-009",
@@ -684,7 +715,9 @@
     "zewn"
    ],
    "t": "45 minut spaceru szybkim krokiem.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "90 minut spaceru szybkim krokiem.",
+   "heroCzas": 90
   },
   {
    "id": "ru-010",
@@ -701,7 +734,9 @@
    ],
    "wym": [],
    "t": "15 minut ćwiczeń z filmikiem dla początkujących: joga albo rozciąganie.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "30 minut ćwiczeń z filmikiem: joga albo rozciąganie, bez przerw.",
+   "heroCzas": 30
   },
   {
    "id": "ru-011",
@@ -776,7 +811,8 @@
    ],
    "wym": [],
    "t": "Zjedz posiłek bez żadnego ekranu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Wszystkie posiłki dziś bez żadnego ekranu."
   },
   {
    "id": "te-002",
@@ -792,7 +828,8 @@
    ],
    "wym": [],
    "t": "Wyłącz powiadomienia z jednej aplikacji, która najbardziej cię rozprasza.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Wyłącz powiadomienia ze wszystkich aplikacji społecznościowych na cały dzień."
   },
   {
    "id": "te-003",
@@ -810,7 +847,9 @@
    "t": "Godzina bez telefonu: zostaw go w innym pokoju.",
    "latwiej": "30 minut.",
    "trudniej": "2 godziny.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Dwie godziny bez telefonu: zostaw go w innym pokoju.",
+   "heroCzas": 120
   },
   {
    "id": "te-004",
@@ -829,7 +868,9 @@
     "zewn"
    ],
    "t": "Wyjdź z domu na 30 minut bez telefonu. Stoper włącz przed wyjściem.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Wyjdź z domu na godzinę bez telefonu. Stoper włącz przed wyjściem.",
+   "heroCzas": 60
   },
   {
    "id": "te-005",
@@ -845,7 +886,8 @@
    ],
    "wym": [],
    "t": "Usuń z ekranu głównego aplikację, w której spędzasz najwięcej czasu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Usuń z telefonu (nie tylko z ekranu) aplikację, w której spędzasz najwięcej czasu, na co najmniej tydzień."
   },
   {
    "id": "te-006",
@@ -863,7 +905,9 @@
     "rano"
    ],
    "t": "Pierwsza godzina po przebudzeniu bez telefonu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Pierwsze dwie godziny po przebudzeniu bez telefonu.",
+   "heroCzas": 120
   },
   {
    "id": "te-007",
@@ -879,7 +923,9 @@
    ],
    "wym": [],
    "t": "Ostatnia godzina przed snem bez ekranu: książka, rozmowa albo spokój.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Ostatnie dwie godziny przed snem bez ekranu.",
+   "heroCzas": 120
   },
   {
    "id": "te-008",
@@ -896,7 +942,9 @@
    ],
    "wym": [],
    "t": "Zamiast przewijania: 30 minut robienia czegoś rękami (gotowanie, majsterkowanie, rysowanie).",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zamiast przewijania: godzina robienia czegoś rękami.",
+   "heroCzas": 60
   },
   {
    "id": "te-009",
@@ -915,7 +963,9 @@
     "zewn"
    ],
    "t": "Usiądź w kawiarni albo w parku na 30 minut i ani razu nie wyjmuj telefonu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Usiądź w kawiarni albo w parku na godzinę bez telefonu i zapisz na kartce, co {zauważyłeś|zauważyłaś}.",
+   "heroCzas": 60
   },
   {
    "id": "te-010",
@@ -982,7 +1032,8 @@
    "t": "Przeczytaj 5 stron i zapisz jedno zdanie, które zostało ci w głowie.",
    "latwiej": "2 strony.",
    "trudniej": "20 stron.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Przeczytaj 30 stron i zapisz trzy zdania, które zostały ci w głowie."
   },
   {
    "id": "na-002",
@@ -998,7 +1049,8 @@
    ],
    "wym": [],
    "t": "Dowiedz się, skąd pochodzi nazwa twojej miejscowości albo ulicy.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Dowiedz się, skąd pochodzi nazwa twojej miejscowości, i opowiedz o tym komuś."
   },
   {
    "id": "na-003",
@@ -1016,7 +1068,8 @@
    "t": "Naucz się 10 słówek w nowym języku.",
    "latwiej": "5 słówek.",
    "trudniej": "20 słówek.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Naucz się 25 słówek w nowym języku i ułóż z nich trzy zdania."
   },
   {
    "id": "na-004",
@@ -1037,7 +1090,8 @@
    ],
    "t": "Przeczytaj 10 stron w miejscu wskazanym przez aplikację: {cel}.",
    "mapa": "pieszo",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Przeczytaj 25 stron w miejscu wskazanym przez aplikację ({cel}), dalej niż zwykle."
   },
   {
    "id": "na-005",
@@ -1053,7 +1107,8 @@
    ],
    "wym": [],
    "t": "Obejrzyj krótki wykład albo film popularnonaukowy i zapisz trzy rzeczy, których nie {wiedziałeś|wiedziałaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Obejrzyj wykład lub film popularnonaukowy (min. 30 min) i zapisz pięć rzeczy, których nie {wiedziałeś|wiedziałaś}."
   },
   {
    "id": "na-006",
@@ -1070,7 +1125,8 @@
    ],
    "wym": [],
    "t": "Rozwiąż sudoku, krzyżówkę albo zagadkę logiczną.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Rozwiąż trzy łamigłówki: sudoku, krzyżówkę i zagadkę logiczną."
   },
   {
    "id": "na-007",
@@ -1091,7 +1147,8 @@
    "podpowiedz": [
     "Najprostszy początek: „Wiesz, że…?”.",
     "Wystarczy przy obiedzie albo w wiadomości głosowej."
-   ]
+   ],
+   "hero": "Opowiedz dwóm różnym osobom o czymś, czego się dziś {nauczyłeś|nauczyłaś}, i odpowiedz na ich pytania."
   },
   {
    "id": "na-008",
@@ -1107,7 +1164,8 @@
    ],
    "wym": [],
    "t": "Naucz się na pamięć krótkiego wiersza albo cytatu i wyrecytuj go.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Naucz się na pamięć dłuższego wiersza (min. 12 wersów) i wyrecytuj go komuś."
   },
   {
    "id": "na-009",
@@ -1123,7 +1181,9 @@
    ],
    "wym": [],
    "t": "10 minut medytacji albo spokojnego oddychania.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "25 minut medytacji albo spokojnego oddychania.",
+   "heroCzas": 25
   },
   {
    "id": "na-010",
@@ -1140,7 +1200,8 @@
    ],
    "wym": [],
    "t": "Naucz się jednej nowej sztuczki z poradnika: węzeł, żonglowanie albo trik z kartami.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Naucz się nowej sztuczki i pokaż ją komuś."
   },
   {
    "id": "na-011",
@@ -1206,7 +1267,9 @@
    ],
    "wym": [],
    "t": "Narysuj w 5 minut to, co widzisz za oknem.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Narysuj w 20 minut to, co widzisz za oknem, ze szczegółami.",
+   "heroCzas": 20
   },
   {
    "id": "kr-002",
@@ -1225,7 +1288,8 @@
     "zewn"
    ],
    "t": "Zrób zdjęcie czegoś zwyczajnego tak, żeby wyglądało niezwykle.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zrób serię 5 zdjęć zwyczajnych rzeczy, żeby wyglądały niezwykle."
   },
   {
    "id": "kr-003",
@@ -1242,7 +1306,8 @@
    ],
    "wym": [],
    "t": "Ułóż i zapisz 4 wersy wierszyka o swoim dniu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Napisz wiersz o swoim dniu, co najmniej 12 wersów."
   },
   {
    "id": "kr-004",
@@ -1261,7 +1326,8 @@
     "jedzenie"
    ],
    "t": "Ugotuj coś bez przepisu, z tego, co jest w lodówce.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Ugotuj dwudaniowy posiłek bez przepisu, z tego, co jest w lodówce."
   },
   {
    "id": "kr-005",
@@ -1281,7 +1347,8 @@
     "koszt"
    ],
    "t": "Ugotuj danie z kuchni, której nigdy nie {próbowałeś|próbowałaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Ugotuj danie z kuchni, której nigdy nie {próbowałeś|próbowałaś}, i poczęstuj nim kogoś."
   },
   {
    "id": "kr-006",
@@ -1297,7 +1364,8 @@
    ],
    "wym": [],
    "t": "Zbuduj coś z tego, co masz w domu: papieru, kartonu albo klocków.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zbuduj z domowych materiałów coś, co działa: karmnik, organizer albo zabawkę."
   },
   {
    "id": "kr-007",
@@ -1318,7 +1386,8 @@
    ],
    "t": "Narysuj albo artystycznie sfotografuj miejsce wskazane przez aplikację: {cel}.",
    "mapa": "pieszo",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Narysuj miejsce wskazane przez aplikację ({cel}), dalej niż zwykle, na miejscu, a nie ze zdjęcia."
   },
   {
    "id": "kr-008",
@@ -1338,7 +1407,8 @@
    "autor": "Claude",
    "podpowiedz": [
     "Pokaż bez przepraszania za jakość: „{Zrobiłem|Zrobiłam} coś, zobacz”."
-   ]
+   ],
+   "hero": "Zrób coś własnego i pokaż to publicznie albo osobie spoza rodziny."
   },
   {
    "id": "kr-009",
@@ -1354,7 +1424,8 @@
    ],
    "wym": [],
    "t": "Zmień ustawienie trzech rzeczy w pokoju tak, żeby było ładniej.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Przemebluj jeden kąt pokoju tak, żeby był ładniejszy i wygodniejszy."
   },
   {
    "id": "kr-010",
@@ -1371,7 +1442,8 @@
    ],
    "wym": [],
    "t": "Nagraj wiadomość głosową z historią z dzieciństwa i wyślij ją bliskiej osobie.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Nagraj trzy wiadomości głosowe z historiami z dzieciństwa i wyślij je trzem bliskim osobom."
   },
   {
    "id": "kr-011",
@@ -1439,7 +1511,8 @@
     "zewn"
    ],
    "t": "Znajdź w okolicy coś, czego nigdy wcześniej nie {zauważyłeś|zauważyłaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Znajdź w okolicy trzy rzeczy, których nigdy wcześniej nie {zauważyłeś|zauważyłaś}."
   },
   {
    "id": "ok-002",
@@ -1459,7 +1532,8 @@
    ],
    "t": "Dojdź do miejsca wskazanego przez aplikację i zrób tam zdjęcie: {cel}.",
    "mapa": "pieszo",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Dojdź do miejsca wskazanego przez aplikację ({cel}), dalej niż zwykle, i zrób tam zdjęcie."
   },
   {
    "id": "ok-003",
@@ -1481,7 +1555,8 @@
    "autor": "Claude",
    "podpowiedz": [
     "Na wsi też się da: sklep, którego nie znasz, świetlica, kościół, biblioteka."
-   ]
+   ],
+   "hero": "Wejdź do trzech miejsc, w których nigdy nie {byłeś|byłaś}."
   },
   {
    "id": "ok-004",
@@ -1500,7 +1575,8 @@
     "zewn"
    ],
    "t": "Wróć do domu inną drogą niż zwykle.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Wróć do domu zupełnie inną drogą, co najmniej dwa razy dłuższą niż zwykle."
   },
   {
    "id": "ok-005",
@@ -1520,7 +1596,8 @@
     "koszt"
    ],
    "t": "Zjedz albo wypij coś, czego nigdy nie {próbowałeś|próbowałaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zjedz cały posiłek z potraw, których nigdy nie {próbowałeś|próbowałaś}."
   },
   {
    "id": "ok-006",
@@ -1542,7 +1619,8 @@
    ],
    "t": "Wsiądź w autobus, wysiądź na przystanku wskazanym przez aplikację ({cel}), zrób tam zdjęcie czegoś ciekawego i wróć.",
    "mapa": "bus",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Wsiądź w autobus, wysiądź na przystanku wskazanym przez aplikację ({cel}), dalej niż zwykle, i znajdź tam coś ciekawego do zdjęcia."
   },
   {
    "id": "ok-007",
@@ -1561,7 +1639,8 @@
     "zewn"
    ],
    "t": "Odwiedź bibliotekę, muzeum, galerię albo zabytek w okolicy, w którym nie {byłeś|byłaś}.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Odwiedź dwa miejsca: muzeum, galerię, bibliotekę albo zabytek, w których nie {byłeś|byłaś}."
   },
   {
    "id": "ok-008",
@@ -1580,7 +1659,8 @@
     "rano"
    ],
    "t": "Zobacz wschód albo zachód słońca z miejsca z widokiem.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zobacz wschód słońca z miejsca z widokiem, do którego trzeba dojść."
   },
   {
    "id": "ok-009",
@@ -1603,7 +1683,8 @@
    "autor": "Claude",
    "podpowiedz": [
     "„Przepraszam, co tu warto zobaczyć?” Ludzie lubią polecać swoje okolice."
-   ]
+   ],
+   "hero": "Zapytaj dwie miejscowe osoby o najciekawsze miejsca w okolicy i odwiedź oba."
   },
   {
    "id": "ok-010",
@@ -1680,7 +1761,8 @@
    ],
    "wym": [],
    "t": "Zrób porządek w jednej szufladzie. Zdjęcie przed i po.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zrób porządek w całej szafie albo komodzie. Zdjęcie przed i po."
   },
   {
    "id": "po-002",
@@ -1699,7 +1781,8 @@
     "rano"
    ],
    "t": "Pościel łóżko zaraz po wstaniu.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Pościel łóżko i ogarnij całą sypialnię zaraz po wstaniu."
   },
   {
    "id": "po-003",
@@ -1715,7 +1798,8 @@
    ],
    "wym": [],
    "t": "Zapisz trzy sprawy, które od dawna odkładasz, i załatw najkrótszą.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zapisz pięć spraw, które od dawna odkładasz, i załatw trzy."
   },
   {
    "id": "po-004",
@@ -1732,7 +1816,8 @@
    ],
    "wym": [],
    "t": "Odłóż do oddania 5 rzeczy, których nie używasz.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Odłóż do oddania 20 rzeczy, których nie używasz, i jeszcze dziś je oddaj."
   },
   {
    "id": "po-005",
@@ -1748,7 +1833,8 @@
    ],
    "wym": [],
    "t": "Posprzątaj telefon: usuń 50 zdjęć i 3 nieużywane aplikacje.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Posprzątaj telefon: usuń 200 zdjęć i 10 nieużywanych aplikacji."
   },
   {
    "id": "po-006",
@@ -1765,7 +1851,8 @@
    ],
    "wym": [],
    "t": "Opróżnij jeden blat albo stół ze wszystkiego, co zbędne, i niech zostanie pusty do wieczora.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Opróżnij wszystkie blaty w kuchni ze zbędnych rzeczy."
   },
   {
    "id": "po-007",
@@ -1781,7 +1868,8 @@
    ],
    "wym": [],
    "t": "Wieczorem zaplanuj na kartce jutrzejszy dzień.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Zaplanuj na kartce cały przyszły tydzień."
   },
   {
    "id": "po-008",
@@ -1803,7 +1891,8 @@
    "podpowiedz": [
     "Wystaw rzecz na OLX, Vinted albo lokalnej grupie „Oddam za darmo”.",
     "Umów się w ruchliwym miejscu."
-   ]
+   ],
+   "hero": "Sprzedaj albo oddaj trzy rzeczy i przekaż je osobiście."
   },
   {
    "id": "po-009",
@@ -1820,7 +1909,8 @@
    ],
    "wym": [],
    "t": "Załatw jedną zaległą sprawę domową albo urzędową, którą odkładasz od tygodni.",
-   "autor": "Claude"
+   "autor": "Claude",
+   "hero": "Załatw dwie zaległe sprawy, które odkładasz od tygodni."
   },
   {
    "id": "po-010",

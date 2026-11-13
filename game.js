@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 14:30";
+var APP_VER="13.11 15:30";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -50,15 +50,17 @@ function variants(e){
 }
 function effI(e,i,c){var dis=0;for(var k in e.w)dis+=e.w[k]*(10-c[k])/10;return i*(1+1.5*dis)}
 function lvlOf(x){return x<3?"E":x<5?"N":x<8?"H":"X"}
-function instText(e,v){var t=v==="l"&&e.latwiej?e.latwiej:v==="h"&&e.trudniej?e.trudniej:e.t;return gtxt(t)}
-function inst(mid,v){var e=byId(mid);if(!e)return null;var vs=variants(e).filter(function(x){return x.v===v})[0]||{v:"b",i:e.i};var c=comfort();var x=effI(e,vs.i,c);return{e:e,mid:mid,v:vs.v,i:vs.i,eff:x,lvl:lvlOf(x),key:mid+"|"+vs.v}}
+function instText(e,v,hero){var t=hero&&e.hero?e.hero:v==="l"&&e.latwiej?e.latwiej:v==="h"&&e.trudniej?e.trudniej:e.t;return gtxt(t)}
+function inst(mid,v){var e=byId(mid);if(!e)return null;var vs=variants(e).filter(function(x){return x.v===v})[0]||{v:"b",i:e.i};var c=comfort();var x=effI(e,vs.i,c),key=mid+"|"+vs.v,A0=D.g&&D.g.day&&D.g.act&&D.g.act[D.g.day.key+"|"+key];return{e:e,mid:mid,v:vs.v,i:vs.i,eff:x,lvl:lvlOf(x),key:key,hero:!!(A0&&A0.hero)}}
+function kmI(I){var k=km(I.e,I.i);return I.hero?Math.round(k*1.5*10)/10:k}
+function czasI(I){return I.hero&&I.e.heroCzas?I.e.heroCzas:I.e.czas}
 function km(e,i){return MAPKM[e.mapa][Math.max(1,Math.min(5,i))-1]}
 
 /* ---------- stan gry ---------- */
-function G0(){return{offset:0,tester:true,xp:0,streak:0,lastDone:null,log:[],day:null,week:null,act:{},visited:[],known:[],sec:{},home:null,useHome:false,ctr:0}}
+function G0(){return{offset:0,tester:false,xp:0,streak:0,lastDone:null,log:[],day:null,week:null,act:{},visited:[],known:[],sec:{},home:null,useHome:false,ctr:0}}
 function startGame(){
   if(!D.comfort){D.comfort=comfort()}
-  D.g=G0();save();S.hist=[];go("weekpick",false);
+  D.g=G0();D.uid=D.uid||Math.random().toString(36).slice(2,6);save();sendProfile();S.hist=[];go("weekpick",false);
 }
 function recent(days){var k=dkey(),r={};(D.g.log||[]).forEach(function(l){if(daysBetween(l.day,k)<days)r[l.mid]=1});return r}
 function pickLevel(want,excl){
@@ -76,8 +78,12 @@ function modeLevel(){var m=(D.g.week&&D.g.week.mode)||"N",r=Math.random();
 function ensureDay(){
   var k=dkey();
   if(D.g.day&&D.g.day.key===k&&D.g.day.tester===D.g.tester)return;
+  var od=D.g.day;
+  if(od&&od.key!==k&&od.hero&&od.done.indexOf(od.hero)<0&&!od.heroTester&&!od.penalized){var pen=Math.round((od.heroXP||0)*.4);od.penalized=true;
+    if(pen>0){D.g.xp=Math.max(0,D.g.xp-pen);var pm=byId(od.hero.split("|")[0]);D.g.log.unshift({day:od.key,mid:od.hero.split("|")[0],v:"",key:od.hero,text:"Niewykonana misja Hero: "+(pm?gtxt(pm.hero||pm.t).replace("{cel}","…"):""),kat:pm?pm.kat:"ruch",lvl:"X",xp:-pen,kara:true,photos:[]});
+      report("kara",{misja:od.hero,poziom:"Hero",ocena:"niewykonana",d:{kara:pen,dzien:od.key}});setTimeout(function(){toast("Misja Hero z "+fmtDate(new Date(od.key+"T12:00:00"))+" niewykonana: −"+pen+" XP")},600)}}
   var excl={},cands=[];
-  var wants=D.g.tester?LVORD:[modeLevel()];
+  var wants=D.g.tester?["E","N","H"]:[modeLevel()];
   wants.forEach(function(w){var p=pickLevel(w,excl);if(p){excl[p.mid]=1;cands.push(p)}else cands.push({mid:null,want:w})});
   D.g.day={key:k,tester:D.g.tester,cands:cands,swaps:0,done:[]};save();
 }
@@ -191,7 +197,7 @@ function findNearby(t){
     return Object.keys(names).map(function(k){return names[k]}).sort(function(a,b){return(b.named-a.named)||(a.d-b.d)}).slice(0,4)}).catch(function(){return got});
 }
 function findTarget(I){
-  var e=I.e,dist=km(e,I.i)*1000,kind=MAPKIND[e.mapa],st0;
+  var e=I.e,dist=kmI(I)*1000,kind=MAPKIND[e.mapa],st0;
   return getStart().then(function(st){st0=st;
     return overpass(poiQuery(kind,st.lat,st.lon,dist*1.7)).then(function(els){
       return els.map(function(el){var la=el.lat!=null?el.lat:el.center&&el.center.lat,lo=el.lon!=null?el.lon:el.center&&el.center.lon;return la==null?null:{lat:la,lon:lo,tags:el.tags||{}}}).filter(Boolean)
@@ -232,7 +238,7 @@ function mapPreview(t){var s=t.start||t,la1=Math.min(s.lat,t.lat),la2=Math.max(s
   var bb=[(lo1-mo).toFixed(5),(la1-ml).toFixed(5),(lo2+mo).toFixed(5),(la2+ml).toFixed(5)].join(",");
   return '<iframe class="mapframe" loading="lazy" title="Mapa celu" src="https://www.openstreetmap.org/export/embed.html?bbox='+bb+'&layer=mapnik&marker='+t.lat.toFixed(5)+','+t.lon.toFixed(5)+'"></iframe><p class="small">Pinezka to cel. Mapa obejmuje też twój punkt startu.</p>'}
 function pinUrl(t){return "https://www.google.com/maps/search/?api=1&query="+t.lat.toFixed(6)+","+t.lon.toFixed(6)}
-function mapTime(e,i){var k=km(e,i),m;
+function mapTime(e,i,I){var k=I?kmI(I):km(e,i),m;
   if(e.mapa==="pieszo"||e.mapa==="pieszo-daleko")m=k*2*12;else if(e.mapa==="rower")m=k*2*4;else if(e.mapa==="bus")m=k*2*3+30;else return "wyprawa na kilka godzin";
   m=Math.round(m/5)*5;return "ok. "+k+" km · "+(m<60?m+" min":(Math.floor(m/60)+" h"+(m%60?" "+m%60+" min":"")))+" w obie strony"}
 function walkInstead(I){
@@ -250,7 +256,7 @@ function proofOk(I,A){
   return(I.e.dowod||[]).every(function(d){
     if(d==="zdjecie"||d==="zrzut")return A.photos.length>0;
     if(d==="notatka")return(A.note||"").trim().length>=3;
-    if(d==="stoper")return A.timer&&(A.timer.skip||(Date.now()-A.timer.start)>=I.e.czas*60000);
+    if(d==="stoper")return A.timer&&(A.timer.skip||(Date.now()-A.timer.start)>=czasI(I)*60000);
     if(d==="gps")return !!A.gps;
     return true});
 }
@@ -260,20 +266,20 @@ function isDone(I){return D.g.day.done.indexOf(I.key)>=0}
 function nav(){var t=S.step;function b(id,em,n){return '<button class="'+(t===id?"on":"")+'" data-a="tab" data-v="'+id+'"><span>'+em+'</span>'+n+'</button>'}
   return '<nav class="nav">'+b("today","🧭","Dziś")+b("journal","📔","Dziennik")+b("char","🪪","Postać")+'</nav>'}
 function lvlBadge(c,pref){return '<span class="lvl '+c+'">'+(pref||"")+LV[c].n+'</span>'}
-function missionText(I){var t=instText(I.e,I.v);if(I.e.mapa){var A=actOf(I);t=t.replace("{cel}",A.target?"<b>"+esc(A.target.name)+"</b>":"<i>miejsce wskaże mapa</i>")}return t}
+function missionText(I){var t=instText(I.e,I.v,I.hero);if(I.e.mapa){var A=actOf(I);t=t.replace("{cel}",A.target?"<b>"+esc(A.target.name)+"</b>":"<i>miejsce wskaże mapa</i>")}return t}
 function reason(I){var c=comfort(),parts=[];for(var k in I.e.w)parts.push(AREA[k].n+" "+Math.round(I.e.w[k]*100)+"% (twoja strefa "+String(c[k]).replace(".",",")+")");
-  var g=(D.goals||[]).indexOf(I.e.kat)>=0;return '<div class="why">🔍 '+(g?"pasuje do twojego celu · ":"")+parts.join(", ")+" · intensywność "+I.i+" → trudność "+(Math.round(I.eff*10)/10).toString().replace(".",",")+(I.v!=="b"?" · wersja "+(I.v==="l"?"łatwiejsza":"trudniejsza"):"")+(I.e.mapa?" · cel ok. "+km(I.e,I.i)+" km":"")+'</div>'}
+  var g=(D.goals||[]).indexOf(I.e.kat)>=0;return '<div class="why">🔍 '+(g?"pasuje do twojego celu · ":"")+parts.join(", ")+" · intensywność "+I.i+" → trudność "+(Math.round(I.eff*10)/10).toString().replace(".",",")+(I.v!=="b"?" · wersja "+(I.v==="l"?"łatwiejsza":"trudniejsza"):"")+(I.e.mapa?" · cel ok. "+kmI(I)+" km":"")+'</div>'}
 
 /* ---------- ekran: tryb tygodnia ---------- */
 R.weekpick=function(){
   var first=!D.g.week,sum="";
   if(!first){var ws=D.g.week.start,xp=0,n=0;D.g.log.forEach(function(l){if(l.day>=ws&&l.day<mondayKey()){xp+=l.xp;n++}});
     sum='<div class="note">📊 Poprzedni tydzień: <b>'+n+'</b> '+(n===1?"misja":n>1&&n<5?"misje":"misji")+', <b>'+xp+' XP</b>, tryb '+LV[D.g.week.mode].mode.toLowerCase()+'.</div>'}
-  var opts=[["E","🌱","Łatwy","Lżejszy tydzień, ale nie odpuszczam. Punkty ×0,8"],["N","🧭","Normalny","Codzienne wyzwania w sam raz. Punkty ×1"],["H","🔥","Trudny","Wyraźnie poza strefą komfortu. Punkty ×1,25"],["X","⚔️","Hero","Najtrudniejsze misje. Punkty ×1,5"]];
+  var opts=[["E","🌱","Łatwy","Lżejszy tydzień, ale nie odpuszczam. Punkty ×0,8"],["N","🧭","Normalny","Codzienne wyzwania w sam raz. Punkty ×1"],["H","🔥","Trudny","Wyraźnie poza strefą komfortu. Punkty ×1,25"]];
   return '<div class="page"><h2>'+(first?"Jak ostry ma być pierwszy tydzień?":"Nowy tydzień, nowy tryb")+'</h2>'+sum+
   '<p class="lead">W trakcie tygodnia tryb można tylko obniżyć, nigdy podwyższyć.</p><div class="opts">'+
   opts.map(function(o){return '<button class="opt" data-a="setweek" data-v="'+o[0]+'"><span class="em">'+o[1]+'</span><span><b>'+o[2]+'</b><span class="s">'+o[3]+'</span></span></button>'}).join("")+
-  '</div>'+(D.g.tester?'<p class="small" style="margin-top:12px">🧪 W trybie testera i tak zobaczysz misje ze wszystkich poziomów. Tryb tygodnia liczy się po wyłączeniu testera.</p>':'')+'</div>';
+  '</div><p class="small" style="margin-top:12px">⚔️ Hero nie jest trybem tygodnia: codziennie możesz podbić swoją misję do Hero.</p>'+(D.g.tester?'<p class="small">🧪 W trybie testera i tak zobaczysz misje z kilku poziomów. Tryb tygodnia liczy się po wyłączeniu testera.</p>':'')+'</div>';
 };
 
 /* ---------- ekran: Dziś ---------- */
@@ -292,9 +298,9 @@ R.today=function(){
     var I=inst(cd.mid,cd.v);if(!I)return;var done=isDone(I);
     h+='<div class="mcard '+I.lvl+(done?" done":"")+'" data-a="open" data-v="'+ix+'">'+
       '<div class="mtop"><span class="kat">'+KAT[I.e.kat]+'</span>'+(D.g.tester&&cd.want!==I.lvl?lvlBadge(I.lvl):lvlBadge(I.lvl))+'</div>'+
+      (I.hero?'<div class="herotag">⚔️ HERO · punkty ×2</div>':'')+
       '<div class="mt">'+missionText(I)+'</div>'+
-      '<div class="meta">⏱️ '+(I.e.mapa?mapTime(I.e,I.i):I.e.czas+" min")+' · '+I.e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</div>'+
-      (D.g.tester&&cd.want==="X"&&I.lvl!=="X"?'<div class="small">Brak misji Hero dla twojego profilu, pokazuję najtrudniejszą dostępną.</div>':'')+
+      '<div class="meta">⏱️ '+(I.e.mapa?mapTime(I.e,I.i,I):czasI(I)+" min")+' · '+I.e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</div>'+
       (done?'<div class="donebadge">✓ Zaliczona</div>':'')+
       (D.g.tester?'<div class="rowbtn"><button class="mini" data-a="reroll" data-v="'+ix+'">🎲 Losuj inną</button></div>':'')+'</div>';
   });
@@ -316,9 +322,14 @@ R.mission=function(){
     lvlBadge(I.lvl,"Dla ciebie: ")+(o!==I.lvl?' <span class="small">(dla przeciętnej osoby: '+LV[o].n.toLowerCase()+')</span>':'')+
     (D.g.tester?reason(I):'')+
     (e.podpowiedz?'<details class="hint"><summary>💡 Jak to zrobić? Podpowiedzi</summary><ul>'+e.podpowiedz.map(function(x){return '<li>'+gtxt(x)+'</li>'}).join("")+'</ul></details>':'')+
-    '<p class="small">⏱️ '+(e.mapa?mapTime(e,I.i):"ok. "+e.czas+" min")+' · Dowód: '+e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</p>';
+    (I.hero?'<div class="herotag">⚔️ HERO · punkty ×2 · bez cofania</div>':'')+
+    '<p class="small">⏱️ '+(e.mapa?mapTime(e,I.i,I):"ok. "+czasI(I)+" min")+' · Dowód: '+e.dowod.map(function(x){return DOWOD[x]}).join(", ")+'</p>';
   if(done){var lg=D.g.log.filter(function(l){return l.day===D.g.day.key&&l.key===I.key})[0];
     h+='<div class="note">✓ Misja zaliczona'+(lg?': <b>+'+lg.xp+' XP</b>':'')+'.</div></div>';return h}
+  if(!I.hero&&(D.g.tester||!D.g.day.hero)){
+    h+='<div class="herobox"><b>⚔️ Podbij do Hero</b><p class="small">'+(e.hero?'Wersja Hero: „'+gtxt(e.hero).replace("{cel}","miejsce dalej niż zwykle")+'”':'Ta sama misja, ale półtora raza dalej.')+'</p><p class="small">Punkty ×2. Raz dziennie, bez cofania. Jeśli nie zdążysz do północy, stracisz 40% punktów, które można było zdobyć.</p>'+
+      '<button class="btn ghost" data-a="hero">'+(S.heroArm?'⚔️ Na pewno? Stuknij jeszcze raz':'⚔️ Podbijam do Hero')+'</button></div>';
+  }
   if(e.mapa){
     h+='<div class="box"><b>🗺️ Cel</b>';
     if(S.mapBusy)h+='<p>Szukam celu w okolicy… 🧭</p>';
@@ -343,8 +354,8 @@ R.mission=function(){
       '<button class="btn ghost" data-a="photo" data-v="'+(d==="zdjecie"?"cam":"gal")+'">'+(d==="zdjecie"?"📷 Zrób zdjęcie":"🖼️ Dodaj zrzut ekranu")+'</button>'+
       (d==="zdjecie"?'<button class="btn link" data-a="photo" data-v="gal">albo wybierz z galerii</button>':'')}
     if(d==="notatka")h+='<b>✍️ Notatka</b><textarea rows="3" placeholder="Jak poszło? Co się wydarzyło?" data-in="note">'+esc(A.note)+'</textarea>';
-    if(d==="stoper"){var need=e.czas*60000;
-      if(!A.timer)h+='<b>⏱️ Stoper: '+e.czas+' min</b><button class="btn ghost" data-a="timer">▶ Start</button>';
+    if(d==="stoper"){var need=czasI(I)*60000;
+      if(!A.timer)h+='<b>⏱️ Stoper: '+czasI(I)+' min</b><button class="btn ghost" data-a="timer">▶ Start</button>';
       else{var left=Math.max(0,need-(Date.now()-A.timer.start));h+='<b>⏱️ Stoper</b><div class="timer" id="tmr">'+(A.timer.skip||!left?"✓ Gotowe":mmss(left))+'</div>'+
         (D.g.tester&&left&&!A.timer.skip?'<button class="btn link" data-a="tskip">⏩ Pomiń czekanie (tester)</button>':'')}}
     if(d==="gps")h+='<b>📍 Na miejscu</b>'+(A.gps?'<p>✓ Jesteś na miejscu!</p>':'<button class="btn ghost" data-a="checkin" '+(A.target?"":"disabled")+'>📍 Jestem na miejscu</button>'+(D.g.tester&&A.target?'<button class="btn link" data-a="gpsskip">⏩ Zalicz bez GPS (tester)</button>':''));
@@ -355,7 +366,7 @@ R.mission=function(){
 };
 function mmss(ms){var s=Math.ceil(ms/1000),m=Math.floor(s/60);return(m>=60?Math.floor(m/60)+":"+("0"+m%60).slice(-2):m)+":"+("0"+s%60).slice(-2)}
 setInterval(function(){if(S.step!=="mission")return;var el=document.getElementById("tmr");if(!el)return;var I=curInst();if(!I)return;var A=actOf(I);if(!A.timer||A.timer.skip)return;
-  var left=Math.max(0,I.e.czas*60000-(Date.now()-A.timer.start));if(!left){render();return}el.textContent=mmss(left)},1000);
+  var left=Math.max(0,czasI(I)*60000-(Date.now()-A.timer.start));if(!left){render();return}el.textContent=mmss(left)},1000);
 
 /* ---------- ekran: ocena ---------- */
 R.rate=function(){
@@ -364,11 +375,12 @@ R.rate=function(){
     [["easy","😎","Za łatwe"],["ok","👌","W sam raz"],["hard","😵","Za trudne"]].map(function(o){return '<button class="opt'+(S.rate===o[0]?" on":"")+'" data-a="rate" data-v="'+o[0]+'"><span class="em">'+o[1]+'</span><b>'+o[2]+'</b></button>'}).join("")+
     '</div><span class="lbl">Czy misja ci się podobała?</span><div class="chips">'+
     '<button class="chip'+(S.like==="y"?" on":"")+'" data-a="like" data-v="y">👍 Tak</button><button class="chip'+(S.like==="n"?" on":"")+'" data-a="like" data-v="n">👎 Nie bardzo</button></div>'+
+    (actOf(I).note&&!D.shareOff?'<label class="chk"><input type="checkbox" '+(S.sendNote?"checked":"")+' onchange="S.sendNote=this.checked"> Dołącz moją notatkę do wyników testów</label>':'')+
     '</div>'+bar("Zapisz w dzienniku",!S.rate,"finishMission()");
 };
 function finishMission(){
   var I=curInst(),A=actOf(I),c=comfort();
-  var mult=D.g.tester?LV[I.lvl].mult:LV[D.g.week.mode].mult;
+  var mult=I.hero?2:D.g.tester?LV[I.lvl].mult:LV[D.g.week.mode==="X"?"H":D.g.week.mode].mult;
   var k=dkey();
   if(D.g.lastDone!==k){var gap=D.g.lastDone?daysBetween(D.g.lastDone,k):99;D.g.streak=gap===1?D.g.streak+1:1;D.g.lastDone=k}
   var sb=1+Math.min(.3,.02*Math.max(0,D.g.streak-1));
@@ -379,9 +391,10 @@ function finishMission(){
     for(var a in I.e.w){D.comfort[a]=r1(clamp(D.comfort[a]+sg*.3*I.e.w[a],0,10));if(D.pending)D.pending.c[a]=r1(clamp(D.pending.c[a]+sg*.3*I.e.w[a],0,10))}}
   D.started=true;
   if(A.target&&A.gps)D.g.visited.push({lat:A.target.lat,lon:A.target.lon});
-  D.g.log.unshift({day:D.g.day.key,mid:I.mid,v:I.v,key:I.key,text:missionText(I).replace(/<[^>]+>/g,""),kat:I.e.kat,lvl:I.lvl,xp:xp,rate:S.rate,like:S.like||null,note:A.note||"",photos:A.photos.slice(),place:A.target?A.target.name:null,tester:D.g.tester});
+  D.g.log.unshift({day:D.g.day.key,mid:I.mid,v:I.v,key:I.key,text:missionText(I).replace(/<[^>]+>/g,""),kat:I.e.kat,lvl:I.hero?"X":I.lvl,xp:xp,rate:S.rate,like:S.like||null,note:A.note||"",photos:A.photos.slice(),place:A.target?A.target.name:null,tester:D.g.tester});
   D.g.day.done.push(I.key);
-  S.rate=null;S.like=null;save();S.hist=[];go("today",false);
+  report(D.g.tester?"misja-test":"misja",{misja:I.mid+(I.v!=="b"?"/"+I.v:""),poziom:LV[I.lvl].n+(I.hero?" + Hero":""),ocena:S.rate,d:{like:S.like||null,xp:xp,trudnosc:r1(I.eff),tryb:D.g.week.mode,hero:I.hero,kat:I.e.kat,dzien:D.g.day.key,seria:D.g.streak,cel:A.target?A.target.name:null,notatka:S.sendNote&&A.note?A.note:null,strefy:D.comfort,wersja:APP_VER}});
+  S.rate=null;S.like=null;S.sendNote=false;save();S.hist=[];go("today",false);
   toast("+"+xp+" XP 🎉"+(D.g.streak>1?"  Seria: "+D.g.streak+" dni":""));
 }
 
@@ -394,12 +407,12 @@ R.journal=function(){
   var last="";
   D.g.log.forEach(function(l){
     if(l.day!==last){last=l.day;var dd=new Date(l.day+"T12:00:00");h+='<div class="jday">'+DNI[dd.getDay()]+', '+fmtDate(dd)+'</div>'}
-    h+='<div class="jentry"><div class="jstamp '+l.lvl+'">'+LV[l.lvl].n+'<br><b>+'+l.xp+'</b></div><div class="jbody"><div class="small">'+KAT[l.kat]+'</div><div class="mt" style="font-size:17px">'+esc(l.text)+'</div>'+
+    h+='<div class="jentry"><div class="jstamp '+l.lvl+'">'+LV[l.lvl].n+'<br><b>'+(l.xp<0?"":"+")+l.xp+'</b></div><div class="jbody"><div class="small">'+KAT[l.kat]+'</div><div class="mt" style="font-size:17px">'+esc(l.text)+'</div>'+
       (l.place?'<div class="small">📍 '+esc(l.place)+'</div>':'')+(l.note?'<div class="jnote">„'+esc(l.note)+'”</div>':'')+
       '<div class="thumbs">'+(l.photos||[]).map(function(pk){return '<img data-pk="'+pk+'" alt="">'}).join("")+'</div>'+
-      '<div class="small">'+({easy:"😎 za łatwe",ok:"👌 w sam raz",hard:"😵 za trudne"}[l.rate]||"")+(l.like==="y"?" · 👍":l.like==="n"?" · 👎":"")+'</div></div></div>';
+      '<div class="small">'+(l.kara?"⚔️ kara za niewykonaną misję Hero":({easy:"😎 za łatwe",ok:"👌 w sam raz",hard:"😵 za trudne"}[l.rate]||""))+(l.like==="y"?" · 👍":l.like==="n"?" · 👎":"")+'</div></div></div>';
   });
-  if(D.g.log.length){var ok=D.g.log.filter(function(l){return l.rate==="ok"}).length;h+='<p class="small center">W sam raz: '+Math.round(ok/D.g.log.length*100)+'% misji (cel testów: ponad 70%)</p><button class="btn ghost" data-a="sharelog">📤 Wyślij podsumowanie testów</button>'}
+  var rl=D.g.log.filter(function(l){return !l.kara});if(rl.length){var ok=rl.filter(function(l){return l.rate==="ok"}).length;h+='<p class="small center">W sam raz: '+Math.round(ok/rl.length*100)+'% misji (cel testów: ponad 70%)</p><button class="btn ghost" data-a="sharelog">📤 Wyślij podsumowanie testów</button>'}
   return h+nav();
 };
 
@@ -407,7 +420,9 @@ R.journal=function(){
 R.char=function(){
   var h=R.card();
   h+='<hr class="sep"><div class="sec"><h3>Ustawienia</h3>'+
-  '<button class="opt'+(D.g.tester?" on":"")+'" data-a="tester"><span class="em">🧪</span><span><b>Tryb testera '+(D.g.tester?"✓":"")+'</b><span class="s">Misje ze wszystkich poziomów naraz, podgląd bazy, przeskakiwanie dni</span></span></button>'+
+  '<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share"><span class="em">📤</span><span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b><span class="s">Misja, poziom, ocena i punkty trafiają do arkusza Maćka. Bez zdjęć i lokalizacji.</span></span></button>'+
+  '<span class="lbl">📅 Codzienne przypomnienie</span>'+calButtons()+
+  ((D.g.tester||D.g.dev)?'<button class="opt'+(D.g.tester?" on":"")+'" data-a="tester"><span class="em">🧪</span><span><b>Tryb testera '+(D.g.tester?"✓":"")+'</b><span class="s">Misje z kilku poziomów naraz, podgląd bazy, przeskakiwanie dni</span></span></button>':'')+
   (D.g.tester?'<div class="grid2" style="margin-top:10px"><button class="btn ghost" data-a="skip" data-v="1">⏭️ Przeskocz dzień</button><button class="btn ghost" data-a="skip" data-v="7">⏩ Przeskocz tydzień</button></div>'+
     (D.g.offset?'<button class="btn link" data-a="skip" data-v="0">↩ Wróć do prawdziwej daty (teraz +'+D.g.offset+' dni)</button>':''):'')+
   '<span class="lbl">🚌 Autobus albo pociąg w pobliżu</span><div class="chips"><button class="chip'+(hasTransit()?" on":"")+'" data-a="transit" data-v="yes">Tak, jeździ</button><button class="chip'+(!hasTransit()?" on":"")+'" data-a="transit" data-v="no">Nie ma albo bardzo rzadko</button></div>'+
@@ -415,7 +430,7 @@ R.char=function(){
   '<button class="btn link" data-a="sethome">'+(D.g.home?"📌 Zapisz obecne miejsce jako nowy punkt (jest zapisany)":"📌 Zapisz obecne miejsce jako mój punkt")+'</button>'+
   '<p class="small">Punkt zostaje tylko w tym telefonie. Bez śledzenia w tle.</p>'+
   '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button>'+
-  '<p class="small">Wersja aplikacji: <b>'+APP_VER+'</b></p>'+
+  '<p class="small" data-a="ver">Wersja aplikacji: <b>'+APP_VER+'</b>'+((D.outbox&&D.outbox.length)?' · do wysłania: '+D.outbox.length:'')+'</p>'+
   '<button class="btn link" style="color:var(--red)" onclick="resetAll()">'+(S.resetArmed?"Na pewno? Usunie postać, punkty i dziennik. Stuknij jeszcze raz":"Zacznij od nowa")+'</button></div>';
   return h+nav();
 };
@@ -451,11 +466,47 @@ function shareText(t,done){
   else toast("Nie mogę udostępnić na tym urządzeniu");
 }
 
+/* ---------- wyniki testów (Formularz Google) ---------- */
+var FORM="https://docs.google.com/forms/d/e/1FAIpQLSd57zdbphj_VhymScKnuXQdKfkNtu0SBN_w1sfgOHQBaNM0xA/formResponse";
+var FE={typ:"444640920",nick:"1810944420",misja:"1399195604",poziom:"1083940506",ocena:"558542356",szcz:"763153339"};
+function report(typ,o){if(D.shareOff)return;D.uid=D.uid||Math.random().toString(36).slice(2,6);
+  var row={typ:typ,nick:(D.nick||"?")+"#"+D.uid,misja:o.misja||"",poziom:o.poziom||"",ocena:o.ocena||"",szcz:JSON.stringify(o.d||{})};
+  D.outbox=(D.outbox||[]).concat([row]).slice(-200);save();flushOut()}
+var _flushing=false;
+function flushOut(){if(_flushing||!D.outbox||!D.outbox.length||navigator.onLine===false)return;_flushing=true;var row=D.outbox[0],b=new URLSearchParams();
+  for(var k in FE)b.append("entry."+FE[k],row[k]);
+  fetch(FORM,{method:"POST",mode:"no-cors",body:b}).then(function(){_flushing=false;D.outbox.shift();save();if(D.outbox.length)setTimeout(flushOut,700)}).catch(function(){_flushing=false})}
+window.addEventListener("online",flushOut);
+function sendProfile(){var c=comfort(),cl=charClass(),ax=axisVals();D.profSent=true;
+  report("profil",{misja:"",poziom:cl.name,ocena:D.rating?D.rating+"/5":"",d:{sciezka:D.knowType==="yes"?(D.path==="quick"?"szybki start":"typ + scenki"):"pytania + scenki",typ:D.type&&D.knowType==="yes"?D.type.EI+D.type.SN+D.type.TF+D.type.JP+(D.type.AT?"-"+D.type.AT:""):null,
+    strefy:c,introwersja:Math.round(ax.intro),spontan:Math.round(ax.spontan),nowosc:Math.round(ax.nowosc),cele:D.goals,wiek:D.age,miejsce:D.place,czas:D.time,pora:D.when,komunikacja:hasTransit(),uwagi:D.comment||null,forma:D.form,wersja:APP_VER}})}
+/* ---------- przypomnienie w kalendarzu ---------- */
+function calDates(){var h=+((D.perm&&D.perm.hour)||8),d=new Date();d.setDate(d.getDate()+1);function p(n){return("0"+n).slice(-2)}
+  var day=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());return{s:day+"T"+p(h)+"0000",e:day+"T"+p(h)+"1000"}}
+function calButtons(){var c=calDates(),txt="🧭 Misja Dnia",det="Czas na dzisiejszą misję! https://geezotto-pl.github.io/misja-dnia/";
+  var g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(txt)+"&details="+encodeURIComponent(det)+"&dates="+c.s+"/"+c.e+"&ctz=Europe/Warsaw&recur="+encodeURIComponent("RRULE:FREQ=DAILY");
+  return '<div class="grid2"><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+g+'" target="_blank" rel="noopener">📅 Kalendarz Google</a><button class="btn ghost" data-a="ics">🍏 Inny kalendarz / iPhone</button></div><p class="small">Codzienne wydarzenie o '+((D.perm&&D.perm.hour)||8)+':00. Godzinę zmienisz potem w kalendarzu.</p>'}
+function icsFile(){var c=calDates(),s=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Misja Dnia//PL","BEGIN:VEVENT","UID:misja-dnia-"+(D.uid||"x")+"@geezotto-pl.github.io","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",
+  "DTSTART;TZID=Europe/Warsaw:"+c.s,"DTEND;TZID=Europe/Warsaw:"+c.e,"RRULE:FREQ=DAILY","SUMMARY:🧭 Misja Dnia","DESCRIPTION:Czas na dzisiejszą misję! https://geezotto-pl.github.io/misja-dnia/","BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:Misja Dnia","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([s],{type:"text/calendar"}));a.download="misja-dnia.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},1000)}
+/* ---------- wprowadzenie ---------- */
+var INTRO=[
+ ["🧭","Codziennie jedna misja","Każdego dnia dostajesz jedną misję dobraną do ciebie: trochę poza strefą komfortu, ale wykonalną. Raz dziennie możesz ją wymienić, ale spróbuj zdać się na to, co wylosowało."],
+ ["📷","Zrób i udokumentuj","Dowodem jest zdjęcie, krótka notatka, stoper albo GPS na miejscu. Przy misjach z mapą aplikacja sama wskazuje cel, za każdym razem w innym kierunku."],
+ ["👌","Oceń, a aplikacja się nauczy","Po misji powiedz, czy była za łatwa, w sam raz, czy za trudna. Na tej podstawie kolejne misje lepiej do ciebie pasują."],
+ ["⚔️","Tryb tygodnia i Hero","W poniedziałek wybierasz tryb tygodnia (w trakcie można go tylko obniżyć). Codziennie możesz też podbić misję do Hero: trudniej, punkty ×2, ale bez cofania, a za niewykonanie tracisz 40% możliwych punktów."],
+ ["🧪","Jesteś testerem!","Twoje wyniki (misja, poziom, ocena, punkty) trafiają do arkusza Maćka. Bez zdjęć i bez lokalizacji. Możesz to wyłączyć w Postać → Ustawienia."]];
+R.intro=function(){var i=S.introStep||0,x=INTRO[i],last=i===INTRO.length-1;
+  var dots='<div class="dots">'+INTRO.map(function(_,j){return '<i class="'+(j===i?"on":"")+'"></i>'}).join("")+'</div>';
+  return '<div class="page center"><div style="font-size:64px;margin:10px 0">'+x[0]+'</div><h2>'+x[1]+'</h2><p class="lead">'+x[2]+'</p>'+
+    (last?'<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share" style="margin:8px 0"><span class="em">📤</span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b></button><span class="lbl">📅 Przypominajka (polecam!)</span>'+calButtons():'')+dots+'</div>'+
+    bar(last?"🚀 Zaczynamy!":"Dalej",false,"ACT.intro('"+(last?"end":i+1)+"')");
+};
 /* ---------- akcje ---------- */
 var ACT={
   tab:function(v){S.hist=[];S.lowerOpen=false;go(v,false)},
   go:function(v){go(v)},
-  setweek:function(v){var ms=mondayKey();D.g.week={start:ms,mode:v};D.g.day=null;save();S.hist=[];go("today",false)},
+  setweek:function(v){var ms=mondayKey();D.g.week={start:ms,mode:v};if(!D.g.day||!D.g.day.done.length)D.g.day=null;save();report("tydzien",{poziom:LV[v].mode,d:{tydzien:ms}});S.hist=[];go(D.g.introDone?"today":"intro",false)},
   lowermenu:function(){S.lowerOpen=!S.lowerOpen;render()},
   lower:function(v){D.g.week.mode=v;S.lowerOpen=false;if(!D.g.tester){var c=D.g.day.cands[0];var I=c&&c.mid&&inst(c.mid,c.v);if(!I||!isDone(I))D.g.day=null}save();render();toast("Tryb obniżony: "+LV[v].mode)},
   open:function(v){S.mix=+v;S.mapErr=null;go("mission")},
@@ -482,8 +533,16 @@ var ACT={
   usehome:function(v){if(v==="1"&&!D.g.home){toast("Najpierw zapisz swój punkt");return}D.g.useHome=v==="1";save();render()},
   sethome:function(){toast("Sprawdzam lokalizację…");getPos().then(function(p){D.g.home={lat:p.lat,lon:p.lon};D.g.useHome=true;save();render();toast("Zapisano punkt startowy 📌")}).catch(function(err){toast(err.message)})},
   bf:function(v){S.bf=v;render()},
+  hero:function(){if(!S.heroArm){S.heroArm=true;render();setTimeout(function(){S.heroArm=false;if(S.step==="mission")render()},4000);return}
+    S.heroArm=false;var I=curInst(),A=actOf(I);A.hero=true;A.target=null;A.timer=null;A.knownN=0;var I2=inst(I.mid,I.v);
+    if(!D.g.tester){D.g.day.hero=I.key;D.g.day.heroXP=Math.round(10*Math.min(I2.eff,3*I2.i)*2)}else D.g.day.heroTester=true;
+    report("hero",{misja:I.mid,poziom:LV[I.lvl].n+" + Hero",d:{dzien:D.g.day.key}});save();render();toast("⚔️ Misja podbita do Hero!")},
+  share:function(){D.shareOff=!D.shareOff;save();render()},
+  ver:function(){S.verTaps=(S.verTaps||0)+1;if(S.verTaps>=5){S.verTaps=0;D.g.dev=true;save();render();toast("🧪 Odblokowano tryb testera w ustawieniach")}},
+  intro:function(v){if(v==="end"){D.g.introDone=true;save();S.hist=[];go("today",false);return}S.introStep=+v;render();window.scrollTo(0,0)},
   transit:function(v){D.transit=v;if(D.g.day&&!D.g.day.done.length)D.g.day=null;save();render()},
   sug:function(v){var p=v.split(":");S.sug[p[0]]=S.sug[p[0]]===p[1]?"":p[1];render()},
+  ics:function(){icsFile()},
   sharediag:function(){shareText("🧪 Misja Dnia: diagnostyka map (wersja "+APP_VER+")\n"+navigator.userAgent+"\n"+MAPDIAG.join("\n"))},
   sharelog:function(){var L=D.g.log,ok=L.filter(function(l){return l.rate==="ok"}).length;
     var t="🧭 Misja Dnia: testy "+(D.nick||"")+"\nMisji: "+L.length+", XP: "+D.g.xp+", w sam raz: "+Math.round(ok/L.length*100)+"%\n"+
@@ -499,10 +558,10 @@ function onProof(ev){var f=ev.target.files&&ev.target.files[0];ev.target.value="
 (function(){var a=document.createElement("input");a.type="file";a.accept="image/*";a.setAttribute("capture","environment");a.id="pCam";a.className="hidden";
   var b=document.createElement("input");b.type="file";b.accept="image/*";b.id="pGal";b.className="hidden";
   a.addEventListener("change",onProof);b.addEventListener("change",onProof);document.body.appendChild(a);document.body.appendChild(b)})();
-window.gameBack=function(){if(["mission","rate","browse","suggest"].indexOf(S.step)>=0&&!S.hist.length){go(D.g?"today":"card",false);return true}return false};
+window.gameBack=function(){if(S.step==="intro"){if(S.introStep>0){S.introStep--;render()}return true}if(["mission","rate","browse","suggest"].indexOf(S.step)>=0&&!S.hist.length){go(D.g?"today":"card",false);return true}return false};
 
 /* ---------- po każdym renderze ---------- */
 var _render=render;
 render=function(){_render();if(["today","journal","char"].indexOf(S.step)>=0)document.body.classList.add("withnav");else document.body.classList.remove("withnav");fillPhotos()};
 
-loadBase(function(){boot()});
+loadBase(function(){boot();if(D.g&&!D.profSent)sendProfile();setTimeout(flushOut,1500)});
