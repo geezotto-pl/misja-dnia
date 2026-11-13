@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 14:00";
+var APP_VER="13.11 14:20";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -178,13 +178,25 @@ function nominatimPOI(st,dist,kind){
       }).catch(function(e){diag("nominatim ["+kw+"]: "+e.message)});
     })})},Promise.resolve()).then(function(){diag("nominatim szukanie: "+out.length+" miejsc");return out});
 }
+var LASTLIST=[];
+function nearbyFrom(t,list){var seen={},out=[];
+  (list||[]).forEach(function(x){if(x.tags&&x.tags.highway==="bus_stop")return;var d=hav(t.lat,t.lon,x.lat,x.lon);if(d<25||d>1000)return;
+    var n=label(x.tags);if(n==="Ciekawe miejsce"&&!x.tags.name)return;if(seen[n])return;seen[n]=1;out.push({name:n,d:d,lat:x.lat,lon:x.lon,named:!!x.tags.name})});
+  out.sort(function(a,b){return(b.named-a.named)||(a.d-b.d)});return out.slice(0,4)}
+function findNearby(t){
+  var got=nearbyFrom(t,LASTLIST);
+  if(got.length>=2)return Promise.resolve(got);
+  return sleep(1100).then(function(){return nominatimPOI({lat:t.lat,lon:t.lon},700,"poi")}).then(function(l2){
+    var all=nearbyFrom(t,l2),names={};got.concat(all).forEach(function(x){names[x.name]=names[x.name]||x});
+    return Object.keys(names).map(function(k){return names[k]}).sort(function(a,b){return(b.named-a.named)||(a.d-b.d)}).slice(0,4)}).catch(function(){return got});
+}
 function findTarget(I){
   var e=I.e,dist=km(e,I.i)*1000,kind=MAPKIND[e.mapa],st0;
   return getStart().then(function(st){st0=st;
     return overpass(poiQuery(kind,st.lat,st.lon,dist*1.7)).then(function(els){
       return els.map(function(el){var la=el.lat!=null?el.lat:el.center&&el.center.lat,lo=el.lon!=null?el.lon:el.center&&el.center.lon;return la==null?null:{lat:la,lon:lo,tags:el.tags||{}}}).filter(Boolean)
     }).catch(function(err){if(!err.all)throw err;return kind==="place"?[]:nominatimPOI(st,dist,kind)});
-  }).then(function(list){var st=st0;
+  }).then(function(list){var st=st0;LASTLIST=list;
     var c=list.map(function(x){x.d=hav(st.lat,st.lon,x.lat,x.lon);x.sec=sector(brg(st.lat,st.lon,x.lat,x.lon));return x})
       .filter(function(x){return x.d>250&&!nearUsed(x.lat,x.lon,300)});
     if(kind==="bus"){var near=list.some(function(x){return hav(st.lat,st.lon,x.lat,x.lon)<1500});if(list.length&&!near){var er=new Error("nostop");er.nostop=true;throw er}}
@@ -310,8 +322,13 @@ R.mission=function(){
   if(e.mapa){
     h+='<div class="box"><b>🗺️ Cel</b>';
     if(S.mapBusy)h+='<p>Szukam celu w okolicy… 🧭</p>';
-    else if(A.target){var t=A.target;h+='<p class="big">'+esc(t.name)+'</p>'+(t.loc?'<p>📍 <b>'+esc(t.loc)+'</b></p>':'')+'<p class="small">'+fmtKm(t.d)+' '+DIRS[t.sec]+' od punktu startu</p>'+
+    else if(A.target){var t=A.target;
+      if(t.nearby===undefined&&S.nbFor!==t){S.nbFor=t;findNearby(t).then(function(n){t.nearby=n;save();if(S.step==="mission")render()})}
+      h+='<p class="big">'+esc(t.name)+'</p>'+(t.loc?'<p>📍 <b>'+esc(t.loc)+'</b></p>':'')+'<p class="small">'+fmtKm(t.d)+' '+DIRS[t.sec]+' od punktu startu</p>'+
       mapPreview(t)+
+      '<div class="nearby"><b>👀 Co zobaczyć na miejscu</b>'+(t.nearby==null?'<p class="small">Szukam ciekawych miejsc w okolicy celu…</p>':
+        t.nearby.length?'<ul>'+t.nearby.map(function(n){return '<li><a href="'+pinUrl(n)+'" target="_blank" rel="noopener">'+esc(n.name)+'</a> <span class="small">· '+fmtKm(n.d)+' od celu</span></li>'}).join("")+'</ul>':
+        '<p class="small">Na mapie nic tu nie zaznaczono. Może to ty coś odkryjesz? Zrób zdjęcie najciekawszej rzeczy, jaką znajdziesz. 🔎</p>')+'</div>'+
       '<div class="grid2"><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+pinUrl(t)+'" target="_blank" rel="noopener">📌 Pokaż punkt</a><a class="btn ghost" style="text-align:center;text-decoration:none" href="'+navUrl(t,e)+'" target="_blank" rel="noopener">🧭 Nawiguj</a></div>'+
       ((D.g.tester||(A.knownN||0)<2)?'<button class="btn ghost" data-a="known">🙅 Znam to miejsce, daj inne'+(D.g.tester?'':' ('+(2-(A.knownN||0))+')')+'</button>':'<p class="small">Wykorzystano obie wymiany celu. Idź śmiało, może cię zaskoczy! 🧭</p>')}
     else h+='<p class="small">Aplikacja wybierze miejsce, w którym jeszcze nie byłeś/aś, za każdym razem w innym kierunku.</p>'.replace("byłeś/aś",G("byłeś","byłaś"))+'<button class="btn ghost" data-a="target">📍 Wyznacz cel</button>'+
@@ -445,7 +462,8 @@ var ACT={
   reroll:function(v){var ix=+v,cd=D.g.day.cands[ix],excl={};D.g.day.cands.forEach(function(x){if(x.mid)excl[x.mid]=1});var p=pickLevel(cd.want,excl);if(p){D.g.day.cands[ix]=p;save();render()}else toast("Brak innych misji na tym poziomie")},
   swap:function(){var cd=D.g.day.cands[0],excl={};excl[cd.mid]=1;var I=inst(cd.mid,cd.v);var p=pickLevel(I?I.lvl:cd.want,excl);if(p){p.want=cd.want;D.g.day.cands[0]=p;D.g.day.swaps++;save();render();toast("Nowa misja 🎲")}else toast("Brak innych misji na tym poziomie")},
   target:function(){var I=curInst(),A=actOf(I);S.mapBusy=true;S.mapErr=null;render();
-    findTarget(I).then(function(t){A.target=t;A.gps=false;S.mapBusy=false;save();render()}).catch(function(err){S.mapBusy=false;
+    findTarget(I).then(function(t){A.target=t;A.gps=false;S.mapBusy=false;save();render();
+      findNearby(t).then(function(n){if(A.target===t){t.nearby=n;save();if(S.step==="mission")render()}})}).catch(function(err){S.mapBusy=false;
       if(err.nostop){walkInstead(I);return}
       S.mapErr=err.message||"Nie udało się wyznaczyć celu";render()})},
   known:function(){var I=curInst(),A=actOf(I);
