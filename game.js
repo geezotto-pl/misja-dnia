@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="13.11 17:00";
+var APP_VER="14.11 15:30";
 var BASE=null;
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
@@ -321,7 +321,7 @@ R.today=function(){
       (wk.done?'<div class="donebadge">✓ Zaliczona</div>':'')+
       ((D.g.tester||(!wk.steps.length&&!wk.swaps&&!wk.done))?'<div class="rowbtn"><button class="mini" data-a="wkswap">'+(D.g.tester?"🎲 Losuj inną":"🔄 Wymień (1 na tydzień)")+'</button></div>':'')+'</div>'}}
   h+='<div class="links">'+(D.g.tester?'<button class="btn link" data-a="go" data-v="browse">📚 Podgląd całej bazy misji</button>':'')+
-    '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button></div>';
+    '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button><button class="btn link" data-a="go" data-v="feedback">💬 Zgłoś uwagę albo błąd</button></div>';
   return h+nav();
 };
 
@@ -472,6 +472,7 @@ R.char=function(){
   '<button class="btn link" data-a="sethome">'+(D.g.home?"📌 Zapisz obecne miejsce jako nowy punkt (jest zapisany)":"📌 Zapisz obecne miejsce jako mój punkt")+'</button>'+
   '<p class="small">Punkt zostaje tylko w tym telefonie. Bez śledzenia w tle.</p>'+
   '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button>'+
+  '<button class="btn link" data-a="go" data-v="feedback">💬 Zgłoś uwagę albo błąd</button>'+
   '<p class="small" data-a="ver">Wersja aplikacji: <b>'+APP_VER+'</b>'+((D.outbox&&D.outbox.length)?' · do wysłania: '+D.outbox.length:'')+'</p>'+
   '<button class="btn link" style="color:var(--red)" onclick="resetAll()">'+(S.resetArmed?"Na pewno? Usunie postać, punkty i dziennik. Stuknij jeszcze raz":"Zacznij od nowa")+'</button></div>';
   return h+nav();
@@ -500,8 +501,24 @@ R.suggest=function(){
 };
 function sendSuggest(){var s=S.sug;if(!s.t.trim()){toast("Opisz najpierw misję");return}
   var t="💡 Propozycja misji do Misji Dnia od "+(D.nick||"")+":\n„"+s.t.trim()+"”\nKategoria: "+(KAT[s.kat]||"—")+"\nRytm: "+({d:"dzienna",t:"tygodniowa",m:"miesięczna"}[s.rytm])+"\nTrudność: "+(s.tr?LV[s.tr].n:"—");
-  shareText(t,function(){S.sug=null;S.hist=[];go(D.g?"today":"card",false);toast("Dzięki za pomysł! 🙌")});
+  var force=D.shareOff;if(force)D.shareOff=false;
+  report("propozycja",{misja:s.kat||"",poziom:s.tr?LV[s.tr].n:"",ocena:{d:"dzienna",t:"tygodniowa",m:"miesięczna"}[s.rytm],d:{tekst:s.t.trim()}});if(force)D.shareOff=true;
+  S.sug=null;S.hist=[];go(D.g?"today":"card",false);toast("Wysłane. Dzięki za pomysł! 🙌");
 }
+R.feedback=function(){var f=S.fb||(S.fb={t:"",k:""});
+  return head()+'<div class="page"><h2>Zgłoś uwagę</h2><p class="lead">Coś nie działa, jest niejasne albo masz pomysł? Napisz, trafi prosto do Maćka.</p>'+
+  '<div class="chips">'+[["blad","🐞 Coś nie działa"],["niejasne","🤔 Niejasne"],["pomysl","💡 Pomysł"],["inne","💬 Inne"]].map(function(o){return '<button class="chip'+(f.k===o[0]?" on":"")+'" data-a="fbk" data-v="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'+
+  '<div style="height:12px"></div><textarea rows="5" data-in="fbt" placeholder="Opisz, co się stało albo co byś zmienił/a">'+esc(f.t)+'</textarea></div>'+bar("📤 Wyślij",false,"sendFeedback()")};
+function sendFeedback(){var f=S.fb;if(!f.t.trim()){toast("Napisz najpierw kilka słów");return}
+  var force=D.shareOff;if(force)D.shareOff=false;
+  report("uwaga",{misja:"",poziom:f.k||"",ocena:"",d:{tekst:f.t.trim(),ekran:S.prevStep||"",wersja:APP_VER,urzadzenie:navigator.userAgent}});if(force)D.shareOff=true;
+  S.fb=null;S.hist=[];go(D.g?"today":"card",false);toast("Dzięki! Wiadomość wysłana 🙌")}
+/* aktywność dzienna i błędy */
+function realDay(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function pingActive(){if(!D.g)return;var k=realDay();if(D.lastPing===k)return;D.lastPing=k;
+  report("aktywny",{misja:"",poziom:D.g.week?LV[D.g.week.mode==="X"?"H":D.g.week.mode].mode:"",ocena:"",d:{dzien:k,xp:D.g.xp,seria:D.g.streak,misji:(D.g.log||[]).filter(function(l){return !l.kara}).length,tester:D.g.tester,wersja:APP_VER,zainstalowana:isStandalone()}})}
+window.addEventListener("error",function(e){try{var k=realDay();D.errDay=D.errDay===k?k:(D.errN=0,k);if((D.errN||0)>=5)return;D.errN=(D.errN||0)+1;
+  report("błąd",{misja:"",poziom:"",ocena:"",d:{blad:String(e.message||"").slice(0,200),plik:String(e.filename||"").split("/").pop(),linia:e.lineno,ekran:S.step,wersja:APP_VER}})}catch(x){}});
 function shareText(t,done){
   if(navigator.share)navigator.share({text:t}).then(done).catch(function(){});
   else if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){toast("Skopiowano. Wklej w wiadomości");done&&done()});
@@ -547,7 +564,7 @@ R.intro=function(){var i=S.introStep||0,x=INTRO[i],last=i===INTRO.length-1;
 /* ---------- akcje ---------- */
 var ACT={
   tab:function(v){S.hist=[];S.lowerOpen=false;go(v,false)},
-  go:function(v){go(v)},
+  go:function(v){S.prevStep=S.step;go(v)},
   setweek:function(v){var ms=mondayKey();D.g.week={start:ms,mode:v};if(!D.g.day||!D.g.day.done.length)D.g.day=null;save();report("tydzien",{poziom:LV[v].mode,d:{tydzien:ms}});S.hist=[];go(D.g.introDone?"today":"intro",false)},
   lowermenu:function(){S.lowerOpen=!S.lowerOpen;render()},
   lower:function(v){D.g.week.mode=v;S.lowerOpen=false;if(!D.g.tester){var c=D.g.day.cands[0];var I=c&&c.mid&&inst(c.mid,c.v);if(!I||!isDone(I))D.g.day=null}save();render();toast("Tryb obniżony: "+LV[v].mode)},
@@ -575,6 +592,7 @@ var ACT={
   usehome:function(v){if(v==="1"&&!D.g.home){toast("Najpierw zapisz swój punkt");return}D.g.useHome=v==="1";save();render()},
   sethome:function(){toast("Sprawdzam lokalizację…");getPos().then(function(p){D.g.home={lat:p.lat,lon:p.lon};D.g.useHome=true;save();render();toast("Zapisano punkt startowy 📌")}).catch(function(err){toast(err.message)})},
   bf:function(v){S.bf=v;render()},
+  fbk:function(v){S.fb.k=S.fb.k===v?"":v;render()},
   wkswap:function(){var w=D.g.week.wk,ex={};ex[w.mid]=1;var m=D.g.week.mode==="X"?"H":D.g.week.mode;var nw=pickWeekly(m,ex);if(!nw){toast("Brak innych misji tygodniowych");return}nw.swaps=(w.swaps||0)+1;D.g.week.wk=nw;save();render();toast("Nowa misja tygodnia 🎲")},
   fakesearch:function(){var q=(document.getElementById("fakeq")||{}).value||"";S.fakeQ=q;if(!q.trim())return;toast("Szukam…");
     fetchT("https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=pl&countrycodes=pl&limit=6&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}},12000).then(function(r){return r.json()}).then(function(a){
@@ -601,16 +619,18 @@ var ACT={
 document.addEventListener("click",function(ev){var b=ev.target.closest("[data-a]");if(!b||b.disabled)return;var f=ACT[b.getAttribute("data-a")];if(f){ev.preventDefault&&b.tagName!=="A"&&ev.preventDefault();f(b.getAttribute("data-v"),b)}});
 document.addEventListener("input",function(ev){var k=ev.target.getAttribute&&ev.target.getAttribute("data-in");if(!k)return;
   if(k==="note"){var I=curInst();actOf(I).note=ev.target.value;save();var nb=document.getElementById("nextBtn");if(nb)nb.disabled=!proofOk(I,actOf(I));var ni=document.getElementById("noteinfo");if(ni)ni.textContent=noteInfo(I,ev.target.value)}
-  if(k==="sugt"){S.sug.t=ev.target.value}});
+  if(k==="sugt"){S.sug.t=ev.target.value}
+  if(k==="fbt"){S.fb.t=ev.target.value}});
 function onProof(ev){var f=ev.target.files&&ev.target.files[0];ev.target.value="";if(!f)return;var I=curInst();if(!I)return;var A=actOf(I);
   compress(f,1000).then(function(data){var pk="p"+Date.now();return pput(pk,data).then(function(){A.photos.push(pk);save();render();toast("Dodano zdjęcie 📸")})}).catch(function(){toast("Nie udało się zapisać zdjęcia")})}
 (function(){var a=document.createElement("input");a.type="file";a.accept="image/*";a.setAttribute("capture","environment");a.id="pCam";a.className="hidden";
   var b=document.createElement("input");b.type="file";b.accept="image/*";b.id="pGal";b.className="hidden";
   a.addEventListener("change",onProof);b.addEventListener("change",onProof);document.body.appendChild(a);document.body.appendChild(b)})();
-window.gameBack=function(){if(S.step==="intro"){if(S.introStep>0){S.introStep--;render()}return true}if(["mission","rate","browse","suggest"].indexOf(S.step)>=0&&!S.hist.length){go(D.g?"today":"card",false);return true}return false};
+window.gameBack=function(){if(S.step==="intro"){if(S.introStep>0){S.introStep--;render()}return true}if(["mission","rate","browse","suggest","feedback"].indexOf(S.step)>=0&&!S.hist.length){go(D.g?"today":"card",false);return true}return false};
 
 /* ---------- po każdym renderze ---------- */
 var _render=render;
 render=function(){_render();if(["today","journal","char"].indexOf(S.step)>=0)document.body.classList.add("withnav");else document.body.classList.remove("withnav");fillPhotos()};
 
-loadBase(function(){boot();if(D.g&&!D.profSent)sendProfile();setTimeout(flushOut,1500)});
+loadBase(function(){boot();if(D.g&&!D.profSent)sendProfile();pingActive();setTimeout(flushOut,1500)});
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"){pingActive();flushOut()}});
