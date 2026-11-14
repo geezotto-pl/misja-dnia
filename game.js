@@ -1,7 +1,8 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="14.11 15:30";
+var APP_VER="14.11 15:45";
 var BASE=null;
+var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
 var KAT={ludzie:"🗣️ Ludzie",relacje:"❤️ Relacje",ruch:"🥾 Ruch",telefon:"📵 Mniej telefonu",nauka:"📖 Umysł i nauka",kreat:"🎨 Kreatywność",okolica:"🧭 Przygoda i okolica",porzadek:"🧹 Porządek"};
@@ -310,7 +311,7 @@ R.today=function(){
       (D.g.tester?'<div class="rowbtn"><button class="mini" data-a="reroll" data-v="'+ix+'">🎲 Losuj inną</button></div>':'')+'</div>';
   });
   if(!D.g.tester){var c0=D.g.day.cands[0];var I0=c0&&c0.mid&&inst(c0.mid,c0.v);
-    if(I0&&!isDone(I0))h+=D.g.day.swaps<1?'<button class="btn ghost" data-a="swap">🔄 Wymień misję (1 dziennie)</button>':'<p class="small center">Dzisiejsza wymiana już wykorzystana.</p>';
+    if(I0&&!isDone(I0))h+=D.g.day.swaps<SWAPS?'<button class="btn ghost" data-a="swap">🔄 Wymień misję (zostało '+(SWAPS-D.g.day.swaps)+')</button>'+(SWAPS>1?'<p class="small center">🧪 W czasie pierwszych testów możesz wymienić misję 3 razy dziennie.</p>':''):'<p class="small center">Dzisiejsze wymiany już wykorzystane. Spróbuj tej, może cię zaskoczy!</p>';
     if(I0&&isDone(I0))h+='<p class="center">Na dziś wszystko. Wracaj jutro po nową misję! 🌙</p>'}
   ensureWeekly();var wk=D.g.week.wk;
   if(wk&&wk.mid){var saveMix=S.mix;S.mix="w";var IW=curInst();S.mix=saveMix;
@@ -319,7 +320,7 @@ R.today=function(){
       '<div class="mcard wk '+IW.lvl+(wk.done?" done":"")+'" data-a="open" data-v="w"><div class="mtop"><span class="kat">'+KAT[IW.e.kat]+'</span>'+lvlBadge(IW.lvl)+'</div>'+
       '<div class="mt">'+missionText(IW)+'</div><div class="meta">'+(IW.n>1?stepDots(IW.n,IW.k,wk.done)+' '+(wk.done?IW.n:IW.k)+'/'+IW.n+' · ':'')+'⏱️ '+(IW.e.mapa?mapTime(IW.e,IW.i,IW):IW.e.czas+" min"+(IW.n>1?" na raz":""))+' · ok. '+weekXP(IW)+' XP</div>'+
       (wk.done?'<div class="donebadge">✓ Zaliczona</div>':'')+
-      ((D.g.tester||(!wk.steps.length&&!wk.swaps&&!wk.done))?'<div class="rowbtn"><button class="mini" data-a="wkswap">'+(D.g.tester?"🎲 Losuj inną":"🔄 Wymień (1 na tydzień)")+'</button></div>':'')+'</div>'}}
+      ((D.g.tester||(!wk.steps.length&&(wk.swaps||0)<SWAPS&&!wk.done))?'<div class="rowbtn"><button class="mini" data-a="wkswap">'+(D.g.tester?"🎲 Losuj inną":"🔄 Wymień (zostało "+(SWAPS-(wk.swaps||0))+")")+'</button></div>':'')+'</div>'}}
   h+='<div class="links">'+(D.g.tester?'<button class="btn link" data-a="go" data-v="browse">📚 Podgląd całej bazy misji</button>':'')+
     '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button><button class="btn link" data-a="go" data-v="feedback">💬 Zgłoś uwagę albo błąd</button></div>';
   return h+nav();
@@ -550,7 +551,7 @@ function icsFile(){var c=calDates(),s=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-
   var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([s],{type:"text/calendar"}));a.download="misja-dnia.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},1000)}
 /* ---------- wprowadzenie ---------- */
 var INTRO=[
- ["🧭","Codziennie jedna misja","Każdego dnia dostajesz jedną misję dobraną do ciebie: trochę poza strefą komfortu, ale wykonalną. Raz dziennie możesz ją wymienić, ale spróbuj zdać się na to, co wylosowało."],
+ ["🧭","Codziennie jedna misja","Każdego dnia dostajesz jedną misję dobraną do ciebie: trochę poza strefą komfortu, ale wykonalną. W czasie pierwszych testów możesz ją wymienić do 3 razy dziennie, ale spróbuj zdać się na to, co wylosowało."],
  ["📷","Zrób i udokumentuj","Dowodem jest zdjęcie, krótka notatka, stoper albo GPS na miejscu. Przy misjach z mapą aplikacja sama wskazuje cel, za każdym razem w innym kierunku."],
  ["👌","Oceń, a aplikacja się nauczy","Po misji powiedz, czy była za łatwa, w sam raz, czy za trudna. Na tej podstawie kolejne misje lepiej do ciebie pasują."],
  ["⚔️","Tryb tygodnia i Hero","W poniedziałek wybierasz tryb tygodnia (w trakcie można go tylko obniżyć). Codziennie możesz też podbić misję do Hero: trudniej, punkty ×2, ale bez cofania, a za niewykonanie tracisz 40% możliwych punktów."],
