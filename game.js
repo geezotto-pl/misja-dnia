@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="14.11 15:45";
+var APP_VER="15.11 14:40";
 var BASE=null;
 var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
@@ -54,7 +54,7 @@ function lvlOf(x){return x<3?"E":x<5?"N":x<8?"H":"X"}
 function instText(e,v,hero){var t=hero&&e.hero?e.hero:v==="l"&&e.latwiej?e.latwiej:v==="h"&&e.trudniej?e.trudniej:e.t;return gtxt(t)}
 function inst(mid,v){var e=byId(mid);if(!e)return null;var vs=variants(e).filter(function(x){return x.v===v})[0]||{v:"b",i:e.i};var c=comfort();var x=effI(e,vs.i,c),key=mid+"|"+vs.v,A0=D.g&&D.g.day&&D.g.act&&D.g.act[D.g.day.key+"|"+key];return{e:e,mid:mid,v:vs.v,i:vs.i,eff:x,lvl:lvlOf(x),key:key,hero:!!(A0&&A0.hero)}}
 function kmI(I){var k=km(I.e,I.i);return I.hero?Math.round(k*1.5*10)/10:k}
-function czasI(I){return I.hero&&I.e.heroCzas?I.e.heroCzas:I.e.czas}
+function czasI(I){return I.hero&&I.e.heroCzas?I.e.heroCzas:I.v==="l"&&I.e.latwiejCzas?I.e.latwiejCzas:I.v==="h"&&I.e.trudniejCzas?I.e.trudniejCzas:I.e.czas}
 function km(e,i){return MAPKM[e.mapa][Math.max(1,Math.min(5,i))-1]}
 
 /* ---------- stan gry ---------- */

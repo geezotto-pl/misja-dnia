@@ -1,5 +1,5 @@
 {
- "wersja": 5,
+ "wersja": 6,
  "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie.",
  "misje": [
   {
@@ -71,8 +71,8 @@
     "zewn"
    ],
    "t": "Zapytaj obcą osobę o drogę, nawet jeśli ją znasz.",
-   "latwiej": "Zapytaj obcą osobę o godzinę.",
-   "trudniej": "Zapytaj o drogę i o to, co warto zobaczyć w okolicy.",
+   "latwiej": "Zapytaj obcą osobę, która jest godzina.",
+   "trudniej": "Zapytaj obcą osobę o drogę, a przy okazji o to, co warto zobaczyć w okolicy.",
    "autor": "Claude",
    "podpowiedz": [
     "Wystarczy: „Przepraszam, którędy najbliżej do…?”.",
@@ -153,8 +153,8 @@
    ],
    "wym": [],
    "t": "Zagadaj do kogoś w kolejce albo poczekalni i porozmawiaj chociaż 2 minuty.",
-   "latwiej": "Zagadaj jednym zdaniem do kogoś w kolejce.",
-   "trudniej": "Rozmowa w kolejce na co najmniej 5 minut.",
+   "latwiej": "Zagadaj jednym zdaniem do kogoś w kolejce albo poczekalni, np. o pogodę.",
+   "trudniej": "Zagadaj do kogoś w kolejce albo poczekalni i porozmawiaj co najmniej 5 minut.",
    "autor": "Claude",
    "podpowiedz": [
     "Zacznij od tego, co widzicie oboje: „Długo dziś ta kolejka”, „Też pan/pani czeka na…?”.",
@@ -447,8 +447,8 @@
     "dzwonienie"
    ],
    "t": "Zadzwoń (nie pisz!) do kogoś, z kim nie {rozmawiałeś|rozmawiałaś} od pół roku.",
-   "latwiej": "Napisz do kogoś, z kim dawno nie {rozmawiałeś|rozmawiałaś}.",
-   "trudniej": "Zadzwoń i umów się na spotkanie.",
+   "latwiej": "Napisz wiadomość do kogoś, z kim nie {rozmawiałeś|rozmawiałaś} od pół roku.",
+   "trudniej": "Zadzwoń do kogoś, z kim nie {rozmawiałeś|rozmawiałaś} od pół roku, i umów się na spotkanie.",
    "autor": "Claude",
    "podpowiedz": [
     "Zacznij od: „{Przypomniałem|Przypomniałam} sobie o tobie, bo…”.",
@@ -611,8 +611,8 @@
     "intens"
    ],
    "t": "Zrób 20 przysiadów, zanim zrobisz sobie poranną kawę.",
-   "latwiej": "10 przysiadów.",
-   "trudniej": "40 przysiadów.",
+   "latwiej": "Zrób 10 przysiadów, zanim zrobisz sobie poranną kawę.",
+   "trudniej": "Zrób 40 przysiadów, zanim zrobisz sobie poranną kawę.",
    "autor": "Claude",
    "hero": "Zrób 50 przysiadów w ciągu dnia, w seriach po 10.",
    "heroCzas": 10
@@ -676,11 +676,13 @@
     "zewn"
    ],
    "t": "30 minut spaceru bez telefonu w ręce.",
-   "latwiej": "15 minut spaceru.",
-   "trudniej": "60 minut spaceru.",
+   "latwiej": "15 minut spaceru bez telefonu w ręce.",
+   "trudniej": "60 minut spaceru bez telefonu w ręce.",
    "autor": "Claude",
    "hero": "60 minut spaceru bez telefonu w ręce, trasą, której nie znasz.",
-   "heroCzas": 60
+   "heroCzas": 60,
+   "latwiejCzas": 15,
+   "trudniejCzas": 60
   },
   {
    "id": "ru-005",
@@ -739,8 +741,8 @@
     "intens"
    ],
    "t": "Deska (plank): 3 razy po 30 sekund.",
-   "latwiej": "3 razy po 15 sekund.",
-   "trudniej": "3 razy po minucie.",
+   "latwiej": "Deska (plank): 3 razy po 15 sekund.",
+   "trudniej": "Deska (plank): 3 razy po minucie.",
    "autor": "Claude",
    "hero": "Deska (plank): 3 razy po minucie.",
    "heroCzas": 5
@@ -863,8 +865,8 @@
     "zewn"
    ],
    "t": "Przejdź pieszo 50 km w tym miesiącu. Liczą się też spacery z misji.",
-   "latwiej": "30 km w miesiąc.",
-   "trudniej": "100 km w miesiąc.",
+   "latwiej": "Przejdź pieszo 30 km w tym miesiącu. Liczą się też spacery z misji.",
+   "trudniej": "Przejdź pieszo 100 km w tym miesiącu. Liczą się też spacery z misji.",
    "autor": "Claude"
   },
   {
@@ -920,11 +922,13 @@
    ],
    "wym": [],
    "t": "Godzina bez telefonu: zostaw go w innym pokoju.",
-   "latwiej": "30 minut.",
-   "trudniej": "2 godziny.",
+   "latwiej": "30 minut bez telefonu: zostaw go w innym pokoju.",
+   "trudniej": "Dwie godziny bez telefonu: zostaw go w innym pokoju.",
    "autor": "Claude",
    "hero": "Dwie godziny bez telefonu: zostaw go w innym pokoju.",
-   "heroCzas": 120
+   "heroCzas": 120,
+   "latwiejCzas": 30,
+   "trudniejCzas": 120
   },
   {
    "id": "te-004",
@@ -1123,8 +1127,8 @@
    ],
    "wym": [],
    "t": "Przeczytaj 5 stron i zapisz jedno zdanie, które zostało ci w głowie.",
-   "latwiej": "2 strony.",
-   "trudniej": "20 stron.",
+   "latwiej": "Przeczytaj 2 strony i zapisz jedno zdanie, które zostało ci w głowie.",
+   "trudniej": "Przeczytaj 20 stron i zapisz jedno zdanie, które zostało ci w głowie.",
    "autor": "Claude",
    "hero": "Przeczytaj 30 stron i zapisz trzy zdania, które zostały ci w głowie.",
    "notatka": {
@@ -1171,8 +1175,8 @@
    ],
    "wym": [],
    "t": "Naucz się 10 słówek w nowym języku.",
-   "latwiej": "5 słówek.",
-   "trudniej": "20 słówek.",
+   "latwiej": "Naucz się 5 słówek w nowym języku.",
+   "trudniej": "Naucz się 20 słówek w nowym języku.",
    "autor": "Claude",
    "hero": "Naucz się 25 słówek w nowym języku i ułóż z nich trzy zdania.",
    "notatka": {
