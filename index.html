@@ -128,6 +128,7 @@ input[type=range]{width:100%;accent-color:var(--red);height:32px}
 .welcome-art{display:flex;justify-content:center;margin:18px 0 8px}
 .hidden{display:none!important}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.iosbox{text-align:left;background:#EEF3F8;border:2px solid var(--blue);border-radius:14px;padding:12px 14px;margin:14px 0}.iosbox ol{margin:8px 0;padding-left:22px}.iosbox li{margin:4px 0}
 .sep{border:none;border-top:2px dotted var(--line);margin:22px 0}
 /* ===== gra ===== */
 body.withnav #app{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
@@ -413,8 +414,10 @@ R.welcome=function(){
   '<p class="lead">Codziennie jedno małe zadanie, które wyciąga cię z rutyny. Dopasowane do tego, kim jesteś.</p>'+
   '<p class="small">Najpierw stworzymy twoją kartę podróżnika. To zajmie 1–4 minuty i zostaje tylko na twoim telefonie.</p>'+
   '<button class="btn link hidden" id="installBtn" onclick="doInstall()">📲 Zainstaluj na telefonie</button>'+
-  '<p class="small hidden" id="iosHint">Na iPhonie: Udostępnij → „Do ekranu początkowego”.</p>'+
-  '</div>'+bar("Zaczynamy ✍️",false,"startNew()");
+  (isIOSBrowser()?'<div class="iosbox"><b>📲 Masz iPhone\'a? Zacznij od instalacji</b>'+
+    '<ol><li>Stuknij <b>Udostępnij</b> (kwadrat ze strzałką) na dole Safari.</li><li>Wybierz <b>„Do ekranu początkowego”</b> → „Dodaj”.</li><li>Otwórz Misję Dnia z ikony na ekranie i dopiero tam stwórz postać.</li></ol>'+
+    '<p class="small">Na iPhonie aplikacja z ekranu początkowego ma osobną pamięć niż Safari. Postać założona tutaj nie przeniesie się do zainstalowanej aplikacji.</p></div>':'')+
+  '</div>'+(isIOSBrowser()?'<div class="bar"><div class="in"><button class="btn ghost" style="background:var(--paper2)" onclick="startNew()">Zacznij mimo to w Safari</button></div></div>':bar("Zaczynamy ✍️",false,"startNew()"));
 };
 R.name=function(){
   return head()+'<div class="page"><h2>Jak masz na imię?</h2><p class="lead">Albo jaki nick ma mieć twoja postać.</p>'+
@@ -618,7 +621,8 @@ R.card=function(){
   (code?'<div class="pp-row">Typ: <b>'+code+'</b></div>':'')+
   '</div></div><div class="pp-desc">'+cl.desc+'</div></div>';
   h+='<div class="sec"><h3>Twoje strefy komfortu</h3>'+radar(c)+
-  '<p>💪 Najpewniej czujesz się w obszarze <b>'+AREA[cl.top].n+'</b>.<br>🌱 Największa przygoda czeka w obszarze <b>'+AREA[cl.low].n+'</b>.</p>'+
+  '<p>💪 Twoja mocna strona: <b>'+AREA[cl.top].n+'</b>.<br>🚀 Najwięcej punktów zdobędziesz w obszarze <b>'+AREA[cl.low].n+'</b>. Tu misje będą dla ciebie najciekawszym wyzwaniem.</p>'+
+  (D.knowType==="yes"&&D.path==="quick"&&!D.started?'<p class="small">To wstępne oszacowanie na podstawie typu osobowości. Po kilku misjach i twoich ocenach aplikacja sama dopasuje je do ciebie.</p>':'')+
   (D.pending?'<div class="note">📝 Zmienione strefy komfortu zaczną działać od poniedziałku '+fmtDate(new Date(D.pending.from))+'.</div>':'')+'</div>';
   h+='<div class="sec"><h3>Twój charakter</h3>'+meter("Ekstrawertyk","Introwertyk",ax.intro)+meter("Plan","Spontan",ax.spontan)+meter("Rutyna","Nowość",ax.nowosc)+meter("Pewność","Ryzyko",ax.ryzyko)+'</div>';
   if(goals.length)h+='<div class="sec"><h3>Cele</h3><div class="stamps">'+goals.map(function(g){return '<span class="stamp">'+g.em+' '+g.t+'</span>'}).join("")+'</div></div>';
@@ -693,6 +697,7 @@ function render(){
 var deferred=null;
 window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e;updInstall()});
 window.addEventListener("appinstalled",function(){deferred=null;updInstall();toast("Zainstalowano! 🎉")});
+function isIOSBrowser(){return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!isStandalone()}
 function isStandalone(){return window.matchMedia("(display-mode: standalone)").matches||navigator.standalone}
 function updInstall(){var b=document.getElementById("installBtn");if(b)b.classList.toggle("hidden",!deferred||isStandalone());
   var i=document.getElementById("iosHint");if(i)i.classList.toggle("hidden",!(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!isStandalone()))}
