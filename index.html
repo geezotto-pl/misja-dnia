@@ -526,42 +526,56 @@ R.perms=function(){
   '</div>'+bar("Dalej");
 };
 /* ====== Awatar ====== */
+/* awatary: nowy styl „Lorelei” (kolory włosów i skóry), stary „Notionists” tylko dla wcześniej zapisanych */
+var FEM_HAIR=[10,13,14,15,16,17,18,19,21,23,24,26,29,30,31,32,33,35,37,38,40,41,42,45,46,48],MALE_HAIR=[1,2,3,4,5,6,7,8,9,11,12,20,22,25,27,28,34,36,39,43,44,47];
+function vn(n){return "variant"+("0"+n).slice(-2)}
+var HAIRC=[["2b1d14","czarne"],["4a2c1a","ciemny brąz"],["7a4a2a","brąz"],["a8582a","rude"],["c99a5b","ciemny blond"],["e6c98a","blond"],["b9b4ad","siwe"],["f0ede6","białe"]];
+var SKIN=[["fbe3cf",""],["f2d3b1",""],["e3b48c",""],["c98e5f",""],["9a6240",""],["5e3a24",""]];
+var AVCATS2=[{k:"hair",n:"Fryzura"},{k:"hairColor",n:"Kolor włosów",sw:HAIRC},{k:"skinColor",n:"Skóra",sw:SKIN},{k:"eyes",n:"Oczy"},{k:"eyebrows",n:"Brwi"},{k:"mouth",n:"Usta"},{k:"nose",n:"Nos"},
+  {k:"glasses",n:"Okulary",none:true},{k:"beard",n:"Broda",none:true},{k:"earrings",n:"Kolczyki",none:true},{k:"freckles",n:"Piegi",none:true},{k:"bg",n:"Tło",sw:BG.map(function(c){return[c,""]})}];
+function hairOrder(){var a=(D.form==="f"?FEM_HAIR:MALE_HAIR).map(vn),b=(D.form==="f"?MALE_HAIR:FEM_HAIR).map(vn);return{list:a.concat(b),own:a.length}}
+function catList(k){var O=window.LAvOptions;if(k==="hair")return hairOrder().list;if(k==="mouth")return O.mouth.filter(function(m){return m.indexOf("happy")===0});return O[k]}
+function lavOpts(o){var r={seed:"misja",backgroundColor:[o.bg||BG[0]],hair:[o.hair],hairColor:[o.hairColor],skinColor:[o.skinColor],eyes:[o.eyes],eyebrows:[o.eyebrows],mouth:[o.mouth],nose:[o.nose],head:[o.head||"variant04"],hairAccessoriesProbability:0};
+  ["glasses","beard","earrings","freckles"].forEach(function(k){if(o[k]){r[k]=[o[k]];r[k+"Probability"]=100}else r[k+"Probability"]=0});return r}
+function randLav(){var O=window.LAvOptions,o={style:"l"};function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+  var h=hairOrder();o.hair=h.list[Math.floor(Math.random()*h.own)];
+  o.hairColor=rnd(["2b1d14","4a2c1a","4a2c1a","7a4a2a","7a4a2a","a8582a","c99a5b","e6c98a"]);o.skinColor=rnd(["fbe3cf","f2d3b1","f2d3b1","e3b48c"]);
+  o.eyes=rnd(O.eyes);o.eyebrows=rnd(O.eyebrows);o.mouth=rnd(catList("mouth"));o.nose=rnd(O.nose);o.head=rnd(O.head);
+  o.glasses=Math.random()<.25?rnd(O.glasses):"";o.beard=D.form!=="f"&&Math.random()<.3?rnd(O.beard):"";o.earrings=D.form==="f"&&Math.random()<.4?rnd(O.earrings):"";o.freckles=Math.random()<.15?"variant01":"";o.bg=rnd(BG);
+  return o}
 function avatarHTML(){
   var a=D.avatar;
   if(a&&a.kind==="photo"&&a.photo)return '<img src="'+a.photo+'" alt="">';
+  if(a&&a.kind==="drawn"&&a.o&&a.o.style==="l"){if(window.LAv)return window.LAv(lavOpts(a.o));loadScript("avatar2.js",function(){render()});return "✏️"}
   if(a&&a.kind==="drawn"&&window.MDAvatar)return window.MDAvatar(avOpts(a.o));
-  if(a&&a.kind==="drawn"){loadAv(function(){render()});return "✏️"}
+  if(a&&a.kind==="drawn"){loadScript("avatar.js",function(){render()});return "✏️"}
   return D.form==="f"?"👩":"🧔";
 }
-var avLoading=false,avCbs=[];
-function loadAv(cb){if(window.MDAvatar){cb();return}avCbs.push(cb);if(avLoading)return;avLoading=true;var s=document.createElement("script");s.src="avatar.js";s.onload=function(){avCbs.forEach(function(f){f()});avCbs=[]};s.onerror=function(){avLoading=false;toast("Nie udało się wczytać kreatora awatarów")};document.head.appendChild(s)}
+var _ls={};
+function loadScript(src,cb){var st=_ls[src]||(_ls[src]={done:false,cbs:[],busy:false});if(st.done){cb();return}st.cbs.push(cb);if(st.busy)return;st.busy=true;var s=document.createElement("script");s.src=src;
+  s.onload=function(){st.done=true;st.cbs.forEach(function(f){f()});st.cbs=[]};s.onerror=function(){st.busy=false;toast("Nie udało się wczytać kreatora awatarów")};document.head.appendChild(s)}
 function avOpts(o){
   var r={seed:"misja",bodyIconProbability:0,backgroundColor:[o.bg||BG[0]]};
   ["hair","brows","eyes","nose","lips","body"].forEach(function(k){r[k]=[o[k]]});
   ["beard","glasses","gesture"].forEach(function(k){if(o[k]){r[k]=[o[k]];r[k+"Probability"]=100}else r[k+"Probability"]=0});
   return r;
 }
-function randAv(){
-  var O=window.MDAvatarOptions,o={};
-  function rnd(a){return a[Math.floor(Math.random()*a.length)]}
-  ["hair","brows","eyes","nose","lips","body"].forEach(function(k){o[k]=rnd(O[k])});
-  o.beard=D.form==="f"?"":(Math.random()<.4?rnd(O.beard):"");
-  o.glasses=Math.random()<.3?rnd(O.glasses):"";o.gesture="";o.bg=rnd(BG);
-  return o;
-}
 R.avatar=function(){
   var a=D.avatar||{};
   if(a.kind==="building"){
-    if(!window.MDAvatar){loadAv(function(){if(!D.avatar.o)D.avatar.o=randAv();save();render()});return head()+'<div class="page"><h2>Chwileczkę…</h2><p class="lead">Wyciągam ołówki ✏️</p></div>'}
-    if(!a.o){a.o=randAv();save()}
-    var O=window.MDAvatarOptions,cat=S.avcat,o=a.o,ctl;
-    if(cat==="bg"){ctl='<div class="swatches">'+BG.map(function(c){return '<button class="sw'+(o.bg===c?" on":"")+'" style="background:#'+c+'" onclick="D.avatar.o.bg=\''+c+'\';save();render()"></button>'}).join("")+'</div>'}
-    else{var def=AVCATS.filter(function(x){return x.k===cat})[0];var list=(def.none?[""]:[]).concat(O[cat]);var idx=list.indexOf(o[cat]);if(idx<0)idx=0;
-      ctl='<div class="cycler"><button onclick="cyc(-1)">◀</button><span class="v">'+def.n+': '+(list[idx]===""?"brak":(idx+(def.none?0:1))+" / "+O[cat].length)+'</span><button onclick="cyc(1)">▶</button></div>'}
+    if(!window.LAv){loadScript("avatar2.js",function(){render()});return head()+'<div class="page"><h2>Chwileczkę…</h2><p class="lead">Wyciągam kredki ✏️</p></div>'}
+    if(!a.o||a.o.style!=="l"){a.o=randLav();save()}
+    var cat=S.avcat||"hair",o=a.o,ctl,def=AVCATS2.filter(function(x){return x.k===cat})[0]||AVCATS2[0];cat=def.k;
+    if(def.sw){ctl='<div class="swatches">'+def.sw.map(function(c){var k=cat==="bg"?"bg":cat;return '<button class="sw'+(o[k]===c[0]?" on":"")+'" title="'+c[1]+'" style="background:#'+c[0]+'" onclick="D.avatar.o[\''+k+'\']=\''+c[0]+'\';save();render()"></button>'}).join("")+'</div>'+
+      (cat==="hairColor"?'<p class="small center">'+(HAIRC.filter(function(c){return c[0]===o.hairColor})[0]||["",""])[1]+'</p>':'')}
+    else{var list=(def.none?[""]:[]).concat(catList(cat));var idx=list.indexOf(o[cat]);if(idx<0)idx=0;var lab;
+      if(cat==="hair"){var ho=hairOrder();lab=idx<ho.own?(idx+1)+" / "+ho.own:"inne: "+(idx-ho.own+1)+" / "+(ho.list.length-ho.own)}
+      else lab=list[idx]===""?"brak":(idx+(def.none?0:1))+" / "+(list.length-(def.none?1:0));
+      ctl='<div class="cycler"><button onclick="cyc(-1)">◀</button><span class="v">'+def.n+': '+lab+'</span><button onclick="cyc(1)">▶</button></div>'}
     return head()+'<div class="page"><h2>Złóż swój awatar</h2>'+
-    '<div class="avbox">'+window.MDAvatar(avOpts(o))+'</div>'+
-    '<div class="cats">'+AVCATS.map(function(c){return '<button class="chip'+(cat===c.k?" on":"")+'" onclick="S.avcat=\''+c.k+'\';render()">'+c.n+'</button>'}).join("")+'</div>'+ctl+
-    '<div class="grid2"><button class="btn ghost" onclick="D.avatar.o=randAv();save();render()">🎲 Losuj</button><button class="btn ghost" onclick="D.avatar={};save();render()">↩ Inna opcja</button></div>'+
+    '<div class="avbox">'+window.LAv(lavOpts(o))+'</div>'+
+    '<div class="cats">'+AVCATS2.map(function(c){return '<button class="chip'+(cat===c.k?" on":"")+'" onclick="S.avcat=\''+c.k+'\';render()">'+c.n+'</button>'}).join("")+'</div>'+ctl+
+    '<div class="grid2"><button class="btn ghost" onclick="D.avatar.o=randLav();save();render()">🎲 Losuj</button><button class="btn ghost" onclick="D.avatar={};save();render()">↩ Inna opcja</button></div>'+
     '</div>'+bar("Gotowe, to ja!",false,"D.avatar.kind=\'drawn\';save();avDone()");
   }
   var has=a.kind==="photo"||a.kind==="drawn";
@@ -575,7 +589,7 @@ R.avatar=function(){
   bar(has?"Dalej":"Pomiń na razie",false,"avDone()");
 };
 function avDone(){if(S.step==="editAvatar"){S.hist=[];go(homeStep(),false)}else next()}
-function cyc(d){var O=window.MDAvatarOptions,cat=S.avcat,o=D.avatar.o;var def=AVCATS.filter(function(x){return x.k===cat})[0];var list=(def.none?[""]:[]).concat(O[cat]);var i=list.indexOf(o[cat]);if(i<0)i=0;i=(i+d+list.length)%list.length;o[cat]=list[i];save();render()}
+function cyc(d){var cat=S.avcat||"hair",o=D.avatar.o;var def=AVCATS2.filter(function(x){return x.k===cat})[0];var list=(def.none?[""]:[]).concat(catList(cat));var i=list.indexOf(o[cat]);if(i<0)i=0;i=(i+d+list.length)%list.length;o[cat]=list[i];save();render()}
 function onFile(e){
   var f=e.target.files&&e.target.files[0];e.target.value="";if(!f)return;
   var url=URL.createObjectURL(f),img=new Image();
@@ -710,7 +724,7 @@ function boot(){
   if(D.done){S.step=D.g?"today":"card"}
   else if(st&&st!=="welcome"&&steps().indexOf(st)>=0){S.step=st;var s=steps();S.hist=s.slice(0,s.indexOf(st))}
   else S.step="welcome";
-  if(S.step==="avatar"&&D.avatar&&D.avatar.kind==="building")loadAv(function(){});
+  if(S.step==="avatar"&&D.avatar&&D.avatar.kind==="building")loadScript("avatar2.js",function(){render()});
   try{history.replaceState({s:S.step},"")}catch(e){}
   render();
 }
