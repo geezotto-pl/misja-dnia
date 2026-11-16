@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="15.11 17:00";
+var APP_VER="16.11 21:00";
 var BASE=null;
 var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
@@ -35,6 +35,7 @@ function allowed(e){
   if(w.indexOf("rower")>=0&&has.indexOf("bike")<0)return false;
   if(w.indexOf("auto")>=0&&has.indexOf("car")<0)return false;
   if(w.indexOf("pies")>=0&&has.indexOf("dog")<0)return false;
+  if(w.indexOf("winda")>=0&&D.place==="village")return false;
   if(w.indexOf("intens")>=0&&D.mobility&&D.mobility!=="none")return false;
   if(w.indexOf("koszt")>=0&&D.budget==="free")return false;
   for(var k in AVOIDMAP)if(w.indexOf(k)>=0&&av.indexOf(AVOIDMAP[k])>=0)return false;
@@ -43,6 +44,9 @@ function allowed(e){
   if(!e.mapa){var t=+(D.time||15);if(e.czas>Math.max(t*3,15))return false}
   return true;
 }
+var LATE_H=17; /* od tej godziny nie losujemy misji „na cały dzień” i nie dajemy takich wersji Hero */
+function late(){return now().getHours()>=LATE_H}
+function heroAllDay(e){return !!(e.caly||e.calyHero)}
 function variants(e){
   var r=[{v:"b",i:e.i}];
   if((e.latwiej||e.mapa)&&e.i>1)r.push({v:"l",i:e.i-1});
@@ -66,7 +70,7 @@ function startGame(){
 function recent(days){var k=dkey(),r={};(D.g.log||[]).forEach(function(l){if(daysBetween(l.day,k)<days)r[l.mid]=1});return r}
 function pickLevel(want,excl){
   var c=comfort(),rec=recent(30),pool=[];
-  (BASE||[]).forEach(function(e){if(e.rytm!=="d"||!allowed(e)||rec[e.id]||excl[e.id])return;
+  (BASE||[]).forEach(function(e){if(e.rytm!=="d"||!allowed(e)||rec[e.id]||excl[e.id]||(e.caly&&late()))return;
     variants(e).forEach(function(vs){var x=effI(e,vs.i,c);if(lvlOf(x)===want)pool.push({mid:e.id,v:vs.v,eff:x,kat:e.kat})})});
   if(!pool.length&&want==="X"){var ph=pickLevel("H",excl);if(ph)ph.want="X";return ph}
   if(!pool.length)return null;
@@ -363,7 +367,8 @@ R.mission=function(){
   if(done){var lg=D.g.log.filter(function(l){return l.day===D.g.day.key&&l.key===I.key})[0];
     h+='<div class="note">✓ Misja zaliczona'+(lg?': <b>+'+lg.xp+' XP</b>':'')+'.</div></div>';return h}
   if(I.weekly)h+='<div class="note">📅 Misja tygodnia, do niedzieli.'+(I.n>1?' Krok <b>'+Math.min(I.k+1,I.n)+' z '+I.n+'</b> '+stepDots(I.n,I.k)+'<br>Każdy krok to osobny dzień i osobny dowód. Punkty dostajesz za każdy krok.':'')+'</div>';
-  if(!I.weekly&&!I.hero&&(D.g.tester||!D.g.day.hero)){
+  if(!I.weekly&&!I.hero&&(D.g.tester||!D.g.day.hero)&&heroAllDay(e)&&late()&&!D.g.tester)h+='<div class="herobox"><b>⚔️ Hero</b><p class="small">Wersja Hero tej misji trwa cały dzień, więc można ją wybrać tylko przed '+LATE_H+':00. Jutro rano spróbuj z inną misją!</p></div>';
+  else if(!I.weekly&&!I.hero&&(D.g.tester||!D.g.day.hero)){
     h+='<div class="herobox"><b>⚔️ Podbij do Hero</b><p class="small">'+(e.hero?'Wersja Hero: „'+gtxt(e.hero).replace("{cel}","miejsce dalej niż zwykle")+'”':'Ta sama misja, ale półtora raza dalej.')+'</p><p class="small">Punkty ×2. Raz dziennie, bez cofania. Jeśli nie zdążysz do północy, stracisz 40% punktów, które można było zdobyć.</p>'+
       '<button class="btn ghost" data-a="hero">'+(S.heroArm?'⚔️ Na pewno? Stuknij jeszcze raz':'⚔️ Podbijam do Hero')+'</button></div>';
   }

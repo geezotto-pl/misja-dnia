@@ -1,6 +1,6 @@
 {
- "wersja": 6,
- "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie.",
+ "wersja": 7,
+ "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie, caly=misja trwa cały dzień (nie losujemy jej od 17:00), calyHero=tylko wersja Hero trwa cały dzień (Hero niedostępne od 17:00), wym \"winda\"=nie dla mieszkających na wsi.",
  "misje": [
   {
    "id": "lu-001",
@@ -650,7 +650,10 @@
    "dowod": [
     "notatka"
    ],
-   "wym": [],
+   "wym": [
+    "winda"
+   ],
+   "caly": true,
    "t": "Przez cały dzień chodź schodami zamiast windą.",
    "autor": "Claude",
    "hero": "Przez cały dzień schody zamiast windy i dodatkowo wejdź raz na najwyższe piętro budynku, w którym jesteś.",
@@ -882,6 +885,7 @@
     "zdjecie"
    ],
    "wym": [],
+   "calyHero": true,
    "t": "Zjedz posiłek bez żadnego ekranu.",
    "autor": "Claude",
    "hero": "Wszystkie posiłki dziś bez żadnego ekranu."
@@ -899,6 +903,7 @@
     "notatka"
    ],
    "wym": [],
+   "calyHero": true,
    "t": "Wyłącz powiadomienia z jednej aplikacji, która najbardziej cię rozprasza.",
    "autor": "Claude",
    "hero": "Wyłącz powiadomienia ze wszystkich aplikacji społecznościowych na cały dzień.",
@@ -1247,6 +1252,8 @@
    ],
    "wym": [],
    "t": "Rozwiąż sudoku, krzyżówkę albo zagadkę logiczną.",
+   "latwiej": "Rozwiąż 5 haseł w krzyżówce albo jedną prostą zagadkę logiczną (łatwe sudoku też się liczy).",
+   "latwiejCzas": 8,
    "autor": "Claude",
    "hero": "Rozwiąż trzy łamigłówki: sudoku, krzyżówkę i zagadkę logiczną."
   },
@@ -2004,6 +2011,7 @@
     "zdjecie"
    ],
    "wym": [],
+   "caly": true,
    "t": "Opróżnij jeden blat albo stół ze wszystkiego, co zbędne, i niech zostanie pusty do wieczora.",
    "autor": "Claude",
    "hero": "Opróżnij wszystkie blaty w kuchni ze zbędnych rzeczy."
