@@ -413,12 +413,37 @@ R.welcome=function(){
   '<h1>Misja Dnia</h1>'+
   '<p class="lead">Codziennie jedno małe zadanie, które wyciąga cię z rutyny. Dopasowane do tego, kim jesteś.</p>'+
   '<p class="small">Najpierw stworzymy twoją kartę podróżnika. To zajmie 1–4 minuty i zostaje tylko na twoim telefonie.</p>'+
-  '<button class="btn link hidden" id="installBtn" onclick="doInstall()">📲 Zainstaluj na telefonie</button>'+
-  (isIOSBrowser()?'<div class="iosbox"><b>📲 Masz iPhone\'a? Zacznij od instalacji</b>'+
-    '<ol><li>Stuknij <b>Udostępnij</b> (kwadrat ze strzałką) na dole Safari.</li><li>Wybierz <b>„Do ekranu początkowego”</b> → „Dodaj”.</li><li>Otwórz Misję Dnia z ikony na ekranie i dopiero tam stwórz postać.</li></ol>'+
-    '<p class="small">Na iPhonie aplikacja z ekranu początkowego ma osobną pamięć niż Safari. Postać założona tutaj nie przeniesie się do zainstalowanej aplikacji.</p></div>':'')+
-  '</div>'+(isIOSBrowser()?'<div class="bar"><div class="in"><button class="btn ghost" style="background:var(--paper2)" onclick="startNew()">Zacznij mimo to w Safari</button></div></div>':bar("Zaczynamy ✍️",false,"startNew()"));
+  installIntro()+
+  '</div>'+(isStandalone()?bar("Zaczynamy ✍️",false,"startNew()"):'<div class="bar"><div class="in"><button class="btn ghost" style="background:var(--paper2)" onclick="startNew()">'+(inAppName()||isIOS()?"Zacznij mimo to tutaj":"Zacznij w przeglądarce")+'</button></div></div>');
 };
+/* Ekran powitalny: najpierw instalacja. Przeglądarki wbudowane (WhatsApp, Snapchat, Messenger…) nie instalują aplikacji. */
+var APP_URL="https://geezotto-pl.github.io/misja-dnia/";
+function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
+function inAppName(){var u=navigator.userAgent;if(isStandalone())return "";
+  if(/WhatsApp/i.test(u))return "WhatsApp";if(/Snapchat/i.test(u))return "Snapchat";if(/Instagram/i.test(u))return "Instagram";
+  if(/FBAN|FBAV|FB_IAB|FBIOS|Messenger/i.test(u))return "Messenger / Facebook";if(/TikTok|musical_ly|BytedanceWebview/i.test(u))return "TikTok";
+  if(/Android/i.test(u)&&/; wv\)/.test(u))return "aplikacja";return ""}
+function browserLabel(){var u=navigator.userAgent,n=inAppName();if(isStandalone())return "zainstalowana";if(n)return "w "+n;
+  return (isIOS()?"iPhone ":/Android/i.test(u)?"Android ":"")+(/CriOS|Chrome/i.test(u)&&!/SamsungBrowser|EdgA|OPR/i.test(u)?"Chrome":/SamsungBrowser/i.test(u)?"Samsung":/Firefox|FxiOS/i.test(u)?"Firefox":/Safari/i.test(u)?"Safari":"inna")}
+function copyLink(){var done=function(){toast("Skopiowano link. Wklej go w "+(isIOS()?"Safari":"Chrome"))};
+  if(navigator.clipboard)navigator.clipboard.writeText(APP_URL).then(done).catch(function(){prompt("Skopiuj link:",APP_URL)});else prompt("Skopiuj link:",APP_URL)}
+function openChrome(){location.href="intent://geezotto-pl.github.io/misja-dnia/#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url="+encodeURIComponent(APP_URL)+";end"}
+function installIntro(){
+  if(isStandalone())return "";
+  var n=inAppName();
+  if(n)return '<div class="iosbox"><b>⚠️ Otwórz w '+(isIOS()?"Safari":"Chrome")+', żeby zainstalować</b>'+
+    '<p class="small">Ten link otworzył się w przeglądarce wbudowanej w '+esc(n)+'. Tutaj aplikacji nie da się zainstalować, a postęp może zniknąć.</p>'+
+    (isIOS()?'<ol><li>Stuknij <b>⋯</b> albo ikonę kompasu i wybierz <b>„Otwórz w Safari”</b>.</li><li>Jeśli takiej opcji nie ma: skopiuj link i wklej go w Safari.</li></ol>'
+      :'<button class="btn main" onclick="openChrome()">Otwórz w Chrome</button><ol><li>Albo stuknij <b>⋮</b> w rogu i wybierz <b>„Otwórz w Chrome”</b> / „Otwórz w przeglądarce”.</li><li>Jeśli nic nie działa: skopiuj link i wklej go w Chrome.</li></ol>')+
+    '<button class="btn link" onclick="copyLink()">📋 Skopiuj link</button></div>';
+  if(isIOS())return '<div class="iosbox"><b>📲 Masz iPhone\'a? Zacznij od instalacji</b>'+
+    '<ol><li>Stuknij <b>Udostępnij</b> (kwadrat ze strzałką) na dole Safari.</li><li>Wybierz <b>„Do ekranu początkowego”</b> → „Dodaj”.</li><li>Otwórz Misję Dnia z ikony na ekranie i dopiero tam stwórz postać.</li></ol>'+
+    '<p class="small">Na iPhonie aplikacja z ekranu początkowego ma osobną pamięć niż Safari. Postać założona tutaj nie przeniesie się do zainstalowanej aplikacji.</p></div>';
+  return '<div class="iosbox"><b>📲 Najlepiej zacznij od instalacji</b>'+
+    '<p class="small">Zainstalowana aplikacja ma własną ikonę, otwiera się jednym stuknięciem, działa bez internetu i sama się aktualizuje.</p>'+
+    '<button class="btn main hidden" id="installBtn" onclick="doInstall()">📲 Zainstaluj na telefonie</button>'+
+    '<p class="small" id="installHow">Stuknij <b>⋮</b> w prawym górnym rogu Chrome i wybierz <b>„Zainstaluj aplikację”</b> (albo „Dodaj do ekranu głównego” → „Zainstaluj”).</p></div>';
+}
 R.name=function(){
   return head()+'<div class="page"><h2>Jak masz na imię?</h2><p class="lead">Albo jaki nick ma mieć twoja postać.</p>'+
   '<input type="text" id="nick" maxlength="20" placeholder="np. Maciek" value="'+esc(D.nick||"")+'" oninput="D.nick=this.value;save();chk()">'+
@@ -714,6 +739,7 @@ window.addEventListener("appinstalled",function(){deferred=null;updInstall();toa
 function isIOSBrowser(){return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!isStandalone()}
 function isStandalone(){return window.matchMedia("(display-mode: standalone)").matches||navigator.standalone}
 function updInstall(){var b=document.getElementById("installBtn");if(b)b.classList.toggle("hidden",!deferred||isStandalone());
+  var h=document.getElementById("installHow");if(h)h.classList.toggle("hidden",!!deferred);
   var i=document.getElementById("iosHint");if(i)i.classList.toggle("hidden",!(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!isStandalone()))}
 function doInstall(){if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(){deferred=null;updInstall()})}
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}

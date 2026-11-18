@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="16.11 21:00";
+var APP_VER="18.11 10:00";
 var BASE=null;
 var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
@@ -522,9 +522,9 @@ function sendFeedback(){var f=S.fb;if(!f.t.trim()){toast("Napisz najpierw kilka 
 /* aktywność dzienna i błędy */
 function realDay(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
 function pingActive(){if(!D.g)return;var k=realDay();if(D.lastPing===k)return;D.lastPing=k;
-  report("aktywny",{misja:"",poziom:D.g.week?LV[D.g.week.mode==="X"?"H":D.g.week.mode].mode:"",ocena:"",d:{dzien:k,xp:D.g.xp,seria:D.g.streak,misji:(D.g.log||[]).filter(function(l){return !l.kara}).length,tester:D.g.tester,wersja:APP_VER,zainstalowana:isStandalone()}})}
+  report("aktywny",{misja:"",poziom:D.g.week?LV[D.g.week.mode==="X"?"H":D.g.week.mode].mode:"",ocena:"",d:{dzien:k,xp:D.g.xp,seria:D.g.streak,misji:(D.g.log||[]).filter(function(l){return !l.kara}).length,tester:D.g.tester,wersja:APP_VER,zainstalowana:isStandalone(),przegladarka:browserLabel()}})}
 window.addEventListener("error",function(e){try{var k=realDay();D.errDay=D.errDay===k?k:(D.errN=0,k);if((D.errN||0)>=5)return;D.errN=(D.errN||0)+1;
-  report("błąd",{misja:"",poziom:"",ocena:"",d:{blad:String(e.message||"").slice(0,200),plik:String(e.filename||"").split("/").pop(),linia:e.lineno,ekran:S.step,wersja:APP_VER}})}catch(x){}});
+  report("błąd",{misja:"",poziom:"",ocena:"",d:{blad:String(e.message||"").slice(0,200),plik:String(e.filename||"").split("/").pop(),linia:e.lineno,ekran:S.step,wersja:APP_VER,przegladarka:browserLabel()}})}catch(x){}});
 function shareText(t,done){
   if(navigator.share)navigator.share({text:t}).then(done).catch(function(){});
   else if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){toast("Skopiowano. Wklej w wiadomości");done&&done()});
