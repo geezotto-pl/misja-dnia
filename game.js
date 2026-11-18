@@ -535,7 +535,7 @@ function shareText(t,done){
 var FORM="https://docs.google.com/forms/d/e/1FAIpQLSd57zdbphj_VhymScKnuXQdKfkNtu0SBN_w1sfgOHQBaNM0xA/formResponse";
 var FE={typ:"444640920",nick:"1810944420",misja:"1399195604",poziom:"1083940506",ocena:"558542356",szcz:"763153339"};
 function report(typ,o){if(D.shareOff)return;D.uid=D.uid||Math.random().toString(36).slice(2,6);
-  var row={typ:typ,nick:(D.nick||"?")+"#"+D.uid,misja:o.misja||"",poziom:o.poziom||"",ocena:o.ocena||"",szcz:JSON.stringify(o.d||{})};
+  var row={typ:typ,nick:String(D.nick||"?").trim()+"#"+D.uid,misja:o.misja||"",poziom:o.poziom||"",ocena:o.ocena||"",szcz:JSON.stringify(o.d||{})};
   D.outbox=(D.outbox||[]).concat([row]).slice(-200);save();flushOut()}
 var _flushing=false;
 function flushOut(){if(_flushing||!D.outbox||!D.outbox.length||navigator.onLine===false)return;_flushing=true;var row=D.outbox[0],b=new URLSearchParams();
