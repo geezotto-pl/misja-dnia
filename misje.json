@@ -1,6 +1,6 @@
 {
- "wersja": 7,
- "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie, caly=misja trwa cały dzień (nie losujemy jej od 17:00), calyHero=tylko wersja Hero trwa cały dzień (Hero niedostępne od 17:00), wym \"winda\"=nie dla mieszkających na wsi.",
+ "wersja": 8,
+ "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), kat \"siebie\"=małe przyjemności (częściej tylko dla chętnych), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie, caly=misja trwa cały dzień (nie losujemy jej od 17:00), calyHero=tylko wersja Hero trwa cały dzień (Hero niedostępne od 17:00), wym \"winda\"=nie dla mieszkających na wsi.",
  "misje": [
   {
    "id": "lu-001",
@@ -2470,6 +2470,258 @@
     "pytanie": "Jaką sprawę {załatwiłeś|załatwiłaś}?",
     "min": 5
    }
+  },
+  {
+   "id": "ds-001",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "jedzenie"
+   ],
+   "t": "Zjedz coś, co naprawdę lubisz, powoli i bez telefonu w ręce.",
+   "hero": "Przygotuj sobie ulubioną przekąskę albo deser „na ładnie”, na talerzu, i zjedz go powoli, bez telefonu.",
+   "autor": "Claude",
+   "podpowiedz": "Nie chodzi o ilość, tylko o to, żeby poczuć smak. Kawałek czekolady wystarczy."
+  },
+  {
+   "id": "ds-002",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.3,
+    "A": 0.2
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "koszt",
+    "zakupy"
+   ],
+   "t": "Kup sobie coś drobnego, do ok. 20 zł, tylko dla siebie.",
+   "hero": "Kup sobie coś drobnego, czego zwykle sobie odmawiasz, i nie tłumacz się z tego nikomu.",
+   "autor": "Claude",
+   "podpowiedz": "Kwiatek, ładny długopis, ulubiony batonik, magazyn. Ważne, żeby było dla ciebie, nie dla domu."
+  },
+  {
+   "id": "ds-003",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zaparz sobie kawę, herbatę albo kakao „na wypasie” i wypij, nic innego nie robiąc.",
+   "hero": "Zrób sobie napój „jak w kawiarni” (pianka, ulubiony kubek, coś do tego) i wypij go w ciszy, bez telefonu.",
+   "autor": "Claude"
+  },
+  {
+   "id": "ds-004",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Posłuchaj trzech ulubionych piosenek głośno, tak jak lubisz.",
+   "hero": "Posłuchaj trzech ulubionych piosenek i zatańcz do co najmniej jednej, choćby {sam|sama} w pokoju.",
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Jakie to były piosenki?",
+    "min": 5
+   }
+  },
+  {
+   "id": "ds-005",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.4
+   },
+   "czas": 20,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Daj sobie 15 minut ciepła i spokoju: długi prysznic, kąpiel albo koc i nic do roboty.",
+   "hero": "Zrób sobie wieczór ciepła: kąpiel albo długi prysznic, potem koc i coś przyjemnego, bez obowiązków przez godzinę.",
+   "heroCzas": 60,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Co {wybrałeś|wybrałaś} i jak było?",
+    "min": 10
+   }
+  },
+  {
+   "id": "ds-006",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.5
+   },
+   "czas": 30,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Obejrzyj odcinek serialu albo przeczytaj rozdział książki jako nagrodę, bez wyrzutów sumienia.",
+   "hero": "Zaplanuj sobie godzinę ulubionej rozrywki, wpisz ją jak spotkanie i dotrzymaj tego terminu.",
+   "heroCzas": 60,
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Co to było?",
+    "min": 5
+   }
+  },
+  {
+   "id": "ds-007",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.3
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zrób sobie jeden kącik ładniejszym: świeczka, kwiatek, posprzątany blat albo ulubiony kubek na wierzchu.",
+   "hero": "Urządź sobie mały kącik tylko dla siebie: miejsce, w którym dobrze się siedzi, z czymś ładnym i czymś wygodnym.",
+   "heroCzas": 40,
+   "autor": "Claude"
+  },
+  {
+   "id": "ds-008",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Zrób dziś jedną małą rzecz tylko dla siebie, bez kupowania czegokolwiek.",
+   "hero": "Zrób dziś trzy małe rzeczy tylko dla siebie, bez kupowania czegokolwiek.",
+   "autor": "Claude",
+   "podpowiedz": "Drzemka, ulubiona maseczka, spacer bez celu, stare zdjęcia, pomalowanie paznokci, gra.",
+   "notatka": {
+    "pytanie": "Co to było?",
+    "min": 5,
+    "pytanieHero": "Jakie trzy rzeczy {zrobiłeś|zrobiłaś}?",
+    "zdaniaHero": 3
+   }
+  },
+  {
+   "id": "ds-009",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 0.4,
+    "S": 0.3
+   },
+   "czas": 45,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn",
+    "koszt"
+   ],
+   "t": "Wyjdź {sam|sama} do kawiarni, cukierni albo w ładne miejsce i posiedź tam co najmniej 20 minut, tylko dla przyjemności.",
+   "hero": "Zrób sobie „randkę ze sobą”: wyjdź {sam|sama} na co najmniej godzinę w miejsce, które lubisz, i zafunduj sobie coś dobrego.",
+   "heroCzas": 90,
+   "autor": "Claude"
+  },
+  {
+   "id": "ds-010",
+   "kat": "siebie",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.4
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Napisz trzy rzeczy, które dziś sprawiły ci przyjemność, nawet najmniejsze.",
+   "autor": "Claude",
+   "hero": "Napisz pięć rzeczy, które dziś sprawiły ci przyjemność, i zaplanuj jedną z nich na jutro.",
+   "notatka": {
+    "pytanie": "Co sprawiło ci dziś przyjemność?",
+    "min": 20,
+    "zdania": 3,
+    "zdaniaHero": 5
+   }
+  },
+  {
+   "id": "ds-020",
+   "kat": "siebie",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "M": 0.4
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Trzy razy w tym tygodniu zrób sobie małą przyjemność i zapisz, co to było.",
+   "kroki": 3,
+   "autor": "Claude",
+   "podpowiedz": "Coś dobrego do jedzenia, ulubiona muzyka, chwila na kocu, cokolwiek tylko dla ciebie.",
+   "notatka": {
+    "pytanie": "Jaką przyjemność dziś sobie {zrobiłeś|zrobiłaś}?",
+    "min": 5
+   }
+  },
+  {
+   "id": "ds-021",
+   "kat": "siebie",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "A": 0.5,
+    "S": 0.3
+   },
+   "czas": 60,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "W tym tygodniu zrób sobie „randkę ze sobą”: kino, kawiarnia, spacer w ładne miejsce, {sam|sama}, przez co najmniej godzinę.",
+   "autor": "Claude"
   }
  ]
 }

@@ -1,11 +1,11 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="18.11 10:00";
+var APP_VER="19.11 01:00";
 var BASE=null;
 var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
 var LVORD=["E","N","H","X"];
-var KAT={ludzie:"🗣️ Ludzie",relacje:"❤️ Relacje",ruch:"🥾 Ruch",telefon:"📵 Mniej telefonu",nauka:"📖 Umysł i nauka",kreat:"🎨 Kreatywność",okolica:"🧭 Przygoda i okolica",porzadek:"🧹 Porządek"};
+var KAT={ludzie:"🗣️ Ludzie",relacje:"❤️ Relacje",ruch:"🥾 Ruch",telefon:"📵 Mniej telefonu",nauka:"📖 Umysł i nauka",kreat:"🎨 Kreatywność",okolica:"🧭 Przygoda i okolica",porzadek:"🧹 Porządek",siebie:"🌿 Dla siebie"};
 var DOWOD={zdjecie:"📷 zdjęcie",zrzut:"🖼️ zrzut ekranu",notatka:"✍️ notatka",stoper:"⏱️ stoper",gps:"📍 GPS na miejscu"};
 var AVOIDMAP={jedzenie:"food",dzwonienie:"phone",zakupy:"shop",wieczor:"evening"};
 var MAPKM={pieszo:[1,2,4,7,10],"pieszo-daleko":[1,2,4,7,10],rower:[4,7,10,14,20],bus:[2,3,5,8,12],wyprawa:[8,12,16,20,25],miejscowosc:[15,25,40,60,80]};
@@ -44,6 +44,12 @@ function allowed(e){
   if(!e.mapa){var t=+(D.time||15);if(e.czas>Math.max(t*3,15))return false}
   return true;
 }
+/* misje „Dla siebie”: pokazujemy częściej tylko tym, którzy tego chcą */
+function selfW(){if(D.selfPref==="no")return 0;if(D.selfPref==="more"||(D.goals||[]).indexOf("siebie")>=0)return .45;return .2}
+function goalsX(){var g=(D.goals||[]).slice();if(D.selfPref==="more"&&g.indexOf("siebie")<0)g.push("siebie");return g}
+var SELF_OK=true; /* losowane raz na każde dobieranie misji */
+function selfRoll(){SELF_OK=Math.random()<selfW()}
+function selfSkip(e){return e.kat==="siebie"&&!SELF_OK}
 var LATE_H=17; /* od tej godziny nie losujemy misji „na cały dzień” i nie dajemy takich wersji Hero */
 function late(){return now().getHours()>=LATE_H}
 function heroAllDay(e){return !!(e.caly||e.calyHero)}
@@ -68,13 +74,13 @@ function startGame(){
   D.g=G0();D.uid=D.uid||Math.random().toString(36).slice(2,6);save();sendProfile();S.hist=[];go("weekpick",false);
 }
 function recent(days){var k=dkey(),r={};(D.g.log||[]).forEach(function(l){if(daysBetween(l.day,k)<days)r[l.mid]=1});return r}
-function pickLevel(want,excl){
+function pickLevel(want,excl){selfRoll();
   var c=comfort(),rec=recent(30),pool=[];
-  (BASE||[]).forEach(function(e){if(e.rytm!=="d"||!allowed(e)||rec[e.id]||excl[e.id]||(e.caly&&late()))return;
+  (BASE||[]).forEach(function(e){if(e.rytm!=="d"||!allowed(e)||rec[e.id]||excl[e.id]||(e.caly&&late())||selfSkip(e))return;
     variants(e).forEach(function(vs){var x=effI(e,vs.i,c);if(lvlOf(x)===want)pool.push({mid:e.id,v:vs.v,eff:x,kat:e.kat})})});
   if(!pool.length&&want==="X"){var ph=pickLevel("H",excl);if(ph)ph.want="X";return ph}
   if(!pool.length)return null;
-  if((D.goals||[]).length&&Math.random()<.6){var g=pool.filter(function(p){return D.goals.indexOf(p.kat)>=0});if(g.length)pool=g}
+  var GL=goalsX();if(GL.length&&Math.random()<.6){var g=pool.filter(function(p){return GL.indexOf(p.kat)>=0});if(g.length)pool=g}
   // preferuj misje bez wariantów zastępczych tej samej misji
   var p=pool[Math.floor(Math.random()*pool.length)];return{mid:p.mid,v:p.v,want:want};
 }
@@ -334,11 +340,11 @@ R.today=function(){
 function curInst(){if(S.mix==="w"){var w=D.g.week.wk;if(!w||!w.mid)return null;var I=inst(w.mid,w.v);if(I){I.weekly=true;I.hero=false;I.n=I.e.kroki||1;I.k=w.steps.length}return I}
   var cd=D.g.day.cands[S.mix];return cd&&cd.mid?inst(cd.mid,cd.v):null}
 /* ---------- misja tygodniowa ---------- */
-function pickWeekly(want,excl){var c=comfort(),pool=[];excl=excl||{};
-  (BASE||[]).forEach(function(e){if(e.rytm!=="t"||!allowed(e)||excl[e.id])return;var x=effI(e,e.i,c);pool.push({mid:e.id,v:"b",x:x,l:lvlOf(x),kat:e.kat})});
+function pickWeekly(want,excl){selfRoll();var c=comfort(),pool=[];excl=excl||{};
+  (BASE||[]).forEach(function(e){if(e.rytm!=="t"||!allowed(e)||excl[e.id]||selfSkip(e))return;var x=effI(e,e.i,c);pool.push({mid:e.id,v:"b",x:x,l:lvlOf(x),kat:e.kat})});
   if(!pool.length)return null;var order=["E","N","H","X"],wi=order.indexOf(want);
   var best=null;for(var dd=0;dd<4&&!best;dd++){[wi-dd,wi+dd].forEach(function(j){if(best||j<0||j>3)return;var p=pool.filter(function(q){return q.l===order[j]});if(p.length){
-    if((D.goals||[]).length&&Math.random()<.6){var g=p.filter(function(q){return D.goals.indexOf(q.kat)>=0});if(g.length)p=g}best=p[Math.floor(Math.random()*p.length)]}})}
+    var GL=goalsX();if(GL.length&&Math.random()<.6){var g=p.filter(function(q){return GL.indexOf(q.kat)>=0});if(g.length)p=g}best=p[Math.floor(Math.random()*p.length)]}})}
   return best?{mid:best.mid,v:"b",steps:[],done:false,swaps:0}:null}
 function ensureWeekly(){if(!D.g.week)return;var w=D.g.week.wk;if(w&&(w.mid||w.none))return;var m=D.g.week.mode==="X"?"H":D.g.week.mode;
   D.g.week.wk=pickWeekly(m)||{none:true};save()}
@@ -420,6 +426,7 @@ R.rate=function(){
     [["easy","😎","Za łatwe"],["ok","👌","W sam raz"],["hard","😵","Za trudne"]].map(function(o){return '<button class="opt'+(S.rate===o[0]?" on":"")+'" data-a="rate" data-v="'+o[0]+'"><span class="em">'+o[1]+'</span><b>'+o[2]+'</b></button>'}).join("")+
     '</div><span class="lbl">Czy misja ci się podobała?</span><div class="chips">'+
     '<button class="chip'+(S.like==="y"?" on":"")+'" data-a="like" data-v="y">👍 Tak</button><button class="chip'+(S.like==="n"?" on":"")+'" data-a="like" data-v="n">👎 Nie bardzo</button></div>'+
+    (I.e.kat==="siebie"?'<span class="lbl">Chcesz więcej takich misji „dla siebie”?</span><div class="chips">'+[["more","🌿 Tak, częściej"],["some","🙂 Czasem"],["no","🙅 Nie dla mnie"]].map(function(o){return '<button class="chip'+(S.selfAns===o[0]?" on":"")+'" data-a="selfans" data-v="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>':'')+
     (actOf(I).note&&!D.shareOff?'<label class="chk"><input type="checkbox" '+(S.sendNote?"checked":"")+' onchange="S.sendNote=this.checked"> Dołącz moją notatkę do wyników testów</label>':'')+
     '</div>'+bar("Zapisz w dzienniku",!S.rate,"finishMission()");
 };
@@ -437,8 +444,9 @@ function finishMission(){
   if(A.target&&A.gps)D.g.visited.push({lat:A.target.lat,lon:A.target.lon});
   D.g.log.unshift({day:dkey(),mid:I.mid,v:I.v,key:I.key,weekly:!!I.weekly,text:(I.weekly?"📅 Misja tygodnia"+(I.n>1?" (ukończona, "+I.n+"/"+I.n+")":"")+": ":"")+missionText(I).replace(/<[^>]+>/g,""),kat:I.e.kat,lvl:I.hero?"X":I.lvl,xp:xp,rate:S.rate,like:S.like||null,note:A.note||"",photos:A.photos.slice(),place:A.target?A.target.name:null,tester:D.g.tester});
   if(I.weekly){D.g.week.wk.steps.push({day:dkey(),note:A.note||"",photos:A.photos.slice()});D.g.week.wk.done=true}else D.g.day.done.push(I.key);
-  report((I.weekly?"tydzien-misja":"misja")+(D.g.tester?"-test":""),{misja:I.mid+(I.v!=="b"?"/"+I.v:""),poziom:LV[I.lvl].n+(I.hero?" + Hero":""),ocena:S.rate,d:{like:S.like||null,xp:xp,trudnosc:r1(I.eff),tryb:D.g.week.mode,hero:I.hero,kat:I.e.kat,dzien:D.g.day.key,seria:D.g.streak,cel:A.target?A.target.name:null,notatka:S.sendNote&&A.note?A.note:null,strefy:D.comfort,wersja:APP_VER}});
-  S.rate=null;S.like=null;S.sendNote=false;save();S.hist=[];go("today",false);
+  if(I.e.kat==="siebie"&&S.selfAns)D.selfPref=S.selfAns;
+  report((I.weekly?"tydzien-misja":"misja")+(D.g.tester?"-test":""),{misja:I.mid+(I.v!=="b"?"/"+I.v:""),poziom:LV[I.lvl].n+(I.hero?" + Hero":""),ocena:S.rate,d:{like:S.like||null,xp:xp,trudnosc:r1(I.eff),tryb:D.g.week.mode,hero:I.hero,kat:I.e.kat,dlaSiebie:I.e.kat==="siebie"?(S.selfAns||null):undefined,dzien:D.g.day.key,seria:D.g.streak,cel:A.target?A.target.name:null,notatka:S.sendNote&&A.note?A.note:null,strefy:D.comfort,wersja:APP_VER}});
+  S.rate=null;S.like=null;S.selfAns=null;S.sendNote=false;save();S.hist=[];go("today",false);
   toast("+"+xp+" XP 🎉"+(D.g.streak>1?"  Seria: "+D.g.streak+" dni":""));
 }
 
@@ -464,6 +472,7 @@ R.journal=function(){
 R.char=function(){
   var h=R.card();
   h+='<hr class="sep"><div class="sec"><h3>Ustawienia</h3>'+
+  '<span class="lbl">🌿 Misje „Dla siebie” (małe przyjemności)</span><div class="chips">'+[["more","Częściej"],["some","Czasem"],["no","Nie pokazuj"]].map(function(o){var cur=D.selfPref||((D.goals||[]).indexOf("siebie")>=0?"more":"some");return '<button class="chip'+(cur===o[0]?" on":"")+'" data-a="selfpref" data-v="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'+
   '<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share"><span class="em">📤</span><span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b><span class="s">Misja, poziom, ocena i punkty trafiają do arkusza Maćka. Bez zdjęć i lokalizacji.</span></span></button>'+
   '<span class="lbl">📅 Codzienne przypomnienie</span>'+calButtons()+
   ((D.g.tester||D.g.dev)?'<button class="opt'+(D.g.tester?" on":"")+'" data-a="tester"><span class="em">🧪</span><span><b>Tryb testera '+(D.g.tester?"✓":"")+'</b><span class="s">Misje z kilku poziomów naraz, podgląd bazy, przeskakiwanie dni</span></span></button>':'')+
@@ -544,7 +553,7 @@ function flushOut(){if(_flushing||!D.outbox||!D.outbox.length||navigator.onLine=
 window.addEventListener("online",flushOut);
 function sendProfile(){var c=comfort(),cl=charClass(),ax=axisVals();D.profSent=true;
   report("profil",{misja:"",poziom:cl.name,ocena:D.rating?D.rating+"/5":"",d:{sciezka:D.knowType==="yes"?(D.path==="quick"?"szybki start":"typ + scenki"):"pytania + scenki",typ:D.type&&D.knowType==="yes"?D.type.EI+D.type.SN+D.type.TF+D.type.JP+(D.type.AT?"-"+D.type.AT:""):null,
-    strefy:c,introwersja:Math.round(ax.intro),spontan:Math.round(ax.spontan),nowosc:Math.round(ax.nowosc),cele:D.goals,wiek:D.age,miejsce:D.place,czas:D.time,pora:D.when,komunikacja:hasTransit(),uwagi:D.comment||null,forma:D.form,wersja:APP_VER}})}
+    strefy:c,introwersja:Math.round(ax.intro),spontan:Math.round(ax.spontan),nowosc:Math.round(ax.nowosc),cele:D.goals,dlaSiebie:D.selfPref||null,wiek:D.age,miejsce:D.place,czas:D.time,pora:D.when,komunikacja:hasTransit(),uwagi:D.comment||null,forma:D.form,wersja:APP_VER}})}
 /* ---------- przypomnienie w kalendarzu ---------- */
 function calDates(){var h=+((D.perm&&D.perm.hour)||8),d=new Date();d.setDate(d.getDate()+1);function p(n){return("0"+n).slice(-2)}
   var day=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());return{s:day+"T"+p(h)+"0000",e:day+"T"+p(h)+"1000"}}
@@ -593,6 +602,8 @@ var ACT={
   photo:function(v){S.photoFor=v;document.getElementById(v==="cam"?"pCam":"pGal").click()},
   rate:function(v){S.rate=v;render()},
   like:function(v){S.like=S.like===v?null:v;render()},
+  selfans:function(v){S.selfAns=S.selfAns===v?null:v;render()},
+  selfpref:function(v){D.selfPref=v;save();report("dla-siebie",{misja:"ustawienia",ocena:v,d:{wersja:APP_VER}});render()},
   tester:function(){D.g.tester=!D.g.tester;save();render();toast(D.g.tester?"Tryb testera włączony":"Tryb testera wyłączony")},
   skip:function(v){v=+v;if(v===0)D.g.offset=0;else D.g.offset=(D.g.offset||0)+v;save();S.hist=[];go("today",false);toast(v?"Przeskoczono "+(v===1?"dzień":"tydzień"):"Prawdziwa data")},
   usehome:function(v){if(v==="1"&&!D.g.home){toast("Najpierw zapisz swój punkt");return}D.g.useHome=v==="1";save();render()},
