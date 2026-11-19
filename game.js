@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="19.11 23:00";
+var APP_VER="20.11 00:30";
 var BASE=null;
 var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
@@ -46,10 +46,17 @@ function allowed(e){
 }
 /* misje „Dla siebie”: pokazujemy częściej tylko tym, którzy tego chcą */
 function selfW(){if(D.selfPref==="no")return 0;if(D.selfPref==="more"||(D.goals||[]).indexOf("siebie")>=0)return .45;return .2}
-function goalsX(){var g=(D.goals||[]).slice();if(D.selfPref==="more"&&g.indexOf("siebie")<0)g.push("siebie");return g}
+/* kategorie do włączania: Częściej (liczą się jak cel) / Czasem / Nie pokazuj */
+var OPTK=[{k:"siebie",em:"🌿",n:"Dla siebie",d:"Małe przyjemności i chwila tylko dla ciebie.",ex:["Kawa albo herbata wypita w spokoju, bez robienia niczego innego","Trzy ulubione piosenki puszczone głośno"]},
+ {k:"natura",em:"🌳",n:"Natura",d:"Ptaki, drzewa, niebo i woda: krótkie chwile na dworze.",ex:["Policz, ile różnych ptaków usłyszysz w 10 minut","Po zmroku znajdź na niebie Wielki Wóz"]},
+ {k:"dziwne",em:"🎲",n:"Dziwne i zabawne",d:"Lekko absurdalne zadania, które wybijają z rutyny i bawią.",ex:["Spacer, na którym o każdym skręcie decyduje rzut monetą","Fort z koców i 15 minut w środku"]}];
+function katPref(k){var g=(D.goals||[]).indexOf(k)>=0;if(k==="siebie")return D.selfPref||(g?"more":"some");return (D.katPref||{})[k]||(g?"more":"some")}
+function setKatPref(k,v){if(k==="siebie")D.selfPref=v;else{D.katPref=D.katPref||{};D.katPref[k]=v}
+  if(v==="no"&&D.g&&D.g.day&&!D.g.day.done.length){var c=D.g.day.cands&&D.g.day.cands[0],e=c&&c.mid&&byId(c.mid);if(e&&e.kat===k)D.g.day=null}}
+function goalsX(){var g=(D.goals||[]).slice();OPTK.forEach(function(o){if(katPref(o.k)==="more"&&g.indexOf(o.k)<0)g.push(o.k)});return g}
 var SELF_OK=true; /* losowane raz na każde dobieranie misji */
 function selfRoll(){SELF_OK=Math.random()<selfW()}
-function selfSkip(e){return e.kat==="siebie"&&!SELF_OK}
+function selfSkip(e){if(e.kat==="siebie")return !SELF_OK;return (e.kat==="natura"||e.kat==="dziwne")&&katPref(e.kat)==="no"}
 var LATE_H=17; /* od tej godziny nie losujemy misji „na cały dzień” i nie dajemy takich wersji Hero */
 function late(){return now().getHours()>=LATE_H}
 function heroAllDay(e){return !!(e.caly||e.calyHero)}
@@ -71,7 +78,7 @@ function km(e,i){return MAPKM[e.mapa][Math.max(1,Math.min(5,i))-1]}
 function G0(){return{offset:0,tester:false,xp:0,streak:0,lastDone:null,log:[],day:null,week:null,act:{},visited:[],known:[],sec:{},home:null,useHome:false,ctr:0}}
 function startGame(){
   if(!D.comfort){D.comfort=comfort()}
-  D.g=G0();D.uid=D.uid||Math.random().toString(36).slice(2,6);save();sendProfile();S.hist=[];go("weekpick",false);
+  D.g=G0();D.news=[NEWS_ID];D.uid=D.uid||Math.random().toString(36).slice(2,6);save();sendProfile();S.hist=[];go("weekpick",false);
 }
 function recent(days){var k=dkey(),r={};(D.g.log||[]).forEach(function(l){if(daysBetween(l.day,k)<days)r[l.mid]=1});return r}
 function yesterdayKat(){var k=dkey(),L=D.g.log||[];for(var i=0;i<L.length;i++){var l=L[i];if(l.weekly||l.step||l.kara)continue;var d=daysBetween(l.day,k);if(d===1)return l.kat;if(d>1)return null}return null}
@@ -306,6 +313,7 @@ R.weekpick=function(){
 R.today=function(){
   if(!BASE)return '<div class="page"><h2>Ładuję misje…</h2><p class="lead">Potrzebny jest internet przy pierwszym uruchomieniu.</p></div>'+nav();
   if(needWeek()){setTimeout(function(){go("weekpick",false)});return ""}
+  if(newsDue()){setTimeout(function(){go("news",false)});return ""}
   ensureDay();cleanAct();
   var d=now(),lvl=totalLevel(D.g.xp),m=D.g.week.mode;
   var h='<div class="dayhead"><div><div class="small">'+DNI[d.getDay()]+', '+fmtDate(d)+(D.g.offset?' <span class="tag">🧪 +'+D.g.offset+' dni</span>':'')+'</div><h2 style="margin:2px 0">Misja dnia</h2></div>'+
@@ -476,7 +484,7 @@ R.journal=function(){
 R.char=function(){
   var h=R.card();
   h+='<hr class="sep"><div class="sec"><h3>Ustawienia</h3>'+
-  '<span class="lbl">🌿 Misje „Dla siebie” (małe przyjemności)</span><div class="chips">'+[["more","Częściej"],["some","Czasem"],["no","Nie pokazuj"]].map(function(o){var cur=D.selfPref||((D.goals||[]).indexOf("siebie")>=0?"more":"some");return '<button class="chip'+(cur===o[0]?" on":"")+'" data-a="selfpref" data-v="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'+
+  OPTK.map(function(o){return '<span class="lbl">'+o.em+' Misje „'+o.n+'”</span>'+prefChips(o.k)}).join("")+
   '<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share"><span class="em">📤</span><span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b><span class="s">Misja, poziom, ocena i punkty trafiają do arkusza Maćka. Bez zdjęć i lokalizacji.</span></span></button>'+
   '<span class="lbl">📅 Codzienne przypomnienie</span>'+calButtons()+
   ((D.g.tester||D.g.dev)?'<button class="opt'+(D.g.tester?" on":"")+'" data-a="tester"><span class="em">🧪</span><span><b>Tryb testera '+(D.g.tester?"✓":"")+'</b><span class="s">Misje z kilku poziomów naraz, podgląd bazy, przeskakiwanie dni</span></span></button>':'')+
@@ -580,6 +588,17 @@ R.intro=function(){var i=S.introStep||0,x=INTRO[i],last=i===INTRO.length-1;
     (last?'<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share" style="margin:8px 0"><span class="em">📤</span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b></button><span class="lbl">📅 Przypominajka (polecam!)</span>'+calButtons():'')+dots+'</div>'+
     bar(last?"🚀 Zaczynamy!":"Dalej",false,"ACT.intro('"+(last?"end":i+1)+"')");
 };
+/* ---------- ekran: nowości po aktualizacji (raz na każdą nowość) ---------- */
+var NEWS_ID="kat-1119";
+function prefChips(k){var cur=katPref(k);return '<div class="chips">'+[["more","Częściej"],["some","Czasem"],["no","Nie pokazuj"]].map(function(o){return '<button class="chip'+(cur===o[0]?" on":"")+'" data-a="katpref" data-v="'+k+':'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'}
+function newsDue(){return D.g&&D.g.introDone&&(D.news||[]).indexOf(NEWS_ID)<0}
+R.news=function(){
+  return '<div class="page"><div style="font-size:52px;text-align:center;margin:6px 0">✨</div><h2 style="text-align:center">Nowe rodzaje misji</h2>'+
+    '<p class="lead">Od dziś w losowaniu są trzy nowe kategorie. Wybierz, jak często chcesz je dostawać. Zmienisz to w każdej chwili w Postać → Ustawienia.</p>'+
+    OPTK.map(function(o){return '<div class="box"><h3 style="margin:0 0 4px">'+o.em+' '+o.n+'</h3><p style="margin:0 0 6px">'+o.d+'</p>'+
+      '<p class="small" style="margin:0 0 10px">Na przykład: '+o.ex.map(function(x){return "„"+gtxt(x)+"”"}).join(" albo ")+'.</p>'+prefChips(o.k)+'</div>'}).join("")+
+    '</div>'+bar("Gotowe 👍",false,"ACT.newsdone('"+NEWS_ID+"')");
+};
 /* ---------- akcje ---------- */
 var ACT={
   tab:function(v){S.hist=[];S.lowerOpen=false;go(v,false)},
@@ -608,6 +627,9 @@ var ACT={
   like:function(v){S.like=S.like===v?null:v;render()},
   selfans:function(v){S.selfAns=S.selfAns===v?null:v;render()},
   selfpref:function(v){D.selfPref=v;save();report("dla-siebie",{misja:"ustawienia",ocena:v,d:{wersja:APP_VER}});render()},
+  katpref:function(v){var p=v.split(":");setKatPref(p[0],p[1]);save();if(S.step!=="news")report("kategoria",{misja:p[0],ocena:p[1],d:{wersja:APP_VER}});render()},
+  newsdone:function(v){D.news=D.news||[];if(D.news.indexOf(v)<0)D.news.push(v);var o={};OPTK.forEach(function(x){o[x.k]=katPref(x.k)});
+    save();report("nowosci",{misja:v,ocena:OPTK.map(function(x){return x.k+"="+o[x.k]}).join(", "),d:{wybor:o,wersja:APP_VER}});S.hist=[];go("today",false);window.scrollTo(0,0)},
   tester:function(){D.g.tester=!D.g.tester;save();render();toast(D.g.tester?"Tryb testera włączony":"Tryb testera wyłączony")},
   skip:function(v){v=+v;if(v===0)D.g.offset=0;else D.g.offset=(D.g.offset||0)+v;save();S.hist=[];go("today",false);toast(v?"Przeskoczono "+(v===1?"dzień":"tydzień"):"Prawdziwa data")},
   usehome:function(v){if(v==="1"&&!D.g.home){toast("Najpierw zapisz swój punkt");return}D.g.useHome=v==="1";save();render()},
