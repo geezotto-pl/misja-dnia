@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="19.11 01:00";
+var APP_VER="19.11 22:00";
 var BASE=null;
 var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
@@ -74,13 +74,17 @@ function startGame(){
   D.g=G0();D.uid=D.uid||Math.random().toString(36).slice(2,6);save();sendProfile();S.hist=[];go("weekpick",false);
 }
 function recent(days){var k=dkey(),r={};(D.g.log||[]).forEach(function(l){if(daysBetween(l.day,k)<days)r[l.mid]=1});return r}
+function yesterdayKat(){var k=dkey(),L=D.g.log||[];for(var i=0;i<L.length;i++){var l=L[i];if(l.weekly||l.step||l.kara)continue;var d=daysBetween(l.day,k);if(d===1)return l.kat;if(d>1)return null}return null}
 function pickLevel(want,excl){selfRoll();
   var c=comfort(),rec=recent(30),pool=[];
   (BASE||[]).forEach(function(e){if(e.rytm!=="d"||!allowed(e)||rec[e.id]||excl[e.id]||(e.caly&&late())||selfSkip(e))return;
     variants(e).forEach(function(vs){var x=effI(e,vs.i,c);if(lvlOf(x)===want)pool.push({mid:e.id,v:vs.v,eff:x,kat:e.kat})})});
   if(!pool.length&&want==="X"){var ph=pickLevel("H",excl);if(ph)ph.want="X";return ph}
   if(!pool.length)return null;
-  var GL=goalsX();if(GL.length&&Math.random()<.6){var g=pool.filter(function(p){return GL.indexOf(p.kat)>=0});if(g.length)pool=g}
+  var GL=goalsX();
+  // drugi dzień z rzędu ta sama kategoria tylko wtedy, gdy to kategoria z celów gracza
+  var yk=yesterdayKat();if(yk&&GL.indexOf(yk)<0){var nk=pool.filter(function(p){return p.kat!==yk});if(nk.length)pool=nk}
+  if(GL.length&&Math.random()<.6){var g=pool.filter(function(p){return GL.indexOf(p.kat)>=0});if(g.length)pool=g}
   // preferuj misje bez wariantów zastępczych tej samej misji
   var p=pool[Math.floor(Math.random()*pool.length)];return{mid:p.mid,v:p.v,want:want};
 }
