@@ -1,6 +1,6 @@
 {
- "wersja": 8,
- "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), kat \"siebie\"=małe przyjemności (częściej tylko dla chętnych), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie, caly=misja trwa cały dzień (nie losujemy jej od 17:00), calyHero=tylko wersja Hero trwa cały dzień (Hero niedostępne od 17:00), wym \"winda\"=nie dla mieszkających na wsi.",
+ "wersja": 9,
+ "opis": "Baza misji Misji Dnia. Pola: kat=kategoria, rytm d/t/m (dzienna/tygodniowa/miesięczna), i=intensywność 1-5, w=obszary (S Ludzie, B Ruch, M Umysł, C Kreatywność, A Przygoda), kat \"natura\"=przyroda, kat \"dziwne\"=dziwne i zabawne, kat \"siebie\"=małe przyjemności (częściej tylko dla chętnych), czas w min, dowod, wym=wymagania/tematy, {m|f}=forma męska|żeńska, {cel}=miejsce wybrane przez aplikację, mapa=rodzaj celu na mapie, caly=misja trwa cały dzień (nie losujemy jej od 17:00), calyHero=tylko wersja Hero trwa cały dzień (Hero niedostępne od 17:00), wym \"winda\"=nie dla mieszkających na wsi.",
  "misje": [
   {
    "id": "lu-001",
@@ -2722,6 +2722,607 @@
    ],
    "t": "W tym tygodniu zrób sobie „randkę ze sobą”: kino, kawiarnia, spacer w ładne miejsce, {sam|sama}, przez co najmniej godzinę.",
    "autor": "Claude"
+  },
+  {
+   "id": "pr-001",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "A": 0.5,
+    "M": 0.5
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wyjdź na 10 minut i policz, ile różnych ptaków usłyszysz albo zobaczysz.",
+   "autor": "Claude",
+   "hero": "Wyjdź na 20 minut i rozpoznaj co najmniej dwa gatunki ptaków (pomoże atlas albo aplikacja).",
+   "notatka": {
+    "pytanie": "Ile ptaków? Opisz jednego z nich.",
+    "min": 15
+   },
+   "heroCzas": 20
+  },
+  {
+   "id": "pr-002",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 0.6,
+    "B": 0.4
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Znajdź największe albo najstarsze drzewo w okolicy. Zrób mu dwa zdjęcia: z daleka i kory z bliska.",
+   "autor": "Claude",
+   "hero": "Znajdź trzy wyjątkowe drzewa w okolicy i dowiedz się, jakie to gatunki."
+  },
+  {
+   "id": "pr-003",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.5,
+    "A": 0.5
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [
+    "zewn",
+    "wieczor"
+   ],
+   "t": "Po zmroku popatrz 10 minut w niebo. Znajdź Wielki Wóz albo Księżyc.",
+   "autor": "Claude",
+   "hero": "Po zmroku znajdź na niebie trzy gwiazdozbiory (pomoże mapa nieba).",
+   "notatka": {
+    "pytanie": "Co {zobaczyłeś|zobaczyłaś} na niebie?",
+    "min": 15
+   }
+  },
+  {
+   "id": "pr-004",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.5,
+    "M": 0.5
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Posadź coś: nasionko, pestkę albo cebulę do szklanki z wodą na parapecie.",
+   "autor": "Claude",
+   "hero": "Posadź trzy różne rośliny albo nasiona i podpisz doniczki."
+  },
+  {
+   "id": "pr-005",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.6,
+    "A": 0.4
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Zbierz pięć różnych rzeczy z natury (liście, szyszki, kamyki) i ułóż z nich obrazek.",
+   "autor": "Claude",
+   "hero": "Ułóż na zewnątrz duży obrazek z co najmniej 20 rzeczy z natury i zostaw go dla przechodniów."
+  },
+  {
+   "id": "pr-006",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 0.5,
+    "M": 0.5
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "20 minut spaceru po lesie, parku albo polnej drodze. Słuchaj tylko dźwięków natury, bez słuchawek.",
+   "autor": "Claude",
+   "hero": "45 minut spaceru bez słuchawek w lesie albo parku, w którym nie {byłeś|byłaś}.",
+   "heroCzas": 45
+  },
+  {
+   "id": "pr-007",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.5,
+    "A": 0.5
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Zrób z bliska zdjęcia trzech drobiazgów z przyrody: liścia, kory, mchu albo kropli wody.",
+   "autor": "Claude",
+   "hero": "Zrób serię 10 zdjęć przyrody z bardzo bliska i wybierz najlepsze."
+  },
+  {
+   "id": "pr-008",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.6,
+    "A": 0.4
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Bez zaglądania w telefon: wyjdź, popatrz na niebo i zapisz swoją prognozę pogody na resztę dnia.",
+   "autor": "Claude",
+   "hero": "Zapisz swoją prognozę na dziś i na jutro, a przy okazji naucz się rozpoznawać trzy rodzaje chmur.",
+   "notatka": {
+    "pytanie": "Jaka będzie pogoda według ciebie?",
+    "min": 15
+   }
+  },
+  {
+   "id": "pr-009",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "B": 0.5,
+    "A": 0.5
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wyjdź na 15 minut na dwór, jaka by nie była pogoda: deszcz, wiatr czy szaruga.",
+   "autor": "Claude",
+   "hero": "Wyjdź na 45 minut na dwór, jaka by nie była pogoda, i zrób zdjęcie najładniejszej rzeczy, jaką zobaczysz.",
+   "heroCzas": 45
+  },
+  {
+   "id": "pr-010",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.4,
+    "A": 0.3,
+    "M": 0.3
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Wysyp ptakom karmę: słonecznik, ziarno albo słoninę (nie chleb!).",
+   "autor": "Claude",
+   "hero": "Zrób karmnik z kartonu albo butelki i powieś go w widocznym miejscu."
+  },
+  {
+   "id": "pr-011",
+   "kat": "natura",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 0.7,
+    "B": 0.3
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Znajdź w okolicy wodę (staw, rzekę, strumień) i posiedź przy niej 10 minut.",
+   "autor": "Claude",
+   "hero": "Dojdź do wody, przy której nigdy nie {byłeś|byłaś}, i posiedź przy niej 20 minut."
+  },
+  {
+   "id": "pr-020",
+   "kat": "natura",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "B": 0.5,
+    "A": 0.5
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Trzy razy w tym tygodniu wyjdź na co najmniej 15 minut do lasu, parku albo w pole.",
+   "autor": "Claude",
+   "kroki": 3
+  },
+  {
+   "id": "pr-021",
+   "kat": "natura",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "C": 0.5,
+    "M": 0.5
+   },
+   "czas": 5,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Przez 5 dni rób zdjęcie temu samemu drzewu albo widokowi, z tego samego miejsca.",
+   "autor": "Claude",
+   "kroki": 5
+  },
+  {
+   "id": "pr-022",
+   "kat": "natura",
+   "rytm": "t",
+   "i": 3,
+   "w": {
+    "B": 0.5,
+    "A": 0.5
+   },
+   "czas": 120,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "Wybierz się na co najmniej dwie godziny do lasu, rezerwatu albo parku krajobrazowego.",
+   "autor": "Claude"
+  },
+  {
+   "id": "pr-030",
+   "kat": "natura",
+   "rytm": "m",
+   "i": 3,
+   "w": {
+    "A": 0.5,
+    "M": 0.5
+   },
+   "czas": 60,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "W tym miesiącu zobacz albo usłysz 10 różnych gatunków ptaków i zapisz je.",
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Wypisz gatunki ptaków, które {spotkałeś|spotkałaś}.",
+    "min": 30
+   }
+  },
+  {
+   "id": "dz-001",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "M": 0.5,
+    "C": 0.5
+   },
+   "czas": 15,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "jedzenie"
+   ],
+   "t": "Zjedz jeden posiłek ręką, którą zwykle nie jesz.",
+   "autor": "Claude",
+   "hero": "Cały dzień rób drobne rzeczy drugą ręką: jedzenie, mycie zębów, otwieranie drzwi."
+  },
+  {
+   "id": "dz-002",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "A": 0.8,
+    "B": 0.2
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [
+    "zewn"
+   ],
+   "t": "15 minut spaceru, na którym o każdym skręcie decyduje rzut monetą (orzeł w prawo, reszka w lewo). Trzymaj się chodników i ścieżek.",
+   "autor": "Claude",
+   "hero": "40 minut spaceru „na monetę”. Zrób zdjęcie miejsca, w którym skończysz.",
+   "heroCzas": 40
+  },
+  {
+   "id": "dz-003",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 0.7,
+    "S": 0.3
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Napisz czterowersową rymowankę o czymś bardzo zwyczajnym (czajnik, skarpetka) i przeczytaj ją komuś.",
+   "autor": "Claude",
+   "hero": "Napisz odę (co najmniej 12 wersów) do zwykłego przedmiotu i wyrecytuj ją komuś z pełną powagą.",
+   "notatka": {
+    "pytanie": "Wpisz swoją rymowankę.",
+    "min": 30
+   }
+  },
+  {
+   "id": "dz-004",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "A": 0.6,
+    "M": 0.4
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Zrób dziś jedną zwykłą rzecz na odwrót: śniadanie na kolację, inna kolejność porannej rutyny, druga strona łóżka.",
+   "autor": "Claude",
+   "hero": "Przeżyj cały poranek w odwrotnej kolejności niż zwykle.",
+   "notatka": {
+    "pytanie": "Co {zrobiłeś|zrobiłaś} na odwrót i jak było?",
+    "min": 20
+   }
+  },
+  {
+   "id": "dz-005",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 1
+   },
+   "czas": 10,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zrób zdjęcie, na którym zwykły przedmiot udaje postać, np. kubek z oczami z karteczek.",
+   "autor": "Claude",
+   "hero": "Zrób komiks z czterech zdjęć, w którym przedmioty z domu przeżywają przygodę."
+  },
+  {
+   "id": "dz-006",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "S": 0.5,
+    "C": 0.3,
+    "M": 0.2
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Otwórz książkę na chybił trafił, wskaż palcem słowo i użyj go dziś trzy razy w rozmowie.",
+   "autor": "Claude",
+   "hero": "Wylosuj tak trzy słowa i użyj każdego z nich w rozmowie.",
+   "notatka": {
+    "pytanie": "Jakie słowo {wylosowałeś|wylosowałaś} i jak je {wplotłeś|wplotłaś}?",
+    "min": 20
+   }
+  },
+  {
+   "id": "dz-007",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.6,
+    "A": 0.4
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zbuduj fort z koców i poduszek i posiedź w nim 15 minut.",
+   "autor": "Claude",
+   "hero": "Zbuduj fort z koców i spędź w nim wieczór: książka, film albo kolacja."
+  },
+  {
+   "id": "dz-008",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 2,
+   "w": {
+    "C": 0.8,
+    "A": 0.2
+   },
+   "czas": 20,
+   "dowod": [
+    "zdjecie",
+    "notatka"
+   ],
+   "wym": [
+    "jedzenie"
+   ],
+   "t": "Wymyśl danie z tego, co masz w domu, nadaj mu wymyślną nazwę i opisz je jak w drogiej restauracji.",
+   "autor": "Claude",
+   "hero": "Przygotuj „menu degustacyjne” z trzech małych dań z tego, co masz w domu, z opisami jak w restauracji.",
+   "notatka": {
+    "pytanie": "Nazwa i opis dania jak z karty drogiej restauracji.",
+    "min": 40
+   }
+  },
+  {
+   "id": "dz-009",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "A": 0.6,
+    "M": 0.4
+   },
+   "czas": 5,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Przez cały dzień wypatruj dziwnych nazw: szyldów, ulic, produktów. Zapisz trzy najzabawniejsze.",
+   "autor": "Claude",
+   "hero": "Zapisz siedem najzabawniejszych nazw, jakie dziś {spotkałeś|spotkałaś}.",
+   "notatka": {
+    "pytanie": "Wypisz znalezione nazwy.",
+    "min": 15,
+    "zdania": 3,
+    "zdaniaHero": 7
+   }
+  },
+  {
+   "id": "dz-010",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "C": 0.7,
+    "S": 0.3
+   },
+   "czas": 5,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Narysuj autoportret z zamkniętymi oczami i pokaż go komuś.",
+   "autor": "Claude",
+   "hero": "Narysuj z zamkniętymi oczami portrety wszystkich domowników i zróbcie wystawę."
+  },
+  {
+   "id": "dz-011",
+   "kat": "dziwne",
+   "rytm": "d",
+   "i": 1,
+   "w": {
+    "S": 0.5,
+    "C": 0.5
+   },
+   "czas": 5,
+   "dowod": [
+    "zrzut"
+   ],
+   "wym": [],
+   "t": "Opowiedz komuś bliskiemu swój dzień w wiadomości złożonej z samych emoji.",
+   "autor": "Claude",
+   "hero": "Opowiedz w emoji fabułę znanego filmu i wyślij ją trzem osobom do zgadnięcia."
+  },
+  {
+   "id": "dz-020",
+   "kat": "dziwne",
+   "rytm": "t",
+   "i": 1,
+   "w": {
+    "A": 0.6,
+    "C": 0.4
+   },
+   "czas": 10,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Trzy razy w tym tygodniu zrób coś zwykłego w niezwykły sposób: inną ręką, inną drogą, w innej kolejności.",
+   "autor": "Claude",
+   "kroki": 3,
+   "notatka": {
+    "pytanie": "Co {zrobiłeś|zrobiłaś} inaczej?",
+    "min": 15
+   }
+  },
+  {
+   "id": "dz-021",
+   "kat": "dziwne",
+   "rytm": "t",
+   "i": 2,
+   "w": {
+    "S": 0.5,
+    "C": 0.5
+   },
+   "czas": 30,
+   "dowod": [
+    "zdjecie"
+   ],
+   "wym": [],
+   "t": "Zorganizuj z domownikami albo znajomymi absurdalne mini-zawody: rzut skarpetką do kosza, wieża z kubków albo najdziwniejsza kanapka.",
+   "autor": "Claude"
+  },
+  {
+   "id": "dz-030",
+   "kat": "dziwne",
+   "rytm": "m",
+   "i": 3,
+   "w": {
+    "A": 0.5,
+    "S": 0.5
+   },
+   "czas": 60,
+   "dowod": [
+    "notatka"
+   ],
+   "wym": [],
+   "t": "Zrób w tym miesiącu „dzień na tak”: zgadzaj się na każdą bezpieczną i rozsądną propozycję domowników albo znajomych.",
+   "autor": "Claude",
+   "notatka": {
+    "pytanie": "Na co się {zgodziłeś|zgodziłaś} i co z tego wyszło?",
+    "min": 40
+   }
   }
  ]
 }
