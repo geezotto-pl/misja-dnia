@@ -143,7 +143,12 @@ body.withnav #app{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .tester{background:#EEF3F8;border:1px dashed var(--blue);color:var(--blue);border-radius:12px;padding:10px 12px;font-size:15px;margin-bottom:12px}
 .mcard{background:#fff;border:2px solid var(--line);border-left:7px solid var(--green);border-radius:14px;padding:14px;margin:12px 0;cursor:pointer;position:relative;box-shadow:0 2px 0 var(--line)}
 .mcard.N{border-left-color:var(--gold)}.mcard.H{border-left-color:var(--red)}.mcard.X{border-left-color:#5b2a86}
-.mcard.done{opacity:.6}.mcard.empty{cursor:default;border-left-color:var(--line)}
+.mcard.adv{border-left-color:#2E6B3F;background:#F4F8EF}.mcard.done{opacity:.6}
+.advgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.advtile{aspect-ratio:1;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink2);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;opacity:.55}
+.advtile b{font-family:var(--hand);font-size:24px}.advtile span{font-size:20px}
+.advtile.op{opacity:1;border-color:#2E6B3F;color:var(--ink);background:#F4F8EF}.advtile.dn{opacity:1;border-color:var(--gold);color:var(--ink)}
+.advtile:disabled{cursor:default}.mcard.empty{cursor:default;border-left-color:var(--line)}
 .mtop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
 .kat{font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
 .mt{font-weight:600;font-size:19px;line-height:1.35}

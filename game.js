@@ -1,6 +1,6 @@
 /* Misja Dnia: gra (misje dzienne, tryb testera, mapa, dowody, punkty, dziennik) */
 "use strict";
-var APP_VER="20.11 00:30";
+var APP_VER="26.11 01:30";
 var BASE=null;
 var SWAPS=3; /* w czasie pierwszych testów 3 wymiany zamiast 1 */
 var LV={E:{n:"Łatwa",mode:"Łatwy",mult:.8},N:{n:"Normalna",mode:"Normalny",mult:1},H:{n:"Trudna",mode:"Trudny",mult:1.25},X:{n:"Hero",mode:"Hero",mult:1.5}};
@@ -343,6 +343,7 @@ R.today=function(){
       '<div class="mt">'+missionText(IW)+'</div><div class="meta">'+(IW.n>1?stepDots(IW.n,IW.k,wk.done)+' '+(wk.done?IW.n:IW.k)+'/'+IW.n+' · ':'')+'⏱️ '+(IW.e.mapa?mapTime(IW.e,IW.i,IW):IW.e.czas+" min"+(IW.n>1?" na raz":""))+' · ok. '+weekXP(IW)+' XP</div>'+
       (wk.done?'<div class="donebadge">✓ Zaliczona</div>':'')+
       ((D.g.tester||(!wk.steps.length&&(wk.swaps||0)<SWAPS&&!wk.done))?'<div class="rowbtn"><button class="mini" data-a="wkswap">'+(D.g.tester?"🎲 Losuj inną":"🔄 Wymień (zostało "+(SWAPS-(wk.swaps||0))+")")+'</button></div>':'')+'</div>'}}
+  h+=advCard();
   h+='<div class="links">'+(D.g.tester?'<button class="btn link" data-a="go" data-v="browse">📚 Podgląd całej bazy misji</button>':'')+
     '<button class="btn link" data-a="go" data-v="suggest">💡 Zaproponuj misję</button><button class="btn link" data-a="go" data-v="feedback">💬 Zgłoś uwagę albo błąd</button></div>';
   return h+nav();
@@ -485,6 +486,7 @@ R.char=function(){
   var h=R.card();
   h+='<hr class="sep"><div class="sec"><h3>Ustawienia</h3>'+
   OPTK.map(function(o){return '<span class="lbl">'+o.em+' Misje „'+o.n+'”</span>'+prefChips(o.k)}).join("")+
+  (advPhase()!=="off"?'<span class="lbl">🎄 Kalendarz adwentowy (dodatek, pierniczki 🍪)</span><div class="chips"><button class="chip'+(adv().on?" on":"")+'" data-a="advset" data-v="1">Włączony</button><button class="chip'+(!adv().on?" on":"")+'" data-a="advset" data-v="0">Wyłączony</button></div>':'')+
   '<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share"><span class="em">📤</span><span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b><span class="s">Misja, poziom, ocena i punkty trafiają do arkusza Maćka. Bez zdjęć i lokalizacji.</span></span></button>'+
   '<span class="lbl">📅 Codzienne przypomnienie</span>'+calButtons()+
   ((D.g.tester||D.g.dev)?'<button class="opt'+(D.g.tester?" on":"")+'" data-a="tester"><span class="em">🧪</span><span><b>Tryb testera '+(D.g.tester?"✓":"")+'</b><span class="s">Misje z kilku poziomów naraz, podgląd bazy, przeskakiwanie dni</span></span></button>':'')+
@@ -588,11 +590,76 @@ R.intro=function(){var i=S.introStep||0,x=INTRO[i],last=i===INTRO.length-1;
     (last?'<button class="opt'+(!D.shareOff?" on":"")+'" data-a="share" style="margin:8px 0"><span class="em">📤</span><b>Wysyłaj wyniki testów '+(!D.shareOff?"✓":"")+'</b></button><span class="lbl">📅 Przypominajka (polecam!)</span>'+calButtons():'')+dots+'</div>'+
     bar(last?"🚀 Zaczynamy!":"Dalej",false,"ACT.intro('"+(last?"end":i+1)+"')");
 };
+/* ---------- kalendarz adwentowy 2026: dodatek z osobną punktacją (pierniczki), okienka można nadrabiać do 31.12 ---------- */
+var ADV_ID="adwent-2026";
+var ADW=[["Zapisz 5 rzeczy, na które cieszysz się w tym grudniu.",""],
+ ["Wieczorem zapal świeczkę i spędź 15 minut bez ekranu.",""],
+ ["Napisz odręcznie kartkę świąteczną i wyślij ją albo wręcz.",""],
+ ["Podziękuj komuś, czyja praca na co dzień jest niewidoczna: listonoszowi, śmieciarzom, sprzątającym.","⛏️ Barbórka"],
+ ["Upiecz pierniczki albo ciasteczka i poczęstuj nimi kogoś spoza domu.",""],
+ ["Zrób komuś anonimową mikołajkową niespodziankę.","🎅 Mikołajki"],
+ ["Zrób ozdobę choinkową z tego, co masz w domu.",""],
+ ["Po zmroku idź na spacer i znajdź najładniej oświetlony dom albo ulicę. Zrób zdjęcie.",""],
+ ["Odłóż ubrania, zabawki albo książki do oddania potrzebującym.",""],
+ ["Naucz się zwrotki mniej znanej kolędy albo pastorałki i zanuć ją komuś.",""],
+ ["Pomóż sąsiadowi albo starszej osobie: zakupy, odśnieżanie, wniesienie czegoś.",""],
+ ["Idź na jarmark świąteczny albo na świąteczny spacer w nowe miejsce.",""],
+ ["Wieczór świąteczny z bliskimi: film albo planszówka, bez telefonów.",""],
+ ["Zadzwoń do kogoś starszego z rodziny i zapytaj, jak wyglądały jego święta z dzieciństwa.",""],
+ ["Napisz list do siebie na przyszłe święta. Schowaj go i otwórz za rok.",""],
+ ["Wrzuć coś do zbiórki: bank żywności, karma do schroniska albo paczka.",""],
+ ["Zrób domową gorącą czekoladę albo kompot z suszu i wypij powoli.",""],
+ ["Zapakuj jeden prezent w wyjątkowy sposób, bez kupowania papieru.",""],
+ ["Udekoruj z kimś choinkę albo jeden kąt domu.",""],
+ ["Zimowy spacer, co najmniej 45 minut, w miejsce, w którym nie {byłeś|byłaś} tej zimy.",""],
+ ["Zobacz zachód słońca i zapisz trzy dobre rzeczy z tego roku.","🌅 Najkrótszy dzień roku"],
+ ["Powiedz albo napisz trzem osobom, za co jesteś im {wdzięczny|wdzięczna} w tym roku.",""],
+ ["Przygotuj jedną potrawę na święta albo pomóż komuś w kuchni.",""],
+ ["Na czas wieczerzy zostaw telefon w innym pokoju i powiedz każdemu przy stole jedno dobre słowo.","⭐ Wigilia"]];
+function adv(){return D.adv||(D.adv={on:null,done:{}})}
+/* "pre" = listopad 2026, liczba 1–31 = dzień grudnia 2026, "off" = poza okresem */
+function advPhase(){var d=now();if(d.getFullYear()!==2026)return "off";if(d.getMonth()===10)return "pre";if(d.getMonth()===11)return d.getDate();return "off"}
+function advCount(){return Object.keys(adv().done).length}
+function advOpenUpTo(){var t=advPhase();return t==="pre"||t==="off"?0:Math.min(t,24)}
+function advMissed(){var a=adv(),t=advPhase(),m=0,last=t>24?24:t-1;for(var i=1;i<=last;i++)if(!a.done[i])m++;return m}
+function advCard(){var a=adv(),t=advPhase();if(!a.on||t==="off")return "";
+  var h='<div class="wkhead">🎄 Kalendarz adwentowy <span class="small">· 🍪 '+advCount()+'/24</span></div>';
+  if(t==="pre")return h+'<div class="mcard adv" data-a="go" data-v="advcal"><div class="mt">Pierwsze okienko otworzy się 1 grudnia.</div><div class="meta">Dodatek świąteczny · osobne punkty: pierniczki 🍪</div></div>';
+  if(t<=24){var dn=!!a.done[t],w=ADW[t-1];
+    h+='<div class="mcard adv'+(dn?" done":"")+'" data-a="advopen" data-v="'+t+'"><div class="mtop"><span class="kat">🎄 Okienko nr '+t+'</span>'+(w[1]?'<span class="small">'+w[1]+'</span>':'')+'</div>'+
+      '<div class="mt">'+gtxt(w[0])+'</div>'+(dn?'<div class="donebadge">✓ +1 🍪</div>':'<div class="meta">Dodatek świąteczny · osobne punkty: pierniczki 🍪</div>')+'</div>'}
+  var m=advMissed();
+  return h+'<button class="btn ghost" data-a="go" data-v="advcal">📅 Cały kalendarz'+(m?' · do nadrobienia: '+m:'')+'</button>'}
+R.advcal=function(){var a=adv(),up=advOpenUpTo(),h='';
+  for(var i=1;i<=24;i++){var dn=!!a.done[i],op=i<=up;
+    h+='<button class="advtile'+(dn?" dn":op?" op":"")+'" '+(op||dn?'data-a="advopen" data-v="'+i+'"':'disabled')+'><b>'+i+'</b><span>'+(dn?"🍪":op?"🎁":"🔒")+'</span></button>'}
+  return head()+'<div class="page"><h2>🎄 Kalendarz adwentowy</h2><p class="lead">Każde otwarte okienko to jeden pierniczek 🍪. To dodatek: nie wpływa na XP ani serię. Pominięte okienka możesz nadrobić do końca grudnia.</p>'+
+    '<div class="big center" style="margin:6px 0 12px">🍪 '+advCount()+' / 24</div><div class="advgrid">'+h+'</div>'+
+    (advPhase()==="pre"?'<p class="small center">Okienka otwierają się od 1 grudnia, jedno dziennie.</p>':'')+'</div>'};
+R.advwin=function(){var n=S.advN,a=adv(),w=ADW[n-1],dn=a.done[n];
+  var h=head()+'<div class="page"><span class="kat">🎄 Okienko nr '+n+(w[1]?' · '+w[1]:'')+'</span><h2 style="margin:6px 0 14px">'+gtxt(w[0])+'</h2>';
+  if(dn){h+='<div class="box"><b>✓ Otwarte '+fmtDate(new Date(dn.day+"T12:00:00"))+' · +1 🍪</b>'+(dn.note?'<p>'+esc(dn.note)+'</p>':'')+'<div class="thumbs">'+(dn.photos||[]).map(function(pk){return '<img data-pk="'+pk+'" alt="">'}).join("")+'</div></div></div>';return h}
+  var late=n<advOpenUpTo()||advPhase()>24;
+  h+=(late?'<p class="small">Nadrabiasz okienko z '+n+' grudnia. Pierniczek liczy się tak samo 🍪</p>':'')+
+    '<span class="lbl">✍️ Krótka notatka (nieobowiązkowa)</span><textarea rows="3" placeholder="Jak było?" data-in="advnote">'+esc(S.advNote||"")+'</textarea>'+
+    '<span class="lbl">📷 Zdjęcie na pamiątkę (nieobowiązkowe)</span><div class="thumbs">'+(S.advPh||[]).map(function(pk){return '<img data-pk="'+pk+'" alt="">'}).join("")+'</div>'+
+    '<div class="grid2"><button class="btn ghost" data-a="photo" data-v="cam">📷 Zrób zdjęcie</button><button class="btn ghost" data-a="photo" data-v="gal">🖼️ Z galerii</button></div>'+
+    '<span class="lbl">Podobało się?</span><div class="chips"><button class="chip'+(S.advLike==="y"?" on":"")+'" data-a="advlike" data-v="y">👍</button><button class="chip'+(S.advLike==="n"?" on":"")+'" data-a="advlike" data-v="n">👎</button></div></div>'+
+    bar("✅ Zrobione! +1 🍪",false,"ACT.advdone()");
+  return h};
+function advNews(){
+  return '<div class="page"><div style="font-size:56px;text-align:center;margin:6px 0">🎄</div><h2 style="text-align:center">Kalendarz adwentowy</h2>'+
+    '<p class="lead">Od 1 do 24 grudnia codziennie otwiera się jedno świąteczne okienko z małym zadaniem: pierniczki, kartka, kolęda, dobry uczynek.</p>'+
+    '<div class="box"><p>🎁 Okienko to <b>dodatek</b>, pojawia się obok zwykłej misji dnia.</p><p>🍪 Za każde okienko dostajesz <b>pierniczka</b>. To osobna, świąteczna punktacja, która nie zmienia XP ani serii.</p><p>⏪ Pominięte okienka możesz <b>nadrobić</b> do końca grudnia.</p></div>'+
+    '<p class="small">Możesz to zmienić w każdej chwili w Postać → Ustawienia.</p><button class="btn ghost" data-a="advset" data-v="0">Nie, dziękuję</button></div>'+
+    bar("🎄 Włączam!",false,"ACT.advset('1')")}
 /* ---------- ekran: nowości po aktualizacji (raz na każdą nowość) ---------- */
 var NEWS_ID="kat-1119";
 function prefChips(k){var cur=katPref(k);return '<div class="chips">'+[["more","Częściej"],["some","Czasem"],["no","Nie pokazuj"]].map(function(o){return '<button class="chip'+(cur===o[0]?" on":"")+'" data-a="katpref" data-v="'+k+':'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'}
-function newsDue(){return D.g&&D.g.introDone&&(D.news||[]).indexOf(NEWS_ID)<0}
-R.news=function(){
+function pendingNews(){if(!D.g||!D.g.introDone)return null;var s=D.news||[];if(s.indexOf(NEWS_ID)<0)return NEWS_ID;
+  var t=advPhase();if(s.indexOf(ADV_ID)<0&&adv().on==null&&(t==="pre"||(t!=="off"&&t<=24)))return ADV_ID;return null}
+function newsDue(){return !!pendingNews()}
+R.news=function(){if(pendingNews()===ADV_ID)return advNews();
   return '<div class="page"><div style="font-size:52px;text-align:center;margin:6px 0">✨</div><h2 style="text-align:center">Nowe rodzaje misji</h2>'+
     '<p class="lead">Od dziś w losowaniu są trzy nowe kategorie. Wybierz, jak często chcesz je dostawać. Zmienisz to w każdej chwili w Postać → Ustawienia.</p>'+
     OPTK.map(function(o){return '<div class="box"><h3 style="margin:0 0 4px">'+o.em+' '+o.n+'</h3><p style="margin:0 0 6px">'+o.d+'</p>'+
@@ -627,6 +694,15 @@ var ACT={
   like:function(v){S.like=S.like===v?null:v;render()},
   selfans:function(v){S.selfAns=S.selfAns===v?null:v;render()},
   selfpref:function(v){D.selfPref=v;save();report("dla-siebie",{misja:"ustawienia",ocena:v,d:{wersja:APP_VER}});render()},
+  advset:function(v){var a=adv(),on=v==="1",fromNews=S.step==="news";if(a.on===on&&!fromNews)return;a.on=on;D.news=D.news||[];if(D.news.indexOf(ADV_ID)<0)D.news.push(ADV_ID);save();
+    report("adwent",{misja:fromNews?"wybor":"ustawienia",ocena:on?"wlaczony":"wylaczony",d:{wersja:APP_VER}});
+    if(fromNews){S.hist=[];go("today",false);window.scrollTo(0,0);if(on)toast("🎄 Kalendarz adwentowy włączony")}else render()},
+  advopen:function(v){var n=+v;if(!adv().done[n]&&n>advOpenUpTo()){toast("To okienko jeszcze zamknięte 🔒");return}S.advN=n;S.advNote="";S.advPh=[];S.advLike=null;go("advwin")},
+  advlike:function(v){S.advLike=S.advLike===v?null:v;render()},
+  advdone:function(){var n=S.advN,a=adv();if(a.done[n])return;var late=n<advOpenUpTo()||advPhase()>24;
+    a.done[n]={day:dkey(),note:(S.advNote||"").trim(),photos:(S.advPh||[]).slice(),like:S.advLike||null};save();
+    report("adwent",{misja:"okienko-"+n,ocena:late?"nadrobione":"w terminie",d:{okienko:n,like:S.advLike||null,pierniczki:advCount(),dzien:dkey(),wersja:APP_VER}});
+    S.hist=[];go("today",false);window.scrollTo(0,0);toast("🍪 +1 pierniczek! Masz już "+advCount()+"/24")},
   katpref:function(v){var p=v.split(":");setKatPref(p[0],p[1]);save();if(S.step!=="news")report("kategoria",{misja:p[0],ocena:p[1],d:{wersja:APP_VER}});render()},
   newsdone:function(v){D.news=D.news||[];if(D.news.indexOf(v)<0)D.news.push(v);var o={};OPTK.forEach(function(x){o[x.k]=katPref(x.k)});
     save();report("nowosci",{misja:v,ocena:OPTK.map(function(x){return x.k+"="+o[x.k]}).join(", "),d:{wybor:o,wersja:APP_VER}});S.hist=[];go("today",false);window.scrollTo(0,0)},
@@ -663,13 +739,16 @@ document.addEventListener("click",function(ev){var b=ev.target.closest("[data-a]
 document.addEventListener("input",function(ev){var k=ev.target.getAttribute&&ev.target.getAttribute("data-in");if(!k)return;
   if(k==="note"){var I=curInst();actOf(I).note=ev.target.value;save();var nb=document.getElementById("nextBtn");if(nb)nb.disabled=!proofOk(I,actOf(I));var ni=document.getElementById("noteinfo");if(ni)ni.textContent=noteInfo(I,ev.target.value)}
   if(k==="sugt"){S.sug.t=ev.target.value}
+  if(k==="advnote"){S.advNote=ev.target.value}
   if(k==="fbt"){S.fb.t=ev.target.value}});
-function onProof(ev){var f=ev.target.files&&ev.target.files[0];ev.target.value="";if(!f)return;var I=curInst();if(!I)return;var A=actOf(I);
+function onProof(ev){var f=ev.target.files&&ev.target.files[0];ev.target.value="";if(!f)return;
+  if(S.step==="advwin"){compress(f,1000).then(function(data){var pk="a"+Date.now();return pput(pk,data).then(function(){(S.advPh=S.advPh||[]).push(pk);render();toast("Dodano zdjęcie 📸")})}).catch(function(){toast("Nie udało się zapisać zdjęcia")});return}
+  var I=curInst();if(!I)return;var A=actOf(I);
   compress(f,1000).then(function(data){var pk="p"+Date.now();return pput(pk,data).then(function(){A.photos.push(pk);save();render();toast("Dodano zdjęcie 📸")})}).catch(function(){toast("Nie udało się zapisać zdjęcia")})}
 (function(){var a=document.createElement("input");a.type="file";a.accept="image/*";a.setAttribute("capture","environment");a.id="pCam";a.className="hidden";
   var b=document.createElement("input");b.type="file";b.accept="image/*";b.id="pGal";b.className="hidden";
   a.addEventListener("change",onProof);b.addEventListener("change",onProof);document.body.appendChild(a);document.body.appendChild(b)})();
-window.gameBack=function(){if(S.step==="intro"){if(S.introStep>0){S.introStep--;render()}return true}if(["mission","rate","browse","suggest","feedback"].indexOf(S.step)>=0&&!S.hist.length){go(D.g?"today":"card",false);return true}return false};
+window.gameBack=function(){if(S.step==="intro"){if(S.introStep>0){S.introStep--;render()}return true}if(["mission","rate","browse","suggest","feedback","advcal","advwin"].indexOf(S.step)>=0&&!S.hist.length){go(D.g?"today":"card",false);return true}return false};
 
 /* ---------- po każdym renderze ---------- */
 var _render=render;
